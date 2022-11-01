@@ -1,4 +1,4 @@
-package com.habit.thehabit.exception.dto;
+package com.habit.thehabit.common.command.app.exception.dto;
 
 import org.springframework.http.HttpStatus;
 

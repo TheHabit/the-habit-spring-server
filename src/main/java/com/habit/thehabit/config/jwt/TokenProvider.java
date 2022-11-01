@@ -1,8 +1,8 @@
 package com.habit.thehabit.config.jwt;
 
-import com.habit.thehabit.app.dao.entity.Member;
-import com.habit.thehabit.app.dto.TokenDTO;
-import com.habit.thehabit.exception.TokenException;
+import com.habit.thehabit.member.command.domain.aggregate.Member;
+import com.habit.thehabit.common.command.app.dto.TokenDTO;
+import com.habit.thehabit.common.command.app.exception.TokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -97,8 +97,9 @@ public class TokenProvider {
                     .collect(Collectors.toList());
 
         /** UserDetails 생성 후 authentication token 리턴 */
+        System.out.println("this.getUserId(accessToken) = " + this.getUserId(accessToken));
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserId(accessToken));
-
+        
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
@@ -119,7 +120,7 @@ public class TokenProvider {
 
     private Claims parseClaims(String accessToken) {
         try{
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJwt(accessToken).getBody();
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
         } catch(ExpiredJwtException e){
             return e.getClaims();
         }

@@ -1,13 +1,14 @@
-package com.habit.thehabit.app.service;
+package com.habit.thehabit.common.command.app.service;
 
-import com.habit.thehabit.app.dao.repository.MemberRepository;
-import com.habit.thehabit.app.dao.entity.Member;
-import com.habit.thehabit.app.dto.TokenDTO;
+import com.habit.thehabit.member.command.domain.aggregate.Member;
+import com.habit.thehabit.common.command.app.dto.TokenDTO;
 import com.habit.thehabit.config.jwt.TokenProvider;
-import com.habit.thehabit.exception.DuplicateIdException;
-import com.habit.thehabit.exception.LoginFailedException;
+import com.habit.thehabit.common.command.app.exception.DuplicateIdException;
+import com.habit.thehabit.common.command.app.exception.LoginFailedException;
+import com.habit.thehabit.member.command.infra.repository.MemberInfraRepository;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,20 +19,20 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
-    private final MemberRepository memberRepository;
+    private final MemberInfraRepository memberInfraRepository;
 
     @Autowired
-    public AuthService(PasswordEncoder passwordEncoder, TokenProvider tokenProvider, MemberRepository memberRepository){
+    public AuthService(PasswordEncoder passwordEncoder, TokenProvider tokenProvider, MemberInfraRepository memberInfraRepository){
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
-        this.memberRepository = memberRepository;
+        this.memberInfraRepository = memberInfraRepository;
     }
 
     @Transactional
     public Member signup(Member member){
 
         /** id 중복 여부 체크 */
-        if( memberRepository.findByMemberId(member.getMemberId()) != null){
+        if( memberInfraRepository.findByMemberId(member.getMemberId()) != null){
             throw new DuplicateIdException("중복된 ID가 존재합니다.");
         }
 
@@ -40,9 +41,9 @@ public class AuthService {
         System.out.println("member.getMemberPwd() = " + member.getMemberPwd() + "|");
 
         /** insert 후 결과 반환 */
-        memberRepository.save(member);
+        memberInfraRepository.save(member);
 
-        return memberRepository.findByMemberId(member.getMemberId());
+        return memberInfraRepository.findByMemberId(member.getMemberId());
     }
 
     @Transactional
@@ -50,7 +51,7 @@ public class AuthService {
 
         System.out.println("member.getMemberPwd() = " + member.getMemberPwd());
         /** 1. 아이디 조회 */
-        Member foundMember = memberRepository.findByMemberId(member.getMemberId());
+        Member foundMember = memberInfraRepository.findByMemberId(member.getMemberId());
         System.out.println("foundMember.getMemberPwd() = " + foundMember.getMemberPwd());
 
         if(foundMember == null){
@@ -68,5 +69,13 @@ public class AuthService {
         TokenDTO token = tokenProvider.generateTokenDTO(foundMember);
 
         return token;
+    }
+
+    public Member update(Member member, User user) {
+
+        /** 회원 정보 조회 */
+        System.out.println("member = " + member);
+
+        return null;
     }
 }

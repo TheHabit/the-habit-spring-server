@@ -5,8 +5,10 @@ import com.habit.thehabit.config.jwt.JwtAuthenticationEntryPoint;
 import com.habit.thehabit.config.jwt.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,6 +24,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
+@EnableJpaRepositories(basePackages = "com.habit.thehabit")
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final TokenProvider tokenProvider;
@@ -66,7 +69,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                     /**모든이에게 접근 허용 */
                     .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .antMatchers("/auths/**").permitAll()
+                    .antMatchers("/auths/signup").permitAll()
+                    .antMatchers("/auths/login").permitAll()
+                    .antMatchers("/v1/target/**").permitAll()
                     .antMatchers("/v1/member/login").permitAll()
                     .antMatchers("/v1/member/success").authenticated()
                     /** USER, ADMIN 권한을 가진 사용자만 접근 허용 */

@@ -1,4 +1,4 @@
-package com.habit.thehabit.app.dao.entity;
+package com.habit.thehabit.member.command.domain.aggregate;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -67,7 +67,8 @@ public class Member implements UserDetails {
 
 
     @Builder
-    public Member(int memberCode, String memberId, String memberPwd, String isTempPwd, String name, String phone, Date signupDate, Date withDrawalDate, String isWithDrawal, String memberRole) {
+    public Member(int memberCode, String memberId, String memberPwd, String isTempPwd, String name, String phone,
+                  Date signupDate, Date withDrawalDate, String isWithDrawal, String memberRole /** Collection<? extends GrantedAuthority> authorities */) {
         this.memberCode = memberCode;
         this.memberId = memberId;
         this.memberPwd = memberPwd;
@@ -78,7 +79,15 @@ public class Member implements UserDetails {
         this.withDrawalDate = withDrawalDate;
         this.isWithDrawal = isWithDrawal;
         this.memberRole = memberRole;
+//        this.authorities = authorities;
     }
+
+    /** Security를 위한 코드 */
+//    private Collection<? extends GrantedAuthority> authorities;
+
+//    public void setAuthorities(Collection<? extends GrantedAuthority> authorities){
+//        this.authorities = authorities;
+//    }
 
     /** UserDetails를 상속받아서 오버라이딩한 메서드들. */
     @Override

@@ -1,4 +1,4 @@
-package com.habit.thehabit.exception;
+package com.habit.thehabit.common.command.app.exception;
 
 public class TokenException extends RuntimeException {
 

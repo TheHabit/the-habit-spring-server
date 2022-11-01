@@ -1,4 +1,4 @@
-package com.habit.thehabit.app.controller;
+package com.habit.thehabit.member.command.app.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +14,6 @@ public class MemberController {
     @GetMapping("test")
     public String test(){
         return "MemberTest";
-    }
-
-    @GetMapping("login")
-    public String goLogin(){
-        return "login";
     }
 
     @ResponseBody

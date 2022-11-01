@@ -2,8 +2,7 @@ package com.habit.thehabit.config.jwt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.habit.thehabit.exception.TokenException;
-import com.habit.thehabit.exception.dto.ApiExceptionDTO;
+import com.habit.thehabit.common.command.app.exception.dto.ApiExceptionDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -77,6 +76,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     /** request 헤더로부터 토큰을 꺼내오는 메서드 */
     private String resolveToken(HttpServletRequest request) {
+
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         /** bearerToken 안에 text가 있는지 확인 */
         if(StringUtils.hasText(bearerToken)){

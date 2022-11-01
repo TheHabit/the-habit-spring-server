@@ -1,4 +1,4 @@
-package com.habit.thehabit.app.dto;
+package com.habit.thehabit.common.command.app.dto;
 
 import org.springframework.http.HttpStatus;
 

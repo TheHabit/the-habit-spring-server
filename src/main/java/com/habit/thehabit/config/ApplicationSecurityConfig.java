@@ -17,8 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 import java.util.Arrays;
+
 
 @Configuration
 @EnableWebSecurity
@@ -45,8 +45,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/v1/member/login")
                 .successForwardUrl("/v1/member/success")
+                //로그인이 성공했을때 uri를 호출하여 다른 로직을 한번 더 실행.
                 .failureForwardUrl("/v1/member/fail")
-
+                //실패했을 때, uri를 호출하여 다른 로직을 한번 더 실행.
                 .and()
                 /** exception handling */
                     .exceptionHandling()
@@ -61,6 +62,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
+                /**/
                     .authorizeRequests()
                     /**모든이에게 접근 허용 */
                     .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -79,6 +81,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
+
+    /*뭐하는 거야*/
     /** cors 요청 허용 여부를 지정한다. */
     @Bean
     CorsConfigurationSource corsConfigurationSource(){

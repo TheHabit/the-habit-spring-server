@@ -28,8 +28,8 @@ public class TargetController {
     static {
         // RestTemplate 기본 설정을 위한 Factory 생성
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(3000);
-        factory.setReadTimeout(3000);
+        factory.setConnectTimeout(5000);
+        factory.setReadTimeout(5000);
         factory.setBufferRequestBody(false);
         REST_TEMPLATE = new RestTemplate(factory);
     }
@@ -54,15 +54,17 @@ public class TargetController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> verifyTarget(@RequestBody MultipartFile file) throws IOException {
+    public ResponseEntity<?> verifyTarget( MultipartFile file) throws IOException {
 
         System.out.println("file = " + file);
+        System.out.println("image.getName() = " + file.getName());
+
         String fileName = file.getOriginalFilename();
         System.out.println("fileName = " + fileName);
         System.out.println("file.getBytes() = " + file.getBytes());
 
         /** 이미지 파일 로컬 저장 */
-        String imageName = "test";
+        String imageName = "test3";
 
         String replaceFileName = null;
 
@@ -74,19 +76,27 @@ public class TargetController {
             throw new RuntimeException(e);
         }
 
-
         /** 인공지능 API 서버로 전송 */
-        LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-        map.add("files", file.getResource());
+        LinkedMultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("image", file.getResource());
+        body.add("num", 1);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(map,headers);
+        HttpEntity<?> requestEntity = new HttpEntity<>(body,headers);
 
-        String url = "http://localhost:8080/v1/target/receive";
+        String url = "http://172.17.134.25:5005/detection";
         JsonNode response = REST_TEMPLATE.postForObject(url,requestEntity, JsonNode.class);
+        System.out.println("response = " + response);
 
-        return new ResponseEntity<>( response, HttpStatus.OK );
+        if(response.get("result").asInt() == 1){
+            return new ResponseEntity<>( true, HttpStatus.OK);
+        } else{
+            return new ResponseEntity<>(false, HttpStatus.NOT_ACCEPTABLE);
+        }
+//        return new ResponseEntity<>( response, HttpStatus.OK );
     }
+
 }
+

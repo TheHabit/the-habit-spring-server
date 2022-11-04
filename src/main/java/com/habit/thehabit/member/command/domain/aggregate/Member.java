@@ -1,9 +1,6 @@
 package com.habit.thehabit.member.command.domain.aggregate;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -29,6 +26,7 @@ import java.util.Date;
         pkColumnValue = "MEMBER_SEQ",
         allocationSize = 1
 )
+
 public class Member implements UserDetails {
 
     @Id

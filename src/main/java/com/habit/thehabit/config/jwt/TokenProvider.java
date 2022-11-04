@@ -29,7 +29,8 @@ public class TokenProvider {
     private final Key key;
 
     public TokenProvider(@Value("${security.jwt.secret}") String secretKey, @Value("${security.jwt.token.expire-length}") long expireTime,
-                         @Value("${security.jwt.authority-type") String authoritesKey, @Value("${security.jwt.bearer-type}") String bearerType, UserDetailsService userDetailsService){
+                         @Value("${security.jwt.authority-type") String authoritesKey, @Value("${security.jwt.bearer-type}") String bearerType,
+                         UserDetailsService userDetailsService){
 
         this.userDetailsService = userDetailsService;
 
@@ -97,6 +98,7 @@ public class TokenProvider {
                     .collect(Collectors.toList());
 
         /** UserDetails 생성 후 authentication token 리턴 */
+        /*여기여기여기여기여기여기여기여기여기여기 문제확인*/
         System.out.println("this.getUserId(accessToken) = " + this.getUserId(accessToken));
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserId(accessToken));
         

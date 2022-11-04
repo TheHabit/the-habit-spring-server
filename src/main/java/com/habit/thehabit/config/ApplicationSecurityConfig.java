@@ -71,9 +71,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .antMatchers("/auths/signup").permitAll()
                     .antMatchers("/auths/login").permitAll()
-                    .antMatchers("/v1/target/**").permitAll()
-                    .antMatchers("/v1/member/login").permitAll()
-                    .antMatchers("/v1/member/success").authenticated()
+                    .antMatchers("/members").hasRole("USER")
+//                    .antMatchers("/v1/target/**").permitAll()
+//                    .antMatchers("/v1/member/login").permitAll()
+//                    .antMatchers("/v1/member/success").authenticated()
                     /** USER, ADMIN 권한을 가진 사용자만 접근 허용 */
                     .antMatchers("/v1/**").hasAnyRole("USER", "ADMIN")
 

@@ -44,9 +44,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)){
 
+            System.out.println("step 1");
             /** token에서 authentication을 얻어와서 security context holder에 저장 */
             Authentication authentication = tokenProvider.getAuthentication(jwt);
 
+            System.out.println("step 2");
             /** SecurityContextHolder는 인증된 유저의 정보를 저장. */
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

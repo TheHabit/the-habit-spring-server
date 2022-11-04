@@ -38,7 +38,12 @@ public class MemberService {
         log.info("[MemberService] updateMember {}", updateRequestDTO);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        MemberDTO loginedMember = (MemberDTO) authentication.getPrincipal();
+//        MemberDTO loginedMember = (MemberDTO) authentication.getPrincipal();
+//        log.info("[MemberService] loginedMember {}", loginedMember);
+        System.out.println("authentication.getPrincipal :" + authentication.getPrincipal());
+        /* */
+        /*캐스팅*/
+        MemberDTO loginedMember = (MemberDTO)authentication.getPrincipal();
         log.info("[MemberService] loginedMember {}", loginedMember);
         if(!passwordEncoder.matches(updateRequestDTO.getMemberPwd(), loginedMember.getMemberPwd())){
             log.info("[MemberService] 비밀번호가 일치하지 않습니다!");

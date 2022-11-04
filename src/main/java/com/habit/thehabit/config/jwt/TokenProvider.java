@@ -1,11 +1,13 @@
 package com.habit.thehabit.config.jwt;
 
+import com.habit.thehabit.member.command.app.dto.MemberDTO;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.common.command.app.dto.TokenDTO;
 import com.habit.thehabit.common.command.app.exception.TokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,6 +21,7 @@ import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class TokenProvider {
 
@@ -97,11 +100,16 @@ public class TokenProvider {
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
 
+        log.info("[TokenProvider] authorities : {}", authorities);
+
         /** UserDetails 생성 후 authentication token 리턴 */
-        /*여기여기여기여기여기여기여기여기여기여기 문제확인*/
         System.out.println("this.getUserId(accessToken) = " + this.getUserId(accessToken));
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserId(accessToken));
-        
+//        UserDetails userDetails = userDetailsService.loadUserByUsername( this.getUserId(accessToken) );
+//        UserDetails userDetails = userDetailsService.loadUserByUsername( "test02" );
+        MemberDTO userDetails = (MemberDTO) userDetailsService.loadUserByUsername( "test02" );
+        log.info("==========================================================");
+        System.out.println(userDetails.getAuthorities());
+        log.info("==========================================================");
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 

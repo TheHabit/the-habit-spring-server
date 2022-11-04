@@ -83,7 +83,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 /** JWT 인증 방식을 사용한 jwt filter을 등록 */
                     .apply(new JwtSecurityConfig(tokenProvider));
-
     }
 
 

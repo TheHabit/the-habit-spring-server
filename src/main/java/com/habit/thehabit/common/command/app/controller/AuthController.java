@@ -41,12 +41,13 @@ public class AuthController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "로그인 성공", authService.login(member)));
     }
 
-    @PutMapping("update")
-    public ResponseEntity<ResponseDTO> update(@RequestBody Member member, @AuthenticationPrincipal User user){
-        System.out.println("member = " + member);
-        System.out.println("user = " + user);
+//    @PutMapping("update")
+//    public ResponseEntity<ResponseDTO> update(@RequestBody Member member, @AuthenticationPrincipal User user){
+//        System.out.println("member = " + member);
+//        System.out.println("user = " + user);
+//
+//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "회원정보 수정 성공", authService.update(member, user)));
+//    }
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "회원정보 수정 성공", authService.update(member, user)));
-    }
 }
 

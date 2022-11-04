@@ -1,14 +1,22 @@
 package com.habit.thehabit.member.command.app.controller;
 
+import com.habit.thehabit.common.command.app.dto.ResponseDTO;
+import com.habit.thehabit.member.command.app.dto.UpdateRequestDTO;
+import com.habit.thehabit.member.command.app.service.MemberService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/v1/member")
+@RequestMapping("/members")
 public class MemberController {
+
+    private final MemberService memberService;
+
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
 
     @ResponseBody
     @GetMapping("test")
@@ -26,5 +34,11 @@ public class MemberController {
     @GetMapping("fail")
     public String fail(){
         return "You're failed to login!";
+    }
+
+    @PutMapping("")
+    public ResponseEntity<ResponseDTO> updateMember(@RequestBody UpdateRequestDTO updateRequestDTO){
+        System.out.println("컨트롤러에 요청들어왔습니다.");
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "회원정보 수정 완료", memberService.updateMember(updateRequestDTO)));
     }
 }

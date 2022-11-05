@@ -24,8 +24,13 @@ public class Club {
     @Column(name = "CLUB_ID")
     private int id;
 
-    @Embedded
-    private com.habit.thehabit.club.command.domain.aggregate.embeddable.Period Period; //클럽 활동 기간
+
+
+    @Column(name = "CLUB_NAME")
+    private String clubName; //모임명
+
+    @Column(name = "BOOK_NAME")
+    private String bookName; //대상도서명
 
     @Embedded
     @AttributeOverrides({
@@ -34,11 +39,14 @@ public class Club {
     })
     private Period recruitPeriod; //모집 기간
 
-    @Column(name = "CLUB_NAME")
-    private String clubName;
+    @Embedded
+    private Period period; //클럽 활동 기간
 
     @Column(name = "NUMBEROF_MEMBER")
-    private int numberOfMember;
+    private int numberOfMember; //모집인원
+
+    @Enumerated(EnumType.STRING)
+    private ClubStatus status; //진행상태
 
     @OneToMany(mappedBy = "member" , cascade = CascadeType.ALL)
     private List<Member> members = new ArrayList<>();

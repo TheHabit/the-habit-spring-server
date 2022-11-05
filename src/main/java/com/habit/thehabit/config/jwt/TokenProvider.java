@@ -106,9 +106,9 @@ public class TokenProvider {
         System.out.println("this.getUserId(accessToken) = " + this.getUserId(accessToken));
 //        UserDetails userDetails = userDetailsService.loadUserByUsername( this.getUserId(accessToken) );
 //        UserDetails userDetails = userDetailsService.loadUserByUsername( "test02" );
-        MemberDTO userDetails = (MemberDTO) userDetailsService.loadUserByUsername( "test02" );
+        UserDetails userDetails = userDetailsService.loadUserByUsername( this.getUserId(accessToken) );
         log.info("==========================================================");
-        System.out.println(userDetails.getAuthorities());
+        System.out.println("userDetails detect " + userDetails.getAuthorities());
         log.info("==========================================================");
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }

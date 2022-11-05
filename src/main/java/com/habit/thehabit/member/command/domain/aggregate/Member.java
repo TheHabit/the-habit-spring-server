@@ -66,7 +66,7 @@ public class Member implements UserDetails {
 
     @Builder
     public Member(int memberCode, String memberId, String memberPwd, String isTempPwd, String name, String phone,
-                  Date signupDate, Date withDrawalDate, String isWithDrawal, String memberRole /** Collection<? extends GrantedAuthority> authorities */) {
+                  Date signupDate, Date withDrawalDate, String isWithDrawal, String memberRole, Collection<? extends GrantedAuthority> authorities) {
         this.memberCode = memberCode;
         this.memberId = memberId;
         this.memberPwd = memberPwd;
@@ -77,49 +77,67 @@ public class Member implements UserDetails {
         this.withDrawalDate = withDrawalDate;
         this.isWithDrawal = isWithDrawal;
         this.memberRole = memberRole;
-//        this.authorities = authorities;
+        this.authorities = authorities;
     }
 
     /** Security를 위한 코드 */
-//    private Collection<? extends GrantedAuthority> authorities;
+    @Transient
+    private Collection<? extends GrantedAuthority> authorities;
 
-//    public void setAuthorities(Collection<? extends GrantedAuthority> authorities){
-//        this.authorities = authorities;
-//    }
+    public void setAuthorities(Collection<? extends GrantedAuthority> authorities){
+        this.authorities = authorities;
+    }
 
     /** UserDetails를 상속받아서 오버라이딩한 메서드들. */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.authorities;
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return this.memberPwd;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return this.memberId;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "memberCode=" + memberCode +
+                ", memberId='" + memberId + '\'' +
+                ", memberPwd='" + memberPwd + '\'' +
+                ", isTempPwd='" + isTempPwd + '\'' +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", signupDate=" + signupDate +
+                ", withDrawalDate=" + withDrawalDate +
+                ", isWithDrawal='" + isWithDrawal + '\'' +
+                ", memberRole='" + memberRole + '\'' +
+                ", authorities=" + authorities +
+                '}';
     }
 }

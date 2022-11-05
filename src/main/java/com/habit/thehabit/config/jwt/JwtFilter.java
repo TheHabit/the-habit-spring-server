@@ -31,13 +31,13 @@ public class JwtFilter extends OncePerRequestFilter {
         try{
             String jwt = resolveToken(request);
             manageContextHolder(jwt);
-            //dofilter원래 자리
+            // dofilter원래 자리
 
         } catch (RuntimeException e) {
             manageApiException(response, e);
         }
 
-            filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 
     /** 토큰이 유효할 때, authentication을 context holder에 담아주는 메서드*/
@@ -52,7 +52,9 @@ public class JwtFilter extends OncePerRequestFilter {
             System.out.println(authentication);
             System.out.println("step 2");
             /** SecurityContextHolder는 인증된 유저의 정보를 저장. */
+            System.out.println("before : SecurityContextHolder.getContext() = " + SecurityContextHolder.getContext());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println("after : SecurityContextHolder.getContext() = " + SecurityContextHolder.getContext());
         }
 
     }

@@ -45,19 +45,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 /** CSRF disable */
                 .csrf().disable()
-                .formLogin()
-                .loginPage("/v1/member/login")
-                .successForwardUrl("/v1/member/success")
-                //로그인이 성공했을때 uri를 호출하여 다른 로직을 한번 더 실행.
-                .failureForwardUrl("/v1/member/fail")
-                //실패했을 때, uri를 호출하여 다른 로직을 한번 더 실행.
-                .and()
+
                 /** exception handling */
-                    .exceptionHandling()
-                    /** 인증 처리가 되지 않았을 때 발생하는 exception 처리를 위한 entry point 지정 */
-                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                    /** 인가되지 않은 곳에 접근시 발생하는 exception 처리 */
-                    .accessDeniedHandler(jwtAccessDeniedHandler)
+                .exceptionHandling()
+                /** 인증 처리가 되지 않았을 때 발생하는 exception 처리를 위한 entry point 지정 */
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                /** 인가되지 않은 곳에 접근시 발생하는 exception 처리 */
+                .accessDeniedHandler(jwtAccessDeniedHandler)
 
                 /** 세션을 사용하지 않기 때문에, Stateless로 설정 */
                 .and()
@@ -65,18 +59,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
-                /**/
                     .authorizeRequests()
-                    /**모든이에게 접근 허용 */
-                    .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .antMatchers("/auths/signup").permitAll()
-                    .antMatchers("/auths/login").permitAll()
-                    .antMatchers("/members").hasRole("USER")
-//                    .antMatchers("/v1/target/**").permitAll()
-//                    .antMatchers("/v1/member/login").permitAll()
-//                    .antMatchers("/v1/member/success").authenticated()
-                    /** USER, ADMIN 권한을 가진 사용자만 접근 허용 */
-                    .antMatchers("/v1/**").hasAnyRole("USER", "ADMIN")
+                    .antMatchers("/v1/auths/login").permitAll()
+                    .antMatchers(HttpMethod.POST,"/v1/members").permitAll()
+                    .antMatchers(HttpMethod.PUT,"/v1/members").hasAuthority("USER")
 
                 .and()
                     .cors()

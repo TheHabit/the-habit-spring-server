@@ -11,9 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
-@RequestMapping("/auths")
+@RequestMapping("/v1/auths")
 public class AuthController {
 
     private final AuthService authService;
@@ -23,31 +22,16 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @GetMapping("test")
-    public String test(){
-        return "hello guys";
-    }
-
-    @PostMapping("signup")
-    public ResponseEntity<ResponseDTO> signup(@RequestBody Member member){
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "회원가입 성공", authService.signup(member)));
-    }
-
     @PostMapping("login")
-    public ResponseEntity<ResponseDTO> login(@RequestBody Member member) throws LoginFailedException {
-        System.out.println("member = " + member);
+    public ResponseEntity<ResponseDTO> login(@RequestBody Member member) {
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "로그인 성공", authService.login(member)));
+        try {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "로그인 성공", authService.login(member)));
+        } catch (LoginFailedException e){
+            return ResponseEntity.status(401).body(new ResponseDTO(HttpStatus.UNAUTHORIZED, "로그인 실패", e.getMessage()));
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 에러", "서버 에러"));
+        }
     }
-
-//    @PutMapping("update")
-//    public ResponseEntity<ResponseDTO> update(@RequestBody Member member, @AuthenticationPrincipal User user){
-//        System.out.println("member = " + member);
-//        System.out.println("user = " + user);
-//
-//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "회원정보 수정 성공", authService.update(member, user)));
-//    }
-
 }
 

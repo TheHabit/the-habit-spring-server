@@ -33,34 +33,18 @@ public class AuthService {
     }
 
     @Transactional
-    public Member signup(Member member){
-
-        /** id 중복 여부 체크 */
-        if( memberInfraRepository.findByMemberId(member.getMemberId()) != null){
-            throw new DuplicateIdException("중복된 ID가 존재합니다.");
-        }
-
-        /** 비밀번호 encoding 해서 setting */
-        member.setMemberPwd(passwordEncoder.encode(member.getMemberPwd()));
-        System.out.println("member.getMemberPwd() = " + member.getMemberPwd() + "|");
-
-        /** insert 후 결과 반환 */
-        memberInfraRepository.save(member);
-
-        return memberInfraRepository.findByMemberId(member.getMemberId());
-    }
-
-    @Transactional
     public TokenDTO login(Member member) throws LoginFailedException {
 
         System.out.println("member.getMemberPwd() = " + member.getMemberPwd());
+        Member foundMember;
         /** 1. 아이디 조회 */
-        Member foundMember = memberInfraRepository.findByMemberId(member.getMemberId());
-        System.out.println("foundMember.getMemberPwd() = " + foundMember.getMemberPwd());
-
-        if(foundMember == null){
+        try{
+            foundMember = memberInfraRepository.findByMemberId(member.getMemberId());
+            System.out.println("foundMember.getMemberPwd() = " + foundMember.getMemberPwd());
+        } catch(Exception e){
             throw new LoginFailedException("아이디가 존재하지 않습니다.");
         }
+
 
         /** 2. 비밀번호 체크 */
         if(!passwordEncoder.matches(member.getMemberPwd(), foundMember.getMemberPwd())){

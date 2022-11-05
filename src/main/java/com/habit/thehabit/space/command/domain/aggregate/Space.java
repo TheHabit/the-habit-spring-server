@@ -1,4 +1,4 @@
-package com.habit.thehabit.club.command.domain.aggregate.embeddable;
+package com.habit.thehabit.space.command.domain.aggregate;
 
 import com.habit.thehabit.club.command.domain.aggregate.Club;
 import com.habit.thehabit.member.command.domain.aggregate.Member;

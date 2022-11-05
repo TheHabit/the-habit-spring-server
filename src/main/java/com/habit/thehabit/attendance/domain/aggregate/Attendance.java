@@ -1,8 +1,6 @@
 package com.habit.thehabit.attendance.domain.aggregate;
 
-import com.habit.thehabit.club.command.domain.aggregate.Club;
-import com.habit.thehabit.club.command.domain.aggregate.embeddable.Period;
-import com.habit.thehabit.club.command.domain.aggregate.embeddable.Space;
+import com.habit.thehabit.space.command.domain.aggregate.Space;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 
 import javax.persistence.*;

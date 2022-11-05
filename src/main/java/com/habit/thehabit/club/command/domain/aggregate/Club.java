@@ -1,7 +1,8 @@
 package com.habit.thehabit.club.command.domain.aggregate;
 
 import com.habit.thehabit.club.command.domain.aggregate.embeddable.Period;
-import com.habit.thehabit.club.command.domain.aggregate.embeddable.Space;
+import com.habit.thehabit.record.command.domain.aggregate.ClubReview;
+import com.habit.thehabit.space.command.domain.aggregate.Space;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 
 import javax.persistence.*;
@@ -54,4 +55,7 @@ public class Club {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "SPACE_ID")
     private Space space;
+
+    @OneToMany(mappedBy = "club")
+    private List<ClubReview> clubReviewList = new ArrayList<ClubReview>();
 }

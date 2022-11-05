@@ -2,6 +2,7 @@ package com.habit.thehabit.member.command.domain.aggregate;
 
 import com.habit.thehabit.attendance.domain.aggregate.Attendance;
 import com.habit.thehabit.chatting.command.domain.aggregate.Chatting;
+import com.habit.thehabit.record.command.domain.aggregate.Record;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -73,6 +74,9 @@ public class Member implements UserDetails {
 
     @OneToMany(mappedBy = "member")
     private List<Chatting> chattingList = new ArrayList<Chatting>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Record> recordList = new ArrayList<Record>();
 
 
     @Builder

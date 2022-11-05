@@ -1,12 +1,16 @@
 package com.habit.thehabit.member.command.domain.aggregate;
 
+import com.habit.thehabit.attendance.domain.aggregate.Attendance;
+import com.habit.thehabit.chatting.command.domain.aggregate.Chatting;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 
 @NoArgsConstructor
@@ -62,6 +66,13 @@ public class Member implements UserDetails {
 
     @Column(name = "MEMBER_ROLE")
     private String memberRole;
+
+    /* 2022-11-06 */
+    @OneToMany(mappedBy = "member")
+    private List<Attendance> attendanceList = new ArrayList<Attendance>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Chatting> chattingList = new ArrayList<Chatting>();
 
 
     @Builder

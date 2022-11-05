@@ -1,11 +1,13 @@
 package com.habit.thehabit.config.jwt;
 
+import com.habit.thehabit.member.command.app.dto.MemberDTO;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.common.command.app.dto.TokenDTO;
 import com.habit.thehabit.common.command.app.exception.TokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,6 +21,7 @@ import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class TokenProvider {
 
@@ -29,7 +32,8 @@ public class TokenProvider {
     private final Key key;
 
     public TokenProvider(@Value("${security.jwt.secret}") String secretKey, @Value("${security.jwt.token.expire-length}") long expireTime,
-                         @Value("${security.jwt.authority-type") String authoritesKey, @Value("${security.jwt.bearer-type}") String bearerType, UserDetailsService userDetailsService){
+                         @Value("${security.jwt.authority-type") String authoritesKey, @Value("${security.jwt.bearer-type}") String bearerType,
+                         UserDetailsService userDetailsService){
 
         this.userDetailsService = userDetailsService;
 
@@ -96,10 +100,16 @@ public class TokenProvider {
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
 
+        log.info("[TokenProvider] authorities : {}", authorities);
+
         /** UserDetails 생성 후 authentication token 리턴 */
         System.out.println("this.getUserId(accessToken) = " + this.getUserId(accessToken));
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserId(accessToken));
-        
+//        UserDetails userDetails = userDetailsService.loadUserByUsername( this.getUserId(accessToken) );
+//        UserDetails userDetails = userDetailsService.loadUserByUsername( "test02" );
+        UserDetails userDetails = userDetailsService.loadUserByUsername( this.getUserId(accessToken) );
+        log.info("==========================================================");
+        System.out.println("userDetails detect " + userDetails.getAuthorities());
+        log.info("==========================================================");
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 

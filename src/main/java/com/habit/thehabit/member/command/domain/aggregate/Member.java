@@ -1,12 +1,15 @@
 package com.habit.thehabit.member.command.domain.aggregate;
 
+import com.habit.thehabit.record.command.domain.aggregate.Record;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 
 @NoArgsConstructor
@@ -62,6 +65,17 @@ public class Member implements UserDetails {
 
     @Column(name = "MEMBER_ROLE")
     private String memberRole;
+
+    @OneToMany(mappedBy = "member")
+    private List<Record> records = new ArrayList<Record>();
+
+    /** 해당 멤버의 레코드 리스트에 개별 레코드를 추가하는 편의 메소드 */
+    public void addRecord(Record record){
+        this.records.add(record);
+        if(record.getMember() != this){
+            record.setMember(this);
+        }
+    }
 
 
     @Builder

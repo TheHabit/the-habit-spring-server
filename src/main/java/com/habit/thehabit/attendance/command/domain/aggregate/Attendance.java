@@ -1,8 +1,7 @@
-package com.habit.thehabit.attendance.domain.aggregate;
+package com.habit.thehabit.attendance.command.domain.aggregate;
 
-import com.habit.thehabit.space.command.domain.aggregate.Space;
+import com.habit.thehabit.club.command.domain.aggregate.Club;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -26,12 +25,14 @@ public class Attendance {
     private Member member; //회원정보
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SPACE_ID")
-    private Space space; //모임공간
+    @JoinColumn(name = "CLUB_ID")
+    private Club club; // 모임정보
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "ATTENDANCE_DATE")
     private Date attendanceDate; //출석일
 
+    @Column(name = "STATUS")
+    private String Status;
 
 }

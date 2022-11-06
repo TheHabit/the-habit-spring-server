@@ -1,8 +1,7 @@
 package com.habit.thehabit.member.command.domain.aggregate;
 
-import com.habit.thehabit.attendance.domain.aggregate.Attendance;
-import com.habit.thehabit.chatting.command.domain.aggregate.Chatting;
-import com.habit.thehabit.record.command.domain.aggregate.Record;
+import com.habit.thehabit.attendance.command.domain.aggregate.Attendance;
+import com.habit.thehabit.club.command.domain.aggregate.ClubMember;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,12 +18,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "TBL_MEMBER")
-//@SequenceGenerator(
-//        name = "MEMBER_CODE_SEQ_GENERATOR",
-//        sequenceName = "MEMBER_CODE_SEQ",
-//        initialValue = 1,
-//        allocationSize = 1
-//)
+
 @TableGenerator(
         name = "MEMBER_SEQ_GENERATOR",
         table = "MY_SEQUENCES",
@@ -69,14 +63,11 @@ public class Member implements UserDetails {
     private String memberRole;
 
     /* 2022-11-06 */
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<ClubMember> clubMemberList = new ArrayList<ClubMember>();
+
+    @OneToMany(mappedBy = "member", cascade =  CascadeType.ALL)
     private List<Attendance> attendanceList = new ArrayList<Attendance>();
-
-    @OneToMany(mappedBy = "member")
-    private List<Chatting> chattingList = new ArrayList<Chatting>();
-
-    @OneToMany(mappedBy = "member")
-    private List<Record> recordList = new ArrayList<Record>();
 
 
     @Builder

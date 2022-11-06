@@ -1,11 +1,13 @@
 package com.habit.thehabit.club.command.domain.aggregate;
 
 import com.habit.thehabit.member.command.domain.aggregate.Member;
+import lombok.Data;
 
 import javax.persistence.*;
 
+@Data
 @Entity
-@Table(name = "TBL_CLUBMEMBER")
+@Table(name = "TBL_CLUB_MEMBER")
 @TableGenerator(
         name = "SEQ_ClUBMEMBER_ID",
         table = "TBL_SEQ_ClUBMEMBER",
@@ -16,7 +18,7 @@ public class ClubMember {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE,
         generator = "SEQ_ClUBMEMBER_ID")
-    @Column(name = "CLUBMEMBER_ID")
+    @Column(name = "CLUB_MEMBER_ID")
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)

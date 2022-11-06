@@ -1,14 +1,14 @@
 package com.habit.thehabit.club.command.domain.aggregate;
 
+import com.habit.thehabit.attendance.command.domain.aggregate.Attendance;
 import com.habit.thehabit.club.command.domain.aggregate.embeddable.Period;
-import com.habit.thehabit.record.command.domain.aggregate.ClubReview;
-import com.habit.thehabit.space.command.domain.aggregate.Space;
-import com.habit.thehabit.member.command.domain.aggregate.Member;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "TBL_CLUB")
 @TableGenerator(
@@ -24,8 +24,6 @@ public class Club {
             generator = "SEQ_ClUB_ID")
     @Column(name = "CLUB_ID")
     private int id;
-
-
 
     @Column(name = "CLUB_NAME")
     private String clubName; //모임명
@@ -47,15 +45,12 @@ public class Club {
     private int numberOfMember; //모집인원
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "STATUS")
     private ClubStatus status; //진행상태
 
-    @OneToMany(mappedBy = "member" , cascade = CascadeType.ALL)
-    private List<Member> members = new ArrayList<>();
+    @OneToMany(mappedBy = "club" , cascade = CascadeType.ALL)
+    private List<ClubMember> clubList = new ArrayList<ClubMember>();
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "SPACE_ID")
-    private Space space;
-
-    @OneToMany(mappedBy = "club")
-    private List<ClubReview> clubReviewList = new ArrayList<ClubReview>();
+    @OneToMany(mappedBy = "club" , cascade = CascadeType.ALL)
+    private List<Attendance> attendanceList = new ArrayList<Attendance>();
 }

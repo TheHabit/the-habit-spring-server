@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -53,4 +54,10 @@ public class Club {
 
     @OneToMany(mappedBy = "club" , cascade = CascadeType.ALL)
     private List<Attendance> attendanceList = new ArrayList<Attendance>();
+
+    public void setRecruitPeriod(Date recruitStartDate, Date recruitEndDate) {
+    }
+
+    public void setPeriod(Date startDate, Date endDate) {
+    }
 }

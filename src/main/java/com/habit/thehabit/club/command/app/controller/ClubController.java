@@ -1,6 +1,7 @@
 package com.habit.thehabit.club.command.app.controller;
 
 import com.habit.thehabit.club.command.app.dto.ClubDTO;
+import com.habit.thehabit.club.command.app.dto.JoinClubDTO;
 import com.habit.thehabit.club.command.app.service.ClubService;
 import com.habit.thehabit.common.command.app.dto.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/v1/Clubs")
+@RequestMapping("/v1/clubs")
 @Slf4j
 public class ClubController {
 
@@ -28,16 +29,19 @@ public class ClubController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", clubService.findAllClubs()));
     }
 
-    /* club 개설 하기 */
+    /* club 개설  */
     @PostMapping("")
     public ResponseEntity<ResponseDTO> createClub(@RequestBody ClubDTO clubDTO){
+        System.out.println("클럽 개설 요청 확인");
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "생성 성공", clubService.createClubs(clubDTO)));
     }
 
-    /* club 참가 하기*/
+    /* club 참가 신청*/
     @PutMapping("")
-    public ResponseEntity<ResponseDTO> joinClub(){
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "신청 성공", clubService.joinClub()));
+    public ResponseEntity<ResponseDTO> joinClub(@RequestBody JoinClubDTO joinClubDTO){
+        System.out.println("joinClub 요청확인");
+        int clubId = joinClubDTO.getClubId();
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "신청 성공", clubService.joinClub(clubId)));
     }
 
 

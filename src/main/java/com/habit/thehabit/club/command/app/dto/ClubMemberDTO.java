@@ -1,16 +1,16 @@
 package com.habit.thehabit.club.command.app.dto;
 
-import com.habit.thehabit.club.command.domain.aggregate.ClubStatus;
-import lombok.*;
+import com.habit.thehabit.club.command.domain.aggregate.ClubMember;
+import com.habit.thehabit.member.command.app.dto.MemberDTO;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class ClubDTO {
+@Data
+public class ClubMemberDTO {
+    /* club */
     private int clubId;
     private String clubName;
     private String bookName;
@@ -19,6 +19,6 @@ public class ClubDTO {
     private Date startDate; //활동시작일
     private Date endDate;   //활동종료일
     private int numberOfMember;
-    private String status;
-//    private List<Integer> memberCodeList;
+    /* Member */
+    private List<Integer> memberCodeList;
 }

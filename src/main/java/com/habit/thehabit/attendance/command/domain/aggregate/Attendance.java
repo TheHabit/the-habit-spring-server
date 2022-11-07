@@ -9,7 +9,7 @@ import java.util.Date;
 @Table(name = "TBL_ATTENDANCE")
 @TableGenerator(
         name = "SEQ_ATTENDANCE_ID",
-        table = "TBL_SEQ_ATTENDANCE",
+        table = "MY_SEQUENCES",
         pkColumnValue = "ATTENDANCE_SEQ",
         allocationSize = 1
 )

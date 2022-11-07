@@ -11,6 +11,7 @@ import javax.persistence.TemporalType;
 import java.util.Date;
 
 @Embeddable
+@Data
 public class Period {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "START_DATE")
@@ -19,4 +20,10 @@ public class Period {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "END_DATE")
     private Date endDate;
+
+    public Period(){}
+    public Period(Date startDate , Date endDate){
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }

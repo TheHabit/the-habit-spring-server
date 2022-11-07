@@ -1,8 +1,12 @@
 package com.habit.thehabit.club.command.domain.aggregate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.habit.thehabit.attendance.command.domain.aggregate.Attendance;
+import com.habit.thehabit.club.command.app.dto.ClubDTO;
 import com.habit.thehabit.club.command.domain.aggregate.embeddable.Period;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,7 +18,7 @@ import java.util.List;
 @Table(name = "TBL_CLUB")
 @TableGenerator(
         name = "SEQ_ClUB_ID",
-        table = "TBL_SEQ_ClUB",
+        table = "MY_SEQUENCES",
         pkColumnValue = "CLUB_SEQ",
         allocationSize = 1
 )
@@ -49,15 +53,28 @@ public class Club {
     @Column(name = "STATUS")
     private ClubStatus status; //진행상태
 
+
     @OneToMany(mappedBy = "club" , cascade = CascadeType.ALL)
-    private List<ClubMember> clubList = new ArrayList<ClubMember>();
+    private List<ClubMember> clubMemberList = new ArrayList<ClubMember>();
 
     @OneToMany(mappedBy = "club" , cascade = CascadeType.ALL)
     private List<Attendance> attendanceList = new ArrayList<Attendance>();
 
-    public void setRecruitPeriod(Date recruitStartDate, Date recruitEndDate) {
+    public boolean isApply(){
+        if(clubMemberList.size() < numberOfMember ){
+            return true;
+        }
+        return false;
     }
-
-    public void setPeriod(Date startDate, Date endDate) {
+    /*무한 루프에 빠지지 않도록 체크*/
+    public void addClubMember(ClubMember clubMember){
+        this.clubMemberList.add(clubMember);
+        if(clubMember.getClub() != this){
+            clubMember.setClub(this);
+        }
+    }
+    public ClubDTO toClubDTO(){
+        ClubDTO clubDTO = new ClubDTO(this.id, this.clubName, this.bookName, this.recruitPeriod.getStartDate(), this.recruitPeriod.getEndDate(),this.period.getStartDate(),this.period.getEndDate(),this.numberOfMember, this.status.toString());
+        return clubDTO;
     }
 }

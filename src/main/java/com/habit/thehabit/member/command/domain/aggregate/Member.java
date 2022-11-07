@@ -1,5 +1,6 @@
 package com.habit.thehabit.member.command.domain.aggregate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.habit.thehabit.attendance.command.domain.aggregate.Attendance;
 import com.habit.thehabit.club.command.domain.aggregate.ClubMember;
 import lombok.*;
@@ -63,9 +64,17 @@ public class Member implements UserDetails {
     private String memberRole;
 
     /* 2022-11-06 */
+    @JsonIgnore
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<ClubMember> clubMemberList = new ArrayList<ClubMember>();
-
+    /*무한 루프에 빠지지 않도록 체크*/
+    public void addClubMember(ClubMember clubMember){
+        this.clubMemberList.add(clubMember);
+        if(clubMember.getMember() != this){
+            clubMember.setMember(this);
+        }
+    }
+    @JsonIgnore
     @OneToMany(mappedBy = "member", cascade =  CascadeType.ALL)
     private List<Attendance> attendanceList = new ArrayList<Attendance>();
 

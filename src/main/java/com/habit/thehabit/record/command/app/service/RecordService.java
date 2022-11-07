@@ -2,6 +2,7 @@ package com.habit.thehabit.record.command.app.service;
 
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.record.command.app.dto.RecordDTO;
+import com.habit.thehabit.record.command.app.dto.RecordGradeAndOneLineReviewDTO;
 import com.habit.thehabit.record.command.app.exception.RecordNotFoundException;
 import com.habit.thehabit.record.command.domain.aggregate.Record;
 import com.habit.thehabit.record.command.infra.repository.RecordInfraRepository;
@@ -84,6 +85,24 @@ public class RecordService {
         /** 조회된 것이 없을 때 예외 처리 */
         if(recordDTOList == null){
             throw new RecordNotFoundException("유저의 독서 기록이 없습니다.");
+        }
+
+        return recordDTOList;
+    }
+
+    public List<RecordGradeAndOneLineReviewDTO> selectAllRecordGradeAndOneLineReview() {
+
+        /** 정렬 추가 예정 */
+        List<Record> recordList = recordInfraRepository.findAll();
+        System.out.println("recordList = " + recordList);
+
+        List<RecordGradeAndOneLineReviewDTO> recordDTOList = new ArrayList<>();
+        for(Record record : recordList){
+            recordDTOList.add(record.entitiyToOneLineReviewDTO());
+        }
+
+        if(recordDTOList == null){
+            throw new RecordNotFoundException("전체 독서 기록이 없습니다.");
         }
 
         return recordDTOList;

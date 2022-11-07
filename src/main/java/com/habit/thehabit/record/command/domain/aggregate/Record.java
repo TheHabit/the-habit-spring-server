@@ -2,6 +2,7 @@ package com.habit.thehabit.record.command.domain.aggregate;
 
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.record.command.app.dto.RecordDTO;
+import com.habit.thehabit.record.command.app.dto.RecordGradeAndOneLineReviewDTO;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -35,11 +36,17 @@ public class Record {
     @Column(name = "BOOK_ISBN")
     private String bookISBN;
 
+    @Column(name = "BOOK_GRADE")
+    private Long bookGrade;
+
     @Column(name = "PAGE_SOURCE")
     private String pageSource;
 
     @Column(name = "BOOK_REVIEW")
     private String bookReview;
+
+    @Column(name = "ONE_LINE_REVIEW")
+    private String oneLineReview;
 
     @Embedded
     private ReadingPeriod readingPeriod;
@@ -61,13 +68,13 @@ public class Record {
         RecordDTO responseDTO;
 
         if(readingPeriod != null){
-            responseDTO = new RecordDTO(recordCode, bookName, bookISBN, pageSource,
-                    bookReview, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
+            responseDTO = new RecordDTO(recordCode, bookName, bookISBN, bookGrade, pageSource,
+                    bookReview, oneLineReview, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
                     readingPeriod.getReportDate(), member.getMemberCode());
 
         } else{
-            responseDTO = new RecordDTO(recordCode, bookName, bookISBN, pageSource,
-                    bookReview, null, null,
+            responseDTO = new RecordDTO(recordCode, bookName, bookISBN, bookGrade, pageSource,
+                    bookReview, oneLineReview, null, null,
                     null, member.getMemberCode());
         }
 
@@ -75,6 +82,25 @@ public class Record {
         return responseDTO;
     }
 
+    public RecordGradeAndOneLineReviewDTO entitiyToOneLineReviewDTO(){
+        RecordGradeAndOneLineReviewDTO responseDTO;
+
+        responseDTO = new RecordGradeAndOneLineReviewDTO(bookGrade, oneLineReview);
+
+        return responseDTO;
+    }
+
+
+    public Long getBookGrade(){return bookGrade;}
+    public void setBookGrade(Long bookGrade){
+        this.bookGrade = bookGrade;
+    }
+
+    public String getOneLineReview(){return oneLineReview;}
+
+    public void setOneLineReview(String oneLineReview){
+        this.oneLineReview = oneLineReview;
+    }
     public Member getMember(){
         return member;
     }

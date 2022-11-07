@@ -67,4 +67,17 @@ public class RecordController {
         }
     }
 
+    /** 전체 독서록 리스트(평점, 한줄평) 가져오기 */
+    @GetMapping("/all")
+    public ResponseEntity<ResponseDTO> selectAllRecordGradeAndOneLineReview(){
+
+        try{
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "전체 독서기록 평점 및 한줄평 가져오기", recordService.selectAllRecordGradeAndOneLineReview()));
+        } catch (RecordNotFoundException re){
+            return ResponseEntity.status(204).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 조회 실패", re.getMessage()));
+        } catch (Exception e){
+            System.out.println("e = " + e);
+            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 조회 실패", "내부 에러 발생"));
+        }
+    }
 }

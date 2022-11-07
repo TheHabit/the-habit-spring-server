@@ -2,12 +2,15 @@ package com.habit.thehabit.record.command.app.service;
 
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.record.command.app.dto.RecordDTO;
+import com.habit.thehabit.record.command.app.exception.RecordNotFoundException;
 import com.habit.thehabit.record.command.domain.aggregate.Record;
 import com.habit.thehabit.record.command.infra.repository.RecordInfraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RecordService {
@@ -39,5 +42,25 @@ public class RecordService {
         RecordDTO responseDTO = foundRecord.entityToDTO();
 
         return responseDTO;
+    }
+
+    public List<RecordDTO> selectRecordListByISBN(String bookISBN) {
+        System.out.println("bookISBN = " + bookISBN);
+
+        List<Record> recordList = recordInfraRepository.findByBookISBN(bookISBN);
+
+        System.out.println("recordList = " + recordList);
+        List<RecordDTO> recordDTOList = new ArrayList<>();
+
+        for(Record record : recordList){
+            System.out.println("recordDTOList = " + recordDTOList);
+            recordDTOList.add(record.entityToDTO());
+        }
+
+        if(recordDTOList == null){
+            throw new RecordNotFoundException("ISBN에 해당하는 독서 기록이 없습니다.");
+        }
+
+        return recordDTOList;
     }
 }

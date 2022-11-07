@@ -58,8 +58,8 @@ public class Record {
     }
 
     public RecordDTO entityToDTO(){
-        RecordDTO responseDTO = new RecordDTO(recordCode, bookName, bookISBN, bookReview,
-                pageSource, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
+        RecordDTO responseDTO = new RecordDTO(recordCode, bookName, bookISBN, pageSource,
+                bookReview, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
                 readingPeriod.getReportDate(), member.getMemberCode());
 
         return responseDTO;

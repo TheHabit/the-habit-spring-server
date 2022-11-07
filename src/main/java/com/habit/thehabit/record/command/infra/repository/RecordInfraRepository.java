@@ -6,4 +6,6 @@ import com.habit.thehabit.record.command.domain.repository.RecordRepository;
 public interface RecordInfraRepository extends RecordRepository {
 
     Record findByRecordCode(Long recordCode);
+
+    Record findByBookISBN(String bookISBN);
 }

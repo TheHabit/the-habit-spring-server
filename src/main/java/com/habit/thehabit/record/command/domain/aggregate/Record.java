@@ -1,14 +1,16 @@
 package com.habit.thehabit.record.command.domain.aggregate;
 
 import com.habit.thehabit.member.command.domain.aggregate.Member;
-import lombok.Getter;
+import com.habit.thehabit.record.command.app.dto.RecordDTO;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "TBL_RECORD")
 @TableGenerator(
         name = "RECORD_SEQ_GENERATOR",
@@ -16,6 +18,7 @@ import javax.persistence.*;
         pkColumnValue = "RECORD_SEQ",
         allocationSize = 1
 )
+@ToString
 public class Record {
 
     @Id
@@ -52,6 +55,14 @@ public class Record {
         if(!member.getRecords().contains(this)){
             member.getRecords().add(this);
         }
+    }
+
+    public RecordDTO entityToDTO(){
+        RecordDTO responseDTO = new RecordDTO(recordCode, bookName, bookISBN, bookReview,
+                pageSource, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
+                readingPeriod.getReportDate(), member.getMemberCode());
+
+        return responseDTO;
     }
 
     public Member getMember(){

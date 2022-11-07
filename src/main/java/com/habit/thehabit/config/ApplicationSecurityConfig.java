@@ -63,6 +63,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/v1/auths/login").permitAll()
                     .antMatchers(HttpMethod.POST,"/v1/members").permitAll()
                     .antMatchers(HttpMethod.PUT,"/v1/members").hasAuthority("USER")
+                    .antMatchers(HttpMethod.GET,"/v1/clubs").hasAuthority("USER")
+                    .antMatchers(HttpMethod.POST,"/v1/clubs").hasAuthority("USER")
+                    .antMatchers(HttpMethod.PUT,"/v1/clubs").hasAuthority("USER")
+
 
                 .and()
                     .cors()

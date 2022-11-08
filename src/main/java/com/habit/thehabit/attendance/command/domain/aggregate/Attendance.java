@@ -1,5 +1,6 @@
 package com.habit.thehabit.attendance.command.domain.aggregate;
 
+import com.habit.thehabit.attendance.command.app.dto.AttendanceInfoDTO;
 import com.habit.thehabit.club.command.domain.aggregate.Club;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import lombok.Data;
@@ -52,5 +53,9 @@ public class Attendance {
         if(!club.getAttendanceList().contains(this)){
             club.getAttendanceList().add(this);
         }
+    }
+    public AttendanceInfoDTO toDTO(){
+        AttendanceInfoDTO attendanceInfoDTO = new AttendanceInfoDTO(this.attendanceDate, this.member.getMemberCode(), this.member.getName());
+        return attendanceInfoDTO;
     }
 }

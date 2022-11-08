@@ -1,5 +1,6 @@
 package com.habit.thehabit.attendance.command.app.service;
 
+import com.habit.thehabit.attendance.command.app.dto.AttendanceInfoDTO;
 import com.habit.thehabit.attendance.command.app.dto.RegistAttendanceDTO;
 import com.habit.thehabit.attendance.command.domain.aggregate.Attendance;
 import com.habit.thehabit.attendance.command.infra.repository.AttendanceInfraRepository;
@@ -12,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -58,5 +62,16 @@ public class AttendanceService {
         registAttendanceDTO.setClubName(club.getClubName());
 
         return registAttendanceDTO;
+    }
+
+    public List<AttendanceInfoDTO> findAllAttendance(int clubId) {
+        System.out.println("service : 요청확인");
+        List<Attendance> attendanceList = attendanceInfraRepository.findAllByClubId(clubId);
+        List<AttendanceInfoDTO> resultList = new ArrayList<>();
+        for (Attendance attendance :  attendanceList){
+            resultList.add(attendance.toDTO());
+        }
+
+        return resultList;
     }
 }

@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/v1/attendance")
@@ -24,10 +22,15 @@ public class AttendanceController {
         this.attendanceService = attendanceService;
     }
 
+    @GetMapping("")
+    public ResponseEntity<ResponseDTO> findAllAttendance(@RequestParam(value = "clubId", defaultValue = "")int clubId){
+        System.out.println("요청확인");
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", attendanceService.findAllAttendance(clubId)));
+    }
+
     @PostMapping("")
     public ResponseEntity<ResponseDTO> regist(@RequestBody RegistAttendanceDTO registAttendanceDTO){
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "출석 성공", attendanceService.regist(registAttendanceDTO)));
-
     }
 
 }

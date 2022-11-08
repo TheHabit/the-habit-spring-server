@@ -7,6 +7,7 @@ import com.habit.thehabit.member.command.app.dto.UpdateRequestDTO;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.member.command.infra.repository.MemberInfraRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Service
 @Slf4j
@@ -89,4 +92,23 @@ public class MemberService {
         return token;
     }
 
+    public Object deleteMember() {
+        /** authentication을 이용해 userdetails 정보 가져옴 */
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member loginedMember = (Member) authentication.getPrincipal();
+        log.info("[MemberService] loginedMember {}", loginedMember);
+        System.out.println("authentication.getPrincipal :" + authentication.getPrincipal());
+        System.out.println(loginedMember.getMemberCode());
+        int memberCode = loginedMember.getMemberCode();
+
+        /* member의 isWithrawal 상태 변경*/
+        Date currTime = DateTime.now().toDate();
+        System.out.println(currTime);
+        Member member = memberInfraRepository.findByMemberCode(memberCode);
+        member.setIsWithDrawal("Y");
+        member.setWithDrawalDate(currTime);
+
+        memberInfraRepository.save(member);
+        return null;
+    }
 }

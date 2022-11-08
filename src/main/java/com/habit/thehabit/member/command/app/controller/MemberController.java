@@ -40,4 +40,9 @@ public class MemberController {
             return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 에러", "서버 에러"));
         }
     }
+
+    @DeleteMapping("")
+    public ResponseEntity<ResponseDTO> deleteMember(){
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"회원 삭제 완료", memberService.deleteMember()));
+    }
 }

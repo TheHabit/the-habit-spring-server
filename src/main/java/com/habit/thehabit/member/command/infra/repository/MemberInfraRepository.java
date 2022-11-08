@@ -9,7 +9,9 @@ import java.util.List;
 public interface MemberInfraRepository extends MemberRepository {
 
     Member findByMemberId (String memberId);
-    
+
+    Member findByMemberIdAndIsWithDrawal (String memberId, String isWithDrawal);
+
     Member findByMemberCode(int memberCode);
 
 }

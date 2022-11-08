@@ -2,9 +2,12 @@ package com.habit.thehabit.attendance.command.domain.aggregate;
 
 import com.habit.thehabit.club.command.domain.aggregate.Club;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Date;
 
+@Data
 @Entity
 @Table(name = "TBL_ATTENDANCE")
 @TableGenerator(
@@ -35,4 +38,19 @@ public class Attendance {
     @Column(name = "STATUS")
     private String Status;
 
+    public void setMember(Member member){
+        this.member = member;
+        //무한루프에 빠지지 않도록 체크
+        if(!member.getAttendanceList().add(this)){
+            member.getAttendanceList().add(this);
+        }
+    }
+
+    public void setClub(Club club){
+        this.club = club;
+        //무한루프에 빠지지 않도록 체크
+        if(!club.getAttendanceList().contains(this)){
+            club.getAttendanceList().add(this);
+        }
+    }
 }

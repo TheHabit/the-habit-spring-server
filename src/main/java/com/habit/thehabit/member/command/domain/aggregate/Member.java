@@ -90,6 +90,12 @@ public class Member implements UserDetails {
     @JsonIgnore
     @OneToMany(mappedBy = "member", cascade =  CascadeType.ALL)
     private List<Attendance> attendanceList = new ArrayList<Attendance>();
+    public void addAttandance(Attendance attendance){
+        this.attendanceList.add(attendance);
+        if(attendance.getMember()!=this){
+            attendance.setMember(this);
+        }
+    }
 
     @Builder
     public Member(int memberCode, String memberId, String memberPwd, String isTempPwd, String name, String phone,

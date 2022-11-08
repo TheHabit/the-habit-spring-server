@@ -34,7 +34,8 @@ public class JwtFilter extends OncePerRequestFilter {
             // dofilter원래 자리
 
         } catch (RuntimeException e) {
-            System.out.println("e = " + e);
+        
+            System.out.println(e);
             manageApiException(response, e);
         }
 
@@ -62,6 +63,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     /** 권한이 없다는 것을 exception을 통해 알리기 위한 메서드 */
     private void manageApiException(HttpServletResponse response, RuntimeException e) throws IOException {
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 

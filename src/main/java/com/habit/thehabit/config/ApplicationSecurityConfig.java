@@ -66,6 +66,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.POST, "/v1/records").hasAuthority("USER")
                     .antMatchers(HttpMethod.PATCH, "/v1/records").hasAuthority("USER")
                     .antMatchers(HttpMethod.DELETE, "/v1/records").hasAuthority("USER")
+                    .antMatchers(HttpMethod.GET,"/v1/clubs").hasAuthority("USER")
+                    .antMatchers(HttpMethod.POST,"/v1/clubs").hasAuthority("USER")
+                    .antMatchers(HttpMethod.PUT,"/v1/clubs").hasAuthority("USER")
 
 
                 .and()

@@ -103,7 +103,7 @@ public class RecordController {
         System.out.println("recordCode = " + recordCode);
 
         try{
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 삭제 성공", recordService.deleteRecord(recordCode)));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 삭제 성공", "삭제 완료되었습니다."));
         } catch (RecordDeleteException rde){
             return ResponseEntity.status(204).body(new ResponseDTO(HttpStatus.NO_CONTENT, "독서기록 삭제 실패", rde.getMessage()));
         } catch(Exception e){

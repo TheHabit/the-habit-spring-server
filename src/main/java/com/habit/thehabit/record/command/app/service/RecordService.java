@@ -25,7 +25,6 @@ public class RecordService {
         this.recordInfraRepository = recordInfraRepository;
     }
 
-
     @Transactional
     public RecordDTO insertRecord(RecordDTO recordDTO, Member member) {
 
@@ -92,10 +91,10 @@ public class RecordService {
 
     public List<RecordGradeAndOneLineReviewDTO> selectAllRecordGradeAndOneLineReview() {
 
-        /** 정렬 추가 예정 */
-        List<Record> recordList = recordInfraRepository.findByIsActivated("Y");
+        List<Record> recordList = recordInfraRepository.findByIsActivatedOrderByBookGradeDesc("Y");
         System.out.println("recordList = " + recordList);
 
+        /** 평점과 한줄평만 가져오는 DTO를 만들어서 진행 */
         List<RecordGradeAndOneLineReviewDTO> recordDTOList = new ArrayList<>();
         for(Record record : recordList){
             recordDTOList.add(record.entitiyToOneLineReviewDTO());
@@ -163,6 +162,7 @@ public class RecordService {
     @Transactional
     public boolean deleteRecord(Long recordCode) {
 
+        /** 영속성 컨텍스트에서 가져와, isActivated 컬럼을 N으로 바꿔서 soft delete 수행 */
         Record record = recordInfraRepository.findByRecordCodeAndIsActivated(recordCode, "Y");
         System.out.println("record = " + record);
 
@@ -171,9 +171,9 @@ public class RecordService {
         }
 
         record.setIsActivated("N");
-        if(record.getIsActivated() == "N"){
-            return true;
+        if(record.getIsActivated() != "N"){
+            throw new RuntimeException();
         }
-        return false;
+        return true;
     }
 }

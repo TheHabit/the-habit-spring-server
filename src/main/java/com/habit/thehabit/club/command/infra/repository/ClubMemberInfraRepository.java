@@ -10,6 +10,5 @@ public interface ClubMemberInfraRepository extends ClubMemberRepository {
     List<ClubMember> findAll();
     List<ClubMember> findByClubId(int clubId);
 
-
 //    void save(Club club);
 }

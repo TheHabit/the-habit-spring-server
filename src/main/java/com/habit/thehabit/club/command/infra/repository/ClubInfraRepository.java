@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface ClubInfraRepository extends ClubRepository {
     List<Club> findAll();
-
+    Club findById(int id);
 }

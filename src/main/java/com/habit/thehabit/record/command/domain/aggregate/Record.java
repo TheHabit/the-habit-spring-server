@@ -3,9 +3,7 @@ package com.habit.thehabit.record.command.domain.aggregate;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.record.command.app.dto.RecordDTO;
 import com.habit.thehabit.record.command.app.dto.RecordGradeAndOneLineReviewDTO;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -13,6 +11,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "TBL_RECORD")
+@Setter
+@Getter
 @TableGenerator(
         name = "RECORD_SEQ_GENERATOR",
         table = "MY_SEQUENCES",
@@ -48,6 +48,14 @@ public class Record {
     @Column(name = "ONE_LINE_REVIEW")
     private String oneLineReview;
 
+    @Column(name = "IS_ACTIVATED")
+    private String isActivated;
+
+    @PrePersist
+    public void prePersist(){
+        this.isActivated = this.isActivated == null ? "Y" : this.isActivated;
+    }
+
     @Embedded
     private ReadingPeriod readingPeriod;
 
@@ -69,15 +77,14 @@ public class Record {
 
         if(readingPeriod != null){
             responseDTO = new RecordDTO(recordCode, bookName, bookISBN, bookGrade, pageSource,
-                    bookReview, oneLineReview, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
+                    bookReview, oneLineReview, isActivated, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
                     readingPeriod.getReportDate(), member.getMemberCode());
 
         } else{
             responseDTO = new RecordDTO(recordCode, bookName, bookISBN, bookGrade, pageSource,
-                    bookReview, oneLineReview, null, null,
+                    bookReview, oneLineReview, isActivated, null, null,
                     null, member.getMemberCode());
         }
-
 
         return responseDTO;
     }
@@ -88,69 +95,6 @@ public class Record {
         responseDTO = new RecordGradeAndOneLineReviewDTO(bookGrade, oneLineReview);
 
         return responseDTO;
-    }
-
-
-    public Long getBookGrade(){return bookGrade;}
-    public void setBookGrade(Long bookGrade){
-        this.bookGrade = bookGrade;
-    }
-
-    public String getOneLineReview(){return oneLineReview;}
-
-    public void setOneLineReview(String oneLineReview){
-        this.oneLineReview = oneLineReview;
-    }
-    public Member getMember(){
-        return member;
-    }
-
-    public Long getRecordCode() {
-        return recordCode;
-    }
-
-    public void setRecordCode(Long recordCode) {
-        this.recordCode = recordCode;
-    }
-
-    public String getBookName() {
-        return bookName;
-    }
-
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
-    }
-
-    public String getBookISBN() {
-        return bookISBN;
-    }
-
-    public void setBookISBN(String bookISBN) {
-        this.bookISBN = bookISBN;
-    }
-
-    public String getPageSource() {
-        return pageSource;
-    }
-
-    public void setPageSource(String pageSource) {
-        this.pageSource = pageSource;
-    }
-
-    public String getBookReview() {
-        return bookReview;
-    }
-
-    public void setBookReview(String bookReview) {
-        this.bookReview = bookReview;
-    }
-
-    public ReadingPeriod getReadingPeriod() {
-        return readingPeriod;
-    }
-
-    public void setReadingPeriod(ReadingPeriod readingPeriod) {
-        this.readingPeriod = readingPeriod;
     }
 
 }

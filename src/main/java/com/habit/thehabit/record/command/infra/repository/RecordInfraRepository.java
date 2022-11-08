@@ -8,10 +8,12 @@ import java.util.List;
 
 public interface RecordInfraRepository extends RecordRepository {
 
-    Record findByRecordCode(Long recordCode);
+    Record findByRecordCodeAndIsActivated(Long recordCode, String isActivated);
 
-    List<Record> findByBookISBN(String bookISBN);
+    List<Record> findByBookISBNAndIsActivated(String bookISBN, String isActivated);
 
-    @Query("select m from Record m where m.member.memberCode = :memberCode")
+    List<Record> findByIsActivated(String isActivated);
+
+    @Query("select m from Record m where m.member.memberCode = :memberCode and m.isActivated = 'Y' ")
     List<Record> findByMemberCode(int memberCode);
 }

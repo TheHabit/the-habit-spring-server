@@ -39,9 +39,11 @@ public class AuthService {
         Member foundMember;
         /** 1. 아이디 조회 */
         try{
+            System.out.println("member.getMemberId() = " + member.getMemberId());
             foundMember = memberInfraRepository.findByMemberId(member.getMemberId());
             System.out.println("foundMember.getMemberPwd() = " + foundMember.getMemberPwd());
         } catch(Exception e){
+            System.out.println("e = " + e);
             throw new LoginFailedException("아이디가 존재하지 않습니다.");
         }
 

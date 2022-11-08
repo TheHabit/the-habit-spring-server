@@ -1,8 +1,11 @@
 package com.habit.thehabit.member.command.domain.aggregate;
 
+
+import com.habit.thehabit.record.command.domain.aggregate.Record;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.habit.thehabit.attendance.command.domain.aggregate.Attendance;
 import com.habit.thehabit.club.command.domain.aggregate.ClubMember;
+
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +29,6 @@ import java.util.List;
         pkColumnValue = "MEMBER_SEQ",
         allocationSize = 1
 )
-
 public class Member implements UserDetails {
 
     @Id
@@ -63,6 +65,17 @@ public class Member implements UserDetails {
     @Column(name = "MEMBER_ROLE")
     private String memberRole;
 
+    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER)
+    private List<Record> records = new ArrayList<Record>();
+
+    /** 해당 멤버의 레코드 리스트에 개별 레코드를 추가하는 편의 메소드 */
+    public void addRecord(Record record){
+        this.records.add(record);
+        if(record.getMember() != this){
+            record.setMember(this);
+        }
+    }
+
     /* 2022-11-06 */
     @JsonIgnore
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
@@ -77,7 +90,6 @@ public class Member implements UserDetails {
     @JsonIgnore
     @OneToMany(mappedBy = "member", cascade =  CascadeType.ALL)
     private List<Attendance> attendanceList = new ArrayList<Attendance>();
-
 
     @Builder
     public Member(int memberCode, String memberId, String memberPwd, String isTempPwd, String name, String phone,

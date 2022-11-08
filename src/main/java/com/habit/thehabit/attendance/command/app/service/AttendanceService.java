@@ -65,7 +65,6 @@ public class AttendanceService {
     }
 
     public List<AttendanceInfoDTO> findAllAttendance(int clubId) {
-        System.out.println("service : 요청확인");
         List<Attendance> attendanceList = attendanceInfraRepository.findAllByClubId(clubId);
         List<AttendanceInfoDTO> resultList = new ArrayList<>();
         for (Attendance attendance :  attendanceList){

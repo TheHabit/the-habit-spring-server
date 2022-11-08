@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/v1/attendance")
+@RequestMapping("/v1/attendances")
 @Slf4j
 public class AttendanceController {
 
@@ -24,7 +24,6 @@ public class AttendanceController {
 
     @GetMapping("")
     public ResponseEntity<ResponseDTO> findAllAttendance(@RequestParam(value = "clubId", defaultValue = "")int clubId){
-        System.out.println("요청확인");
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", attendanceService.findAllAttendance(clubId)));
     }
 

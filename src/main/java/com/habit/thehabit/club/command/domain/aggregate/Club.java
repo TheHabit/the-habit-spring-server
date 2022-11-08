@@ -73,6 +73,12 @@ public class Club {
             clubMember.setClub(this);
         }
     }
+    public void addAttandance(Attendance attendance){
+        this.attendanceList.add(attendance);
+        if(attendance.getClub()!=this){
+            attendance.setClub(this);
+        }
+    }
     public ClubDTO toClubDTO(){
         ClubDTO clubDTO = new ClubDTO(this.id, this.clubName, this.bookName, this.recruitPeriod.getStartDate(), this.recruitPeriod.getEndDate(),this.period.getStartDate(),this.period.getEndDate(),this.numberOfMember, this.status.toString());
         return clubDTO;

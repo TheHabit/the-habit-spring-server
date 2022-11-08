@@ -1,6 +1,8 @@
 package com.habit.thehabit.target.command.app.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.habit.thehabit.common.command.app.dto.ResponseDTO;
+import com.habit.thehabit.target.command.app.service.TargetService;
 import com.habit.thehabit.util.FileUploadUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -34,6 +36,12 @@ public class TargetController {
         REST_TEMPLATE = new RestTemplate(factory);
     }
 
+    private final TargetService targetService;
+
+    public TargetController(TargetService targetService){
+        this.targetService = targetService;
+    }
+
     @PostMapping("/receive")
     public void test(@RequestBody List<MultipartFile> files, ServletRequest request) throws IOException {
         MultipartFile file = files.get(0);
@@ -63,38 +71,41 @@ public class TargetController {
         System.out.println("fileName = " + fileName);
         System.out.println("file.getBytes() = " + file.getBytes());
 
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "파일업로드 성공", targetService.fileUpload(file)));
+
         /** 이미지 파일 로컬 저장 */
-        String imageName = "test3";
+//        String imageName = "test3";
+//
+//        String replaceFileName = null;
+//
+//        try {
+//            replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, imageName, file);
+//
+//        } catch (IOException e) {
+//            FileUploadUtils.deleteFile(IMAGE_DIR, replaceFileName);
+//            throw new RuntimeException(e);
+//        }
 
-        String replaceFileName = null;
 
-        try {
-            replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, imageName, file);
-
-        } catch (IOException e) {
-            FileUploadUtils.deleteFile(IMAGE_DIR, replaceFileName);
-            throw new RuntimeException(e);
-        }
-
-        /** 인공지능 API 서버로 전송 */
-        LinkedMultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("image", file.getResource());
-        body.add("num", 1);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        HttpEntity<?> requestEntity = new HttpEntity<>(body,headers);
-
-        String url = "http://172.17.134.25:5005/detection";
-        JsonNode response = REST_TEMPLATE.postForObject(url,requestEntity, JsonNode.class);
-        System.out.println("response = " + response);
-
-        if(response.get("result").asInt() == 1){
-            return new ResponseEntity<>( true, HttpStatus.OK);
-        } else{
-            return new ResponseEntity<>(false, HttpStatus.NOT_ACCEPTABLE);
-        }
+//        /** 인공지능 API 서버로 전송 */
+//        LinkedMultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+//        body.add("image", file.getResource());
+//        body.add("num", 1);
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+//
+//        HttpEntity<?> requestEntity = new HttpEntity<>(body,headers);
+//
+//        String url = "http://172.17.134.25:5005/detection";
+//        JsonNode response = REST_TEMPLATE.postForObject(url,requestEntity, JsonNode.class);
+//        System.out.println("response = " + response);
+//
+//        if(response.get("result").asInt() == 1){
+//            return new ResponseEntity<>( true, HttpStatus.OK);
+//        } else{
+//            return new ResponseEntity<>(false, HttpStatus.NOT_ACCEPTABLE);
+//        }
 //        return new ResponseEntity<>( response, HttpStatus.OK );
     }
 

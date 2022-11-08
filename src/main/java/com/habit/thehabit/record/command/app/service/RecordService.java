@@ -1,5 +1,6 @@
 package com.habit.thehabit.record.command.app.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.record.command.app.dto.RecordDTO;
 import com.habit.thehabit.record.command.app.dto.RecordGradeAndOneLineReviewDTO;
@@ -9,7 +10,14 @@ import com.habit.thehabit.record.command.domain.aggregate.ReadingPeriod;
 import com.habit.thehabit.record.command.domain.aggregate.Record;
 import com.habit.thehabit.record.command.infra.repository.RecordInfraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -17,6 +25,19 @@ import java.util.List;
 
 @Service
 public class RecordService {
+
+    private static final RestTemplate REST_TEMPLATE;
+    @Value("${ai.datasource.url}")
+    private String url;
+
+    static {
+        // RestTemplate 기본 설정을 위한 Factory 생성
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(10000);
+        factory.setReadTimeout(10000);
+        factory.setBufferRequestBody(false);
+        REST_TEMPLATE = new RestTemplate(factory);
+    }
 
     private RecordInfraRepository recordInfraRepository;
 
@@ -32,6 +53,34 @@ public class RecordService {
         System.out.println("recordDTO = " + recordDTO);
         Record record = recordDTO.dtoToEntity(member);
         System.out.println("record entity = " + record);
+
+        System.out.println("record.getBookReview() = " + record.getBookReview());
+
+        /** ------------- 인공지능 API 서버로 전송 */
+        /** body 설정 */
+        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("review", record.getBookReview());
+
+        /** header 설정 */
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        /** http 통신할 entity 설정 */
+        HttpEntity<?> requestEntity = new HttpEntity<>(body,headers);
+
+        /** AI 서버 통신 후 한줄 요약(oneLineReview) 가져오기 */
+        JsonNode response = REST_TEMPLATE.postForObject(url,requestEntity, JsonNode.class);
+        System.out.println("response = " + response);
+
+        String oneLineReview = null;
+
+        if(response != null){
+            oneLineReview = String.valueOf(response.get("result"));
+        }
+        /** ------------- */
+
+        /** record entity에 oneLineReview set */
+        record.setOneLineReview(oneLineReview);
 
         /** DB에 record 저장 */
         recordInfraRepository.save(record);

@@ -13,16 +13,12 @@ import java.util.UUID;
 
 @Service
 public class TargetService {
-
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-
     private final AmazonS3 amazonS3;
-
     public TargetService(AmazonS3 amazonS3){
         this.amazonS3 = amazonS3;
     }
-
     @Transactional
     public String fileUpload(MultipartFile imageFile) throws IOException {
         ObjectMetadata objectMetadata = new ObjectMetadata();

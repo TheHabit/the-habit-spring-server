@@ -62,18 +62,15 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                     .antMatchers("/v1/auths/login").permitAll()
                     .antMatchers(HttpMethod.POST,"/v1/members").permitAll()
-                    .antMatchers(HttpMethod.PUT,"/v1/members").hasAuthority("USER")
-                    .antMatchers(HttpMethod.POST, "/v1/records").hasAuthority("USER")
-                    .antMatchers(HttpMethod.PATCH, "/v1/records").hasAuthority("USER")
-                    .antMatchers(HttpMethod.DELETE, "/v1/records").hasAuthority("USER")
-                    .antMatchers(HttpMethod.GET,"/v1/clubs").hasAuthority("USER")
-                    .antMatchers(HttpMethod.POST,"/v1/clubs").hasAuthority("USER")
-                    .antMatchers(HttpMethod.PUT,"/v1/clubs").hasAuthority("USER")
-
+                    .antMatchers("/v1/**").hasAuthority("USER")
 
                 .and()
                     .cors()
 
+                .and()
+                    .logout()
+                        .logoutUrl("/v1/auths/logout")
+                        .logoutSuccessUrl("/v1/records/user")
                 .and()
                 /** JWT 인증 방식을 사용한 jwt filter을 등록 */
                     .apply(new JwtSecurityConfig(tokenProvider));

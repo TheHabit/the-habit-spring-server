@@ -40,7 +40,8 @@ public class AuthService {
         /** 1. 아이디 조회 */
         try{
             System.out.println("member.getMemberId() = " + member.getMemberId());
-            foundMember = memberInfraRepository.findByMemberId(member.getMemberId());
+//            foundMember = memberInfraRepository.findByMemberId(member.getMemberId());
+            foundMember = memberInfraRepository.findByMemberIdAndIsWithDrawal(member.getMemberId(),"N");
             System.out.println("foundMember.getMemberPwd() = " + foundMember.getMemberPwd());
         } catch(Exception e){
             System.out.println("e = " + e);

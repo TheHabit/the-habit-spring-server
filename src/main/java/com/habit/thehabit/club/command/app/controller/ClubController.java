@@ -2,6 +2,7 @@ package com.habit.thehabit.club.command.app.controller;
 
 import com.habit.thehabit.club.command.app.dto.CreateClubDTO;
 import com.habit.thehabit.club.command.app.dto.JoinClubDTO;
+import com.habit.thehabit.club.command.app.dto.WithdrawDTO;
 import com.habit.thehabit.club.command.app.service.ClubService;
 import com.habit.thehabit.common.command.app.dto.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -45,13 +46,13 @@ public class ClubController {
     }
 
 
+    /* club 탈퇴 */
+    @PatchMapping("")
+    public ResponseEntity<ResponseDTO> withdrawClub(@RequestBody WithdrawDTO withdrawDTO ){
 
-//    @PostMapping("")
-//    public ResponseEntity<ResponseDTO> withdrawClub(@RequestBody WithdrawDTO withdrawDTO ){
-//
-//        System.out.println("컨트롤러 클럽 탈퇴 요청 확인");
-//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "클럽 탈퇴 성공", clubService.withdrawClub(withdrawDTO)));
-//    }
+        System.out.println("컨트롤러 클럽 탈퇴 요청 확인");
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "클럽 탈퇴 성공", clubService.withdrawClub(withdrawDTO)));
+    }
 
 
 }

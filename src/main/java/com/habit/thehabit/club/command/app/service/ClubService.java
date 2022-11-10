@@ -2,6 +2,7 @@ package com.habit.thehabit.club.command.app.service;
 import com.habit.thehabit.club.command.app.dto.ClubDTO;
 import com.habit.thehabit.club.command.app.dto.CreateClubDTO;
 import com.habit.thehabit.club.command.app.dto.ScheduleDTO;
+import com.habit.thehabit.club.command.app.dto.WithdrawDTO;
 import com.habit.thehabit.club.command.domain.aggregate.Club;
 import com.habit.thehabit.club.command.domain.aggregate.ClubMember;
 import com.habit.thehabit.club.command.domain.aggregate.embeddable.Period;
@@ -11,6 +12,7 @@ import com.habit.thehabit.club.command.infra.repository.ScheduleInfraRepository;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.member.command.infra.repository.MemberInfraRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.NonUniqueResultException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -113,7 +116,7 @@ public class ClubService {
 
         ClubDTO clubDTO = new ClubDTO();
         /* 이미 클럽에 참여중인 유저가 요청한 경우 예외 처리*/
-        if( clubMemberInfraRepository.findByClubIdAndMemberCode(clubId,memberCode) != null){
+        if( clubMemberInfraRepository.findByClubIdAndMemberCodeIsValid(clubId,memberCode) != null){
             message = "이미 참가한 모임입니다.";
             clubDTO.setMessage(message);
             return clubDTO;
@@ -136,25 +139,25 @@ public class ClubService {
         return clubDTO;
     }
 
-//    public WithdrawDTO withdrawClub(WithdrawDTO withdrawDTO ) {
-//        /* 지원한 사람의 정보 조회*/
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Member loginedMember = (Member) authentication.getPrincipal();
-//        log.info("loginedMember {}", loginedMember);
-//        int memberCode = loginedMember.getMemberCode();
-//        log.info("memberCode : {}", memberCode);
-////        Member member = memberInfraRepository.findByMemberCode(memberCode);
-////        log.info("member : {}", member);
-//
-//        /* clubId, memberCode를 통해 ClubMember를 조회 후 삭제 */
-//        Date currTime = DateTime.now().toDate();
-//        int clubId = withdrawDTO.getClubId();
-//        ClubMember clubMember = clubMemberInfraRepository.findByMemberCodeAndClubId(memberCode, clubId);
-//        clubMember.setWithdrawDate(currTime);
-//
-//        withdrawDTO.setClubName(clubMember.getClub().getClubName());
-//        withdrawDTO.setWithdrawDate(currTime);
-//        withdrawDTO.setMemberName(clubMember.getMember().getName());
-//        return withdrawDTO;
-//    }
+    public WithdrawDTO withdrawClub(WithdrawDTO withdrawDTO ) {
+        /* 지원한 사람의 정보 조회*/
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member loginedMember = (Member) authentication.getPrincipal();
+        log.info("loginedMember {}", loginedMember);
+        int memberCode = loginedMember.getMemberCode();
+        log.info("memberCode : {}", memberCode);
+//        Member member = memberInfraRepository.findByMemberCode(memberCode);
+//        log.info("member : {}", member);
+
+        /* clubId, memberCode를 통해 ClubMember를 조회 후 삭제 */
+        Date currTime = DateTime.now().toDate();
+        int clubId = withdrawDTO.getClubId();
+        ClubMember clubMember = clubMemberInfraRepository.findByClubIdAndMemberCode(clubId,memberCode);
+        clubMember.setWithdrawDate(currTime);
+
+        withdrawDTO.setClubName(clubMember.getClub().getClubName());
+        withdrawDTO.setWithdrawDate(currTime);
+        withdrawDTO.setMemberName(clubMember.getMember().getName());
+        return withdrawDTO;
+    }
 }

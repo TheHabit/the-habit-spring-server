@@ -152,8 +152,9 @@ public class ClubService {
         /* clubId, memberCode를 통해 ClubMember를 조회 후 삭제 */
         Date currTime = DateTime.now().toDate();
         int clubId = withdrawDTO.getClubId();
-        ClubMember clubMember = clubMemberInfraRepository.findByClubIdAndMemberCode(clubId,memberCode);
+        ClubMember clubMember = clubMemberInfraRepository.findByClubIdAndMemberCodeIsValid(clubId,memberCode);
         clubMember.setWithdrawDate(currTime);
+        clubMember.getClub().removeCurrentNumberOfMember();//현재 참가인원수 -1
 
         withdrawDTO.setClubName(clubMember.getClub().getClubName());
         withdrawDTO.setWithdrawDate(currTime);

@@ -10,6 +10,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -109,9 +110,14 @@ public class Club {
         this.currentNumberOfMember --;
     }
     public ClubDTO toClubDTO(){
-        ClubDTO clubDTO = new ClubDTO(this.id,"", this.clubName, this.clubIntro
-                ,this.bookName, this.recruitPeriod.getStartDate()
-                ,this.recruitPeriod.getEndDate(),this.period.getStartDate()
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+
+        ClubDTO clubDTO = new ClubDTO(
+                this.id,"", this.clubName, this.clubIntro
+                ,this.bookName
+                ,this.recruitPeriod.getStartDate()
+                ,this.recruitPeriod.getEndDate()
+                ,this.period.getStartDate()
                 ,this.period.getEndDate()
                 ,this.numberOfMember
                 ,this.status.toString()

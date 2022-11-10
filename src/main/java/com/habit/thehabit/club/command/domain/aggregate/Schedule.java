@@ -53,10 +53,6 @@ public class Schedule {
         }
     }
     public ScheduleDTO toScheduleDTO(){
-        System.out.println("============================================================");
-        System.out.println(this.startTime);
-        System.out.println(this.endTime);
-        System.out.println("============================================================");
         ScheduleDTO scheduleDTO = new ScheduleDTO(this.id,this.day,this.startTime,this.endTime);
         return scheduleDTO;
     }

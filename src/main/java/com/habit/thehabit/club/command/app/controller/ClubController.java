@@ -42,7 +42,12 @@ public class ClubController {
 
     /* 개설된 club목록 조회 */
     @GetMapping("")
-    public ResponseEntity<ResponseDTO> getClubs(){
+    public ResponseEntity<ResponseDTO> getClubs(@RequestParam(value = "option", defaultValue = "-1")int option){
+        if(option == 1){
+            //option이 1인 경우 참가한 클럽 조회
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회요청 성공",clubService.getMyClubs()));
+        }
+
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회요청 성공", clubService.findAllClubs()));
     }
 

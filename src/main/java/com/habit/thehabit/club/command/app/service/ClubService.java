@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -42,9 +41,25 @@ public class ClubService {
         this.scheduleInfraRepository = scheduleInfraRepository;
     }
 
+    /*사용자가 참여중인 것만 조회*/
+    public  List<ClubDTO> getMyClubs() {
+        /*사용자의 정보가져오기*/
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member loginedMember = (Member) authentication.getPrincipal();
+        log.info("loginedMember {}", loginedMember);
+        int memberCode = loginedMember.getMemberCode();
+
+
+        List<Club> clubList = clubInfraRepository.findClubMembersByMemberCodeIsValid(memberCode);
+        List<ClubDTO> clubDTOList = new ArrayList<>();
+
+        for(Club club : clubList){
+            clubDTOList.add(club.toClubDTO());
+        }
+        return clubDTOList;
+    }
     public List<ClubDTO> findAllClubs() {
         List<Club> clubList = clubInfraRepository.findAll();
-
         List<ClubDTO> clubDTOList = new ArrayList<>();
 
         for(Club club : clubList){
@@ -172,4 +187,6 @@ public class ClubService {
         }
         return withdrawDTO;
     }
+
+
 }

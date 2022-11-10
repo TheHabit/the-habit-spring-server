@@ -12,7 +12,7 @@ public class ClubDTO {
     private int clubId;
     private String message;
     private String clubName;
-    private String clubRule;
+    private String clubIntro;
     private String bookName;
     private Date recruitStartDate; //모입시작일
     private Date recruitEndDate; //모집종료일
@@ -21,6 +21,7 @@ public class ClubDTO {
     private int numberOfMember;
     private String status;
     private String imageUri; //이미지 정보
+
 //    private List<ScheduleDTO> scheduleDTOList;
 
 

@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.NonUniqueResultException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,6 +76,7 @@ public class ClubService {
         club.setPeriod(new Period(createClubDTO.getStartDate(), createClubDTO.getEndDate()));
         System.out.println(createClubDTO.getNumberOfMember());
         club.setNumberOfMember(createClubDTO.getNumberOfMember());
+        club.setImageUri(createClubDTO.getImageUri());
         club.addCurrentNumberOfMember();
 
         /* Club 객체에 넣을 List<Schedule>만들기(DTO.list<ScheduleDTO> -> List<Schedulte>)*/

@@ -18,7 +18,9 @@ import java.util.Map;
 public class CreateClubDTO {
 
     private int clubId;
+    private String message;
     private String clubName;
+    private String clubIntro;
     private String bookName;
     private Date recruitStartDate; //모입시작일
     private Date recruitEndDate; //모집종료일

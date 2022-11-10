@@ -70,8 +70,8 @@ public class Club {
     @Column(name = "IMAGE_URI")
     private String imageUri;
 
-    @Column(name = "CLUB_RULE")
-    private String clubRule;
+    @Column(name = "CLUB_INTRO")
+    private String clubIntro;
     public boolean isApply(){
         if(clubMemberList.size() < numberOfMember ){
             return true;
@@ -108,7 +108,7 @@ public class Club {
         this.currentNumberOfMember --;
     }
     public ClubDTO toClubDTO(){
-        ClubDTO clubDTO = new ClubDTO(this.id,"", this.clubName, this.clubRule
+        ClubDTO clubDTO = new ClubDTO(this.id,"", this.clubName, this.clubIntro
                 ,this.bookName, this.recruitPeriod.getStartDate()
                 ,this.recruitPeriod.getEndDate(),this.period.getStartDate()
                 ,this.period.getEndDate()

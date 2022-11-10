@@ -3,6 +3,7 @@ package com.habit.thehabit.club.command.domain.aggregate;
 
 import com.habit.thehabit.attendance.command.domain.aggregate.Attendance;
 import com.habit.thehabit.club.command.app.dto.ClubDTO;
+import com.habit.thehabit.club.command.app.dto.ScheduleDTO;
 import com.habit.thehabit.club.command.domain.aggregate.embeddable.Period;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
@@ -114,8 +115,16 @@ public class Club {
                 ,this.period.getEndDate()
                 ,this.numberOfMember
                 ,this.status.toString()
-                ,this.imageUri);
+                ,this.imageUri
+                ,ToScheduleDTOList(this.scheduleList));
 
         return clubDTO;
     }
+    private List<ScheduleDTO> ToScheduleDTOList(List<Schedule> scheduleList){
+        List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
+        for(Schedule schedule : scheduleList){
+            scheduleDTOList.add(schedule.toScheduleDTO());
+        }
+        return scheduleDTOList;
+    };
 }

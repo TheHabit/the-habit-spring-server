@@ -46,6 +46,7 @@ public class ClubService {
         List<Club> clubList = clubInfraRepository.findAll();
 
         List<ClubDTO> clubDTOList = new ArrayList<>();
+
         for(Club club : clubList){
             clubDTOList.add(club.toClubDTO());
         }
@@ -96,6 +97,7 @@ public class ClubService {
         clubMemberInfraRepository.save(clubMember);
         int clubId = clubMember.getClub().getId();
         createClubDTO.setClubId(clubId);
+        System.out.println(createClubDTO);
         return createClubDTO;
     }
 

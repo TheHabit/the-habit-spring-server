@@ -1,11 +1,13 @@
 package com.habit.thehabit.club.command.domain.aggregate;
 
+import com.habit.thehabit.club.command.app.dto.ScheduleDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Setter
@@ -49,5 +51,13 @@ public class Schedule {
         if(!club.getScheduleList().contains(this)){
             club.getScheduleList().add(this);
         }
+    }
+    public ScheduleDTO toScheduleDTO(){
+        System.out.println("============================================================");
+        System.out.println(this.startTime);
+        System.out.println(this.endTime);
+        System.out.println("============================================================");
+        ScheduleDTO scheduleDTO = new ScheduleDTO(this.id,this.day,this.startTime,this.endTime);
+        return scheduleDTO;
     }
 }

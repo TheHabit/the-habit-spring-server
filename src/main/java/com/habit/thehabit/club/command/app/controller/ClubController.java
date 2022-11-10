@@ -5,7 +5,6 @@ import com.habit.thehabit.club.command.app.dto.JoinClubDTO;
 import com.habit.thehabit.club.command.app.dto.WithdrawDTO;
 import com.habit.thehabit.club.command.app.service.ClubService;
 import com.habit.thehabit.common.command.app.dto.ResponseDTO;
-import com.habit.thehabit.target.command.app.controller.TargetController;
 import com.habit.thehabit.target.command.app.service.UploadToS3;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +31,7 @@ public class ClubController {
         this.uploadToS3 = uploadToS3;
     }
 
-    /* club 개설  */
-    /*모임 일정 생성 후, 작업중 2022-11-09*/
-//    @PostMapping("")
-//    public ResponseEntity<ResponseDTO> createClub(@RequestBody CreateClubDTO createClubDTO){
-//        System.out.println("클럽 개설 확인");
-//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "생성요청 성공", clubService.createClubs(createClubDTO)));
-//    }
-
+    /*club 생성*/
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ResponseDTO> createClub( @RequestPart CreateClubDTO request, @RequestPart MultipartFile imgFile ) throws IOException {
         System.out.println("클럽 개설 확인");
@@ -47,7 +39,6 @@ public class ClubController {
         request.setImageUri(imageUri);
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "생성요청 성공", clubService.createClubs(request)));
     }
-
 
     /* 개설된 club목록 조회 */
     @GetMapping("")

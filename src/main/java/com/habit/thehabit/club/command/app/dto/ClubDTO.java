@@ -3,6 +3,7 @@ package com.habit.thehabit.club.command.app.dto;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,8 +22,6 @@ public class ClubDTO {
     private int numberOfMember;
     private String status;
     private String imageUri; //이미지 정보
-
-//    private List<ScheduleDTO> scheduleDTOList;
-
+    private List<ScheduleDTO> scheduleDTOList;
 
 }

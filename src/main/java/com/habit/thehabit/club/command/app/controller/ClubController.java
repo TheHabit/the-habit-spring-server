@@ -28,7 +28,7 @@ public class ClubController {
     /*모임 일정 생성 후, 작업중 2022-11-09*/
     @PostMapping("")
     public ResponseEntity<ResponseDTO> createClub(@RequestBody CreateClubDTO createClubDTO){
-        System.out.println("클럽 개설 요청 확인");
+        System.out.println("클럽 개설 확인");
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "생성요청 성공", clubService.createClubs(createClubDTO)));
     }
     /* 개설된 club목록 조회 */

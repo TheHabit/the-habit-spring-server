@@ -74,6 +74,8 @@ public class ClubService {
         club.setBookName(createClubDTO.getBookName());
         club.setRecruitPeriod(new Period(createClubDTO.getRecruitStartDate(), createClubDTO.getRecruitEndDate()));
         club.setPeriod(new Period(createClubDTO.getStartDate(), createClubDTO.getEndDate()));
+        System.out.println(createClubDTO.getNumberOfMember());
+        club.setNumberOfMember(createClubDTO.getNumberOfMember());
         club.addCurrentNumberOfMember();
 
         /* Club 객체에 넣을 List<Schedule>만들기(DTO.list<ScheduleDTO> -> List<Schedulte>)*/
@@ -152,13 +154,19 @@ public class ClubService {
         /* clubId, memberCode를 통해 ClubMember를 조회 후 삭제 */
         Date currTime = DateTime.now().toDate();
         int clubId = withdrawDTO.getClubId();
-        ClubMember clubMember = clubMemberInfraRepository.findByClubIdAndMemberCodeIsValid(clubId,memberCode);
-        clubMember.setWithdrawDate(currTime);
-        clubMember.getClub().removeCurrentNumberOfMember();//현재 참가인원수 -1
 
-        withdrawDTO.setClubName(clubMember.getClub().getClubName());
-        withdrawDTO.setWithdrawDate(currTime);
-        withdrawDTO.setMemberName(clubMember.getMember().getName());
+        try {
+            ClubMember clubMember = clubMemberInfraRepository.findByClubIdAndMemberCodeIsValid(clubId,memberCode);
+            clubMember.setWithdrawDate(currTime);
+            clubMember.getClub().removeCurrentNumberOfMember();//현재 참가인원수 -1
+            withdrawDTO.setClubName(clubMember.getClub().getClubName());
+            withdrawDTO.setWithdrawDate(currTime);
+            withdrawDTO.setMemberName(clubMember.getMember().getName());
+        }catch (NullPointerException e)
+        {
+            System.out.println(e.getMessage());
+            return null;
+        }
         return withdrawDTO;
     }
 }

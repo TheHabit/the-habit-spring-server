@@ -5,12 +5,15 @@ import com.habit.thehabit.attendance.command.domain.aggregate.Attendance;
 import com.habit.thehabit.club.command.app.dto.ClubDTO;
 import com.habit.thehabit.club.command.domain.aggregate.embeddable.Period;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 
 import java.util.List;
 
+@DynamicInsert
 @Data
 @Entity
 @Table(name = "TBL_CLUB")
@@ -46,6 +49,7 @@ public class Club {
     @Column(name = "NUMBEROF_MEMBER")
     private int numberOfMember; //모집인원
 
+    @ColumnDefault("RECRUITING")
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS")
     private ClubStatus status; //진행상태

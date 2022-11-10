@@ -3,11 +3,15 @@ package com.habit.thehabit.club.command.domain.aggregate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.habit.thehabit.club.command.app.dto.ClubMemberDTO;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "TBL_CLUB_MEMBER")
 @TableGenerator(
@@ -30,6 +34,10 @@ public class ClubMember {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL )
     @JoinColumn(name = "CLUB_ID")
     private Club club;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column( name = "WITHDRAW_DATE")
+    private Date withdrawDate; //신청한 클럽에서 탈퇴했을 경우 Y처리되는 컬럼 null허용
 
     public void setMember(Member member){
         this.member = member;

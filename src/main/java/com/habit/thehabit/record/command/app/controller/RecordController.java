@@ -7,14 +7,25 @@ import com.habit.thehabit.record.command.app.exception.RecordDeleteException;
 import com.habit.thehabit.record.command.app.exception.RecordNotFoundException;
 import com.habit.thehabit.record.command.app.service.RecordService;
 import com.habit.thehabit.record.command.domain.aggregate.Record;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Getter;
+import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+@Tag(name = "독서 기록", description = "독서 기록 API")
 @RestController
 @RequestMapping("/v1/records")
 public class RecordController {
@@ -27,13 +38,25 @@ public class RecordController {
     }
 
     /** 독서 기록 삽입 */
+    @Operation(summary = "독서기록 삽입하기", description = "새로운 독서 기록을 삽입합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "OK", content = @Content(schema = @Schema(implementation = RecordDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Sever Error")
+    })
+    @Parameters({
+            @Parameter(name = "bookName", description = "책 제목", example = "지적 대화를 위한 넓고 얉은 지식"),
+            @Parameter(name = "bookISBN", description = "책 ISBN", example = "11211312314"),
+            @Parameter(name = "bookReview", description = "독서록"),
+            @Parameter(name = "startDate", description = "독서 시작 일자", example = "2022-10-11"),
+            @Parameter(name = "endDate", description = "독서 종료 일자", example = "2022-11-11")
+    })
     @PostMapping("")
-    public ResponseEntity<ResponseDTO> insertRecord(@RequestBody RecordDTO record, @AuthenticationPrincipal Member member){
+    public ResponseEntity<ResponseDTO> insertRecord(@RequestPart(value = "bookImg") MultipartFile bookImg, @RequestPart(value = "record") RecordDTO record, @AuthenticationPrincipal Member member){
         
         try{
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 입력 성공", recordService.insertRecord(record, member)));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 입력 성공", recordService.insertRecord(bookImg, record, member)));
         } catch(Exception e){
-            System.out.println("Exception = " + e);
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 입력 실패", "내부 에러 발생"));
         }
     }

@@ -9,6 +9,7 @@ import com.habit.thehabit.record.command.app.exception.RecordNotFoundException;
 import com.habit.thehabit.record.command.domain.aggregate.ReadingPeriod;
 import com.habit.thehabit.record.command.domain.aggregate.Record;
 import com.habit.thehabit.record.command.infra.repository.RecordInfraRepository;
+import com.habit.thehabit.util.AwsFileUploadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -19,9 +20,13 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -42,47 +47,67 @@ public class RecordService {
     }
 
     private RecordInfraRepository recordInfraRepository;
+    private AwsFileUploadUtils awsFileUploadUtils;
 
     @Autowired
-    public RecordService(RecordInfraRepository recordInfraRepository){
+    public RecordService(RecordInfraRepository recordInfraRepository, AwsFileUploadUtils awsFileUploadUtils){
         this.recordInfraRepository = recordInfraRepository;
+        this.awsFileUploadUtils = awsFileUploadUtils;
     }
 
     @Transactional
-    public RecordDTO insertRecord(RecordDTO recordDTO, Member member) {
+    public RecordDTO insertRecord(MultipartFile bookImg, RecordDTO recordDTO, Member member) throws IOException {
 
         /** DB에 접근하기 위해 DTO를 엔티티로 변환 */
         System.out.println("recordDTO = " + recordDTO);
         Record record = recordDTO.dtoToEntity(member);
         System.out.println("record entity = " + record);
 
+        System.out.println("bookImg = " + bookImg);
+
         System.out.println("record.getBookReview() = " + record.getBookReview());
-
-        /** ------------- 인공지능 API 서버로 전송 */
-        /** body 설정 */
-        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("review", record.getBookReview());
-
-        /** header 설정 */
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        /** http 통신할 entity 설정 */
-        HttpEntity<?> requestEntity = new HttpEntity<>(body,headers);
-
-        /** AI 서버 통신 후 한줄 요약(oneLineReview) 가져오기 */
-        JsonNode response = REST_TEMPLATE.postForObject(url,requestEntity, JsonNode.class);
-        System.out.println("response = " + response);
-
-        String oneLineReview = null;
-
-        if(response != null){
-            oneLineReview = String.valueOf(response.get("result"));
+        
+        /** 기록 날짜(현재 날짜) 기록 */
+        Date curDate = new Date();
+        System.out.println("curDate = " + curDate);
+        if(record.getReadingPeriod() == null){
+            ReadingPeriod readingPeriod = new ReadingPeriod(null, null, curDate);
+        } else{
+            record.getReadingPeriod().setReportDate(curDate);
         }
-        /** ------------- */
+        System.out.println("record.getReadingPeriod() = " + record.getReadingPeriod());
+//
+//        /** ------------- 인공지능 API 서버로 전송 */
+//        /** body 설정 */
+//        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+//        body.add("review", record.getBookReview());
+//
+//        /** header 설정 */
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+//
+//        /** http 통신할 entity 설정 */
+//        HttpEntity<?> requestEntity = new HttpEntity<>(body,headers);
+//
+//        /** AI 서버 통신 후 한줄 요약(oneLineReview) 가져오기 */
+//        JsonNode response = REST_TEMPLATE.postForObject(url,requestEntity, JsonNode.class);
+//        System.out.println("response = " + response);
+//
+//        String oneLineReview = null;
+//
+//        if(response != null){
+//            oneLineReview = String.valueOf(response.get("result"));
+//        }
 
-        /** record entity에 oneLineReview set */
-        record.setOneLineReview(oneLineReview);
+//        /** record entity에 oneLineReview set */
+//        record.setOneLineReview(oneLineReview);
+//        /** ------------- */
+
+
+        /** Aws S3로 파일 업로드 */
+        String imgSrc = awsFileUploadUtils.fileUpload(bookImg, "record");
+        record.setPageSource(imgSrc);
+
 
         /** DB에 record 저장 */
         recordInfraRepository.save(record);

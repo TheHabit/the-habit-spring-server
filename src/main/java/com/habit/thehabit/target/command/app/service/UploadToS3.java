@@ -1,33 +1,28 @@
-package com.habit.thehabit.target.command.app.controller;
+package com.habit.thehabit.target.command.app.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.habit.thehabit.common.command.app.dto.ResponseDTO;
-import com.habit.thehabit.target.command.app.service.TargetService;
-import com.habit.thehabit.util.FileUploadUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.http.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.ServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 
-@RestController
-@RequestMapping("/v1/target")
-@RefreshScope
-public class TargetController {
+import javax.transaction.Transactional;
+import java.util.UUID;
+
+@Component
+public class UploadToS3 {
 
     private static final RestTemplate REST_TEMPLATE;
 
     @Value("${image.image-dir}")
     private String IMAGE_DIR;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+    private final AmazonS3 amazonS3;
 
     static {
         // RestTemplate 기본 설정을 위한 Factory 생성
@@ -38,32 +33,12 @@ public class TargetController {
         REST_TEMPLATE = new RestTemplate(factory);
     }
 
-    private final TargetService targetService;
-
-    public TargetController(TargetService targetService){
-        this.targetService = targetService;
+    public UploadToS3(AmazonS3 amazonS3, TargetService targetService){
+        this.amazonS3 = amazonS3;
     }
 
-    @PostMapping("/receive")
-    public void test(@RequestBody List<MultipartFile> files, ServletRequest request) throws IOException {
-        MultipartFile file = files.get(0);
-        System.out.println("file.getBytes().toString() = " + file.getBytes().toString());
-
-        String imageName = "test";
-
-        String replaceFileName = null;
-
-        try {
-            replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, imageName, file);
-
-        } catch (IOException e) {
-            FileUploadUtils.deleteFile(IMAGE_DIR, replaceFileName);
-            throw new RuntimeException(e);
-        }
-
-    }
     /*S3에 이미지 파일 업로드를 위한 메소드*/
-    public String upload(MultipartFile file) throws IOException {
+    public String upload(MultipartFile file, String dir) throws IOException {
 
         System.out.println("file = " + file);
         System.out.println("image.getName() = " + file.getName());
@@ -72,23 +47,20 @@ public class TargetController {
         System.out.println("fileName = " + fileName);
         System.out.println("file.getBytes() = " + file.getBytes());
 
-        return targetService.fileUpload(file);
+        return fileUpload(file, dir);
     }
 
+    @Transactional
+    public String fileUpload(MultipartFile imageFile , String dir) throws IOException {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(imageFile.getInputStream().available());
+        objectMetadata.setContentType(imageFile.getContentType());
 
-    @PostMapping("")
-    public ResponseEntity<?> verifyTarget( MultipartFile file) throws IOException {
+        String fileName = dir + UUID.randomUUID().toString().replace("-", "");
+        amazonS3.putObject(new PutObjectRequest(bucket, fileName, imageFile.getInputStream(), objectMetadata));
 
-        System.out.println("file = " + file);
-        System.out.println("image.getName() = " + file.getName());
-
-        String fileName = file.getOriginalFilename();
-        System.out.println("fileName = " + fileName);
-        System.out.println("file.getBytes() = " + file.getBytes());
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "파일업로드 성공", targetService.fileUpload(file)));
-
-
+        return amazonS3.getUrl(bucket, fileName).toString();
+    }
 
             /** 이미지 파일 로컬 저장 */
 //        String imageName = "test3";
@@ -126,13 +98,5 @@ public class TargetController {
 //        return new ResponseEntity<>( response, HttpStatus.OK );
     }
 
-    @Value("${spring.web.resources.static-locations}")
-    private String uri;
 
-    @GetMapping("/test")
-    public void configTest(){
-        System.out.println(uri);
-    }
-
-}
 

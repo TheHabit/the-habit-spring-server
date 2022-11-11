@@ -14,7 +14,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -32,7 +34,18 @@ public class AttendanceService {
         this.clubInfraRepository = clubInfraRepository;
     }
 
+    /* 출석 체크 */
     public RegistAttendanceDTO regist(RegistAttendanceDTO registAttendanceDTO) {
+        /*출석 가능한 시간인지 확인*/
+        //출석 여청 들어온 시간 변수에 저장
+        Date checkedDateTime = registAttendanceDTO.getDate();
+        //해당 날짜의 요일, 년/월/일, 시간 분리하여 변수에 저장
+        //해당 날짜의 요일
+        LocalDateTime currTime = LocalDateTime.now();
+
+
+
+
         /*출석체크하는 사용자의 정보가져오기*/
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member loginedMember = (Member) authentication.getPrincipal();
@@ -64,6 +77,7 @@ public class AttendanceService {
         return registAttendanceDTO;
     }
 
+    /*조회*/
     public List<AttendanceInfoDTO> findAllAttendance(int clubId) {
         List<Attendance> attendanceList = attendanceInfraRepository.findAllByClubId(clubId);
         List<AttendanceInfoDTO> resultList = new ArrayList<>();

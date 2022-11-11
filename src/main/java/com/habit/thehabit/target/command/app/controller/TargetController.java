@@ -5,6 +5,7 @@ import com.habit.thehabit.common.command.app.dto.ResponseDTO;
 import com.habit.thehabit.target.command.app.service.TargetService;
 import com.habit.thehabit.util.FileUploadUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.util.LinkedMultiValueMap;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/target")
+@RefreshScope
 public class TargetController {
 
     private static final RestTemplate REST_TEMPLATE;
@@ -107,6 +109,14 @@ public class TargetController {
 //            return new ResponseEntity<>(false, HttpStatus.NOT_ACCEPTABLE);
 //        }
 //        return new ResponseEntity<>( response, HttpStatus.OK );
+    }
+
+    @Value("${spring.web.resources.static-locations}")
+    private String uri;
+
+    @GetMapping("/test")
+    public void configTest(){
+        System.out.println(uri);
     }
 
 }

@@ -11,6 +11,7 @@ import com.habit.thehabit.record.command.domain.aggregate.Record;
 import com.habit.thehabit.record.command.infra.repository.RecordInfraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RefreshScope
 public class RecordService {
 
     private static final RestTemplate REST_TEMPLATE;

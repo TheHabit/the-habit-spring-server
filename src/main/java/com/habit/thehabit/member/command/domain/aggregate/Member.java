@@ -47,6 +47,13 @@ public class Member implements UserDetails {
     @Column(name = "PW_IS_TEMP")
     private String isTempPwd;
 
+    @PrePersist
+    public void prePersist(){
+        this.isTempPwd = this.isTempPwd == null ? "N" : this.isTempPwd;
+        this.isWithDrawal = this.isWithDrawal == null ? "N" : this.isWithDrawal;
+        this.memberRole = this.memberRole == null ? "USER" : this.memberRole;
+    }
+
     @Column(name = "NICKNAME")
     private String name;
 

@@ -12,8 +12,11 @@ public interface RecordInfraRepository extends RecordRepository {
 
     List<Record> findByBookISBNAndIsActivated(String bookISBN, String isActivated);
 
-    List<Record> findByIsActivatedOrderByBookGradeDesc(String isActivated);
+    List<Record> findByIsActivatedAndIsDoneOrderByRatingDesc(String isActivated, String isDone);
 
-    @Query("select m from Record m where m.member.memberCode = :memberCode and m.isActivated = 'Y' ")
-    List<Record> findByMemberCode(int memberCode);
+    @Query("select m from Record m where m.member.memberCode = :memberCode and m.isActivated = 'Y' and m.isDone = :isDone ")
+    List<Record> findByMemberCodeAndIsDone(int memberCode, String isDone);
+
+    @Query("select m from Record m where m.member.memberCode = :memberCode and m.isActivated = 'Y' and m.bookISBN = :bookISBN")
+    List<Record> findByMemberCodeAndBookISBNAndIsActivated(int memberCode, String bookISBN);
 }

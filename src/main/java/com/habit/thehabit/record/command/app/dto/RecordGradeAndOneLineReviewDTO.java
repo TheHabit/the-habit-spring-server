@@ -8,6 +8,8 @@ import lombok.*;
 @Setter
 @ToString
 public class RecordGradeAndOneLineReviewDTO {
-    private Long bookGrade;
+    private String bookName;
+    private String thumbnailLink;
+    private String name;
     private String oneLineReview;
 }

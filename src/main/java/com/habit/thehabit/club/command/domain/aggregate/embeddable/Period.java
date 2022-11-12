@@ -13,11 +13,11 @@ import java.util.Date;
 @Embeddable
 @Data
 public class Period {
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name = "START_DATE")
     private Date startDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name = "END_DATE")
     private Date endDate;
 

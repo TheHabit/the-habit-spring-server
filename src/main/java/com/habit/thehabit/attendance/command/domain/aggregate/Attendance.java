@@ -55,7 +55,7 @@ public class Attendance {
         }
     }
     public AttendanceInfoDTO toDTO(){
-        AttendanceInfoDTO attendanceInfoDTO = new AttendanceInfoDTO(this.attendanceDate, this.member.getMemberCode(), this.member.getName());
+        AttendanceInfoDTO attendanceInfoDTO = new AttendanceInfoDTO(this.attendanceDate, this.member.getMemberCode(), this.member.getName(),null);
         return attendanceInfoDTO;
     }
 }

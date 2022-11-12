@@ -15,13 +15,13 @@ import java.util.Date;
 @NoArgsConstructor
 public class ScheduleDTO {
     private int scheduleid;
-    private String day;
+    private String dayOfWeek;
     private Date startTime;
     private Date endTime;
 
-    public ScheduleDTO(int id, String day, Date startTime, Date endTime) {
+    public ScheduleDTO(int id, String dayOfWeek, Date startTime, Date endTime) {
         this.scheduleid = id;
-        this.day = day;
+        this.dayOfWeek = dayOfWeek;
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -37,7 +37,7 @@ public class ScheduleDTO {
     }
     public Schedule toSchedule(){
         Schedule schedule = new Schedule();
-        schedule.setDay(this.day);
+        schedule.setDayOfWeek(this.dayOfWeek);
         schedule.setStartTime(this.startTime);
         schedule.setEndTime(this.endTime);
         return schedule;

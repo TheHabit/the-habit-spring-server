@@ -11,6 +11,7 @@ import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -74,6 +75,9 @@ public class Club {
 
     @Column(name = "CLUB_INTRO")
     private String clubIntro;
+
+    @Transient
+    private List<LocalDateTime> meetingSchedules;
     public boolean isApply(){
         if(clubMemberList.size() < numberOfMember ){
             return true;
@@ -102,6 +106,7 @@ public class Club {
         }
     }
 
+
     /* currentNumberOfMember 카운팅 메소드*/
     public void addCurrentNumberOfMember(){
         this.currentNumberOfMember ++;
@@ -125,6 +130,10 @@ public class Club {
                 ,ToScheduleDTOList(this.scheduleList));
 
         return clubDTO;
+    }
+    /* meetingSchadules 생성 */
+    public void makeSchedules(){
+
     }
     private List<ScheduleDTO> ToScheduleDTOList(List<Schedule> scheduleList){
         List<ScheduleDTO> scheduleDTOList = new ArrayList<>();

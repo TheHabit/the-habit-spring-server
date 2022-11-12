@@ -5,19 +5,18 @@ import com.habit.thehabit.club.command.app.dto.JoinClubDTO;
 import com.habit.thehabit.club.command.app.dto.WithdrawDTO;
 import com.habit.thehabit.club.command.app.service.ClubService;
 import com.habit.thehabit.common.command.app.dto.ResponseDTO;
-import com.habit.thehabit.target.command.app.service.UploadToS3;
+import com.habit.thehabit.util.UploadToS3;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-@Controller
+@RestController
 @RequestMapping("/v1/clubs")
 @Slf4j
 public class ClubController {

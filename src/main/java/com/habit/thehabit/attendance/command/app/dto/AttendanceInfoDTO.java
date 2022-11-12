@@ -12,4 +12,6 @@ public class AttendanceInfoDTO {
     private Date date;
     private int memberCode;
     private String memberName;
+    private String percentage;
+
 }

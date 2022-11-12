@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.text.ParseException;
+
+@RestController
 @RequestMapping("/v1/attendances")
 @Slf4j
 public class AttendanceController {
@@ -22,13 +24,15 @@ public class AttendanceController {
         this.attendanceService = attendanceService;
     }
 
+    /* 조회 */
     @GetMapping("")
     public ResponseEntity<ResponseDTO> findAllAttendance(@RequestParam(value = "clubId", defaultValue = "")int clubId){
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", attendanceService.findAllAttendance(clubId)));
     }
 
-    @PostMapping("")
-    public ResponseEntity<ResponseDTO> regist(@RequestBody RegistAttendanceDTO registAttendanceDTO){
+    /* 출석 */
+    @PostMapping("") //현재시간, clubID 담아서 보내야함.
+    public ResponseEntity<ResponseDTO> regist(@RequestBody RegistAttendanceDTO registAttendanceDTO) throws ParseException {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "출석 성공", attendanceService.regist(registAttendanceDTO)));
     }
 

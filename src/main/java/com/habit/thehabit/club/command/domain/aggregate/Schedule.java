@@ -30,8 +30,8 @@ public class Schedule {
     @Column(name = "SCHEDULE_ID")
     private int id;
 
-    @Column(name = "DAY")
-    private String day;
+    @Column(name = "DAY_OF_WEEK")
+    private String dayOfWeek;
 
     @Temporal(TemporalType.TIME)
     @Column(name = "START_TIME")
@@ -53,7 +53,7 @@ public class Schedule {
         }
     }
     public ScheduleDTO toScheduleDTO(){
-        ScheduleDTO scheduleDTO = new ScheduleDTO(this.id,this.day,this.startTime,this.endTime);
+        ScheduleDTO scheduleDTO = new ScheduleDTO(this.id,this.dayOfWeek,this.startTime,this.endTime);
         return scheduleDTO;
     }
 }

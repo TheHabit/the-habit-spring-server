@@ -15,12 +15,17 @@ import java.util.Date;
 public class RecordDTO {
     private Long recordCode;
     private String bookName;
+    private String bookAuthor;
+    private String bookPublishInfo;
+    private String thumbnailLink;
+
     private String bookISBN;
-    private Long bookGrade;
+    private int rating;
 
     private String pageSource;
     private String bookReview;
     private String oneLineReview;
+    private String isDone;
     private String isActivated;
 
     private Date startDate;
@@ -36,8 +41,8 @@ public class RecordDTO {
     }
 
     public Record dtoToEntity(Member member){
-        Record record = new Record(recordCode, bookName, bookISBN, bookGrade,
-                pageSource, bookReview, oneLineReview, isActivated, setReadingPeriod(), member);
+        Record record = new Record(recordCode, bookName, bookAuthor, bookPublishInfo, thumbnailLink, bookISBN, rating,
+                pageSource, bookReview, oneLineReview, isDone, isActivated, setReadingPeriod(), member);
         return record;
     }
 

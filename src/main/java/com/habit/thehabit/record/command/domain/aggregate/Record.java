@@ -33,11 +33,20 @@ public class Record {
     @Column(name = "BOOK_NAME")
     private String bookName;
 
+    @Column(name = "BOOK_AUTHOR")
+    private String bookAuthor;
+
+    @Column(name = "BOOK_PUBLISH_INFO")
+    private String bookPubllishInfo;
+
+    @Column(name = "THUMBNAIL_LINK")
+    private String thumbnailLink;
+
     @Column(name = "BOOK_ISBN")
     private String bookISBN;
 
-    @Column(name = "BOOK_GRADE")
-    private Long bookGrade;
+    @Column(name = "RATING")
+    private int rating;
 
     @Column(name = "PAGE_SOURCE")
     private String pageSource;
@@ -47,6 +56,9 @@ public class Record {
 
     @Column(name = "ONE_LINE_REVIEW")
     private String oneLineReview;
+
+    @Column(name = "IS_DONE")
+    private String isDone;
 
     @Column(name = "IS_ACTIVATED")
     private String isActivated;
@@ -76,13 +88,13 @@ public class Record {
         RecordDTO responseDTO;
 
         if(readingPeriod != null){
-            responseDTO = new RecordDTO(recordCode, bookName, bookISBN, bookGrade, pageSource,
-                    bookReview, oneLineReview, isActivated, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
+            responseDTO = new RecordDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating, pageSource,
+                    bookReview, oneLineReview, isDone, isActivated, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
                     readingPeriod.getReportDate(), member.getMemberCode());
 
         } else{
-            responseDTO = new RecordDTO(recordCode, bookName, bookISBN, bookGrade, pageSource,
-                    bookReview, oneLineReview, isActivated, null, null,
+            responseDTO = new RecordDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating, pageSource,
+                    bookReview, oneLineReview, isDone, isActivated, null, null,
                     null, member.getMemberCode());
         }
 
@@ -92,7 +104,7 @@ public class Record {
     public RecordGradeAndOneLineReviewDTO entitiyToOneLineReviewDTO(){
         RecordGradeAndOneLineReviewDTO responseDTO;
 
-        responseDTO = new RecordGradeAndOneLineReviewDTO(bookGrade, oneLineReview);
+        responseDTO = new RecordGradeAndOneLineReviewDTO(bookName, thumbnailLink, member.getName(), oneLineReview);
 
         return responseDTO;
     }

@@ -7,13 +7,14 @@ import lombok.Setter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 @Getter
 @Setter
-//@NoArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 public class CreateClubDTO {
 
@@ -22,11 +23,11 @@ public class CreateClubDTO {
     private String clubName;
     private String clubIntro;
     private String bookName;
-    private Date recruitStartDate; //모입시작일
-    private Date recruitEndDate; //모집종료일
-    private Date startDate; //활동시작일
-    private Date endDate;   //활동종료일
-    private int numberOfMember;
+    private LocalDateTime recruitStartDate; //모집시작일 -> 생성일자로 대체
+    private LocalDateTime recruitEndDate; //모집종료일 --> 며칠간 모집할지 일수 받기
+    private LocalDateTime startDate; //활동시작일 00:00
+    private LocalDateTime endDate;   //활동종료일 23:59
+    private int numberOfMember; //모집 인원
     private String status;
     private String imageUri; //이미지 정보
     private List<ScheduleDTO> scheduleDTOList; //미팅 일정들

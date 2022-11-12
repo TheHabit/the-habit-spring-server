@@ -45,9 +45,9 @@ public class AttendanceService {
     /* 출석 체크 */
     public RegistAttendanceDTO regist(RegistAttendanceDTO registAttendanceDTO) throws ParseException {
 
-        if(isPossible(registAttendanceDTO).getClubName() == null){
-            return null;
-        }
+//        if (isPossible(registAttendanceDTO).getClubName() == null) {
+//            return null;
+//        }
         /*출석체크하는 사용자의 정보가져오기*/
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member loginedMember = (Member) authentication.getPrincipal();
@@ -88,72 +88,73 @@ public class AttendanceService {
 
         return resultList;
     }
+}
 
     /*출석 조회시, 출석률 관련 메소드*/
 
 
-    /*출석체크시, 예외 처리 메소드*/
-    public RegistAttendanceDTO isPossible(RegistAttendanceDTO registAttendanceDTO) throws ParseException {
-        /*출석 가능한 시간인지 확인*/
-        //출석 여청 들어온 시간(현재시간) 변수에 저장
-        //년/월/일, 요일, 시간 분리하여 변수에 저장
-
-        LocalDate currLDate = LocalDate.now(); //현재날짜
-        Date currDate = java.sql.Date.valueOf(currLDate);
-
-        LocalTime currLTime = LocalTime.now(); //현재시간
-        System.out.println(currLTime);
-        Date currTime = java.sql.Date.valueOf(String.valueOf(currLTime));
-
-        DayOfWeek DOF = currLDate.getDayOfWeek();
-        String dayOfWeek = DOF.getDisplayName(TextStyle.SHORT, Locale.KOREAN); //현재 요일
-
-        System.out.println("currDate : " + currDate);
-        System.out.println("currTime : " + currLTime);
-        System.out.println("dayOfweek : " + dayOfWeek);
-
-        /* 현재 날짜가, 출석 가능한 날짜인지 확인*/
-        int clubId = registAttendanceDTO.getClubId();
-        Club club = clubInfraRepository.findById(clubId);
-
-        Date startDate = club.getPeriod().getStartDate();//모임 시작일
-        Date endDate = club.getPeriod().getEndDate();//모임 종료일
-
-        if ((currDate.equals(startDate) || currDate.after(startDate)) && (currDate.before(endDate) || currDate.equals(endDate))) {
-
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-            Calendar calendar = Calendar.getInstance();
-
-            /* 해당 요일(dayOfWeek)이 있는지 확인 , true -> 출석 가능한 시간인지 확인 ,true -> 출석로직 진행*/
-            List<Schedule> scheduleList = scheduleInfraRepository.findByDayOfWeek(dayOfWeek);
-            for (Schedule schedule : scheduleList) {
-                //해당되는 요일이 있을 경우, 출석가능한 시간인지 확인
-                if (schedule.getDayOfWeek().contains(dayOfWeek)) {
-                    Date checkStartTime = schedule.getStartTime(); //출석이 가능한 시작 시간
-                    System.out.println("출석 시작 시간: " + checkStartTime);
-
-                    calendar.setTime(checkStartTime); //10분 더한 출석 종료 시간
-                    calendar.add(Calendar.MINUTE, 60); //10분 더한 출석 종료 시간
-                    String checkEndTimeTemp = simpleDateFormat.format(calendar.getTime());
-                    Date checkEndTime = simpleDateFormat.parse(checkEndTimeTemp);
-
-                    System.out.println("출석 종료 시간 String: " + checkEndTimeTemp);
-                    System.out.println("출석 종료 시간 Date: " + checkEndTime);
-
-                    /*현재 시각이 출석가능 시간에 있으면 출석 진행*/
-                    if ((currTime.equals(checkStartTime) || currTime.after(checkStartTime)) && (currTime.before(checkEndTime) || currTime.equals(checkEndTime))) {
-                        registAttendanceDTO.setClubId(clubId);
-                        registAttendanceDTO.setClubName(club.getClubName());
-                        return registAttendanceDTO;
-                    }
-                }
-            }
-        }
-            return registAttendanceDTO;
-
-    }
-
-}
+//    /*출석체크시, 예외 처리 메소드*/
+//    public RegistAttendanceDTO isPossible(RegistAttendanceDTO registAttendanceDTO) throws ParseException {
+//        /*출석 가능한 시간인지 확인*/
+//        //출석 여청 들어온 시간(현재시간) 변수에 저장
+//        //년/월/일, 요일, 시간 분리하여 변수에 저장
+//
+//        LocalDate currLDate = LocalDate.now(); //현재날짜
+//        Date currDate = java.sql.Date.valueOf(currLDate);
+//
+//        LocalTime currLTime = LocalTime.now(); //현재시간
+//        System.out.println(currLTime);
+//        Date currTime = java.sql.Date.valueOf(String.valueOf(currLTime));
+//
+//        DayOfWeek DOF = currLDate.getDayOfWeek();
+//        String dayOfWeek = DOF.getDisplayName(TextStyle.SHORT, Locale.KOREAN); //현재 요일
+//
+//        System.out.println("currDate : " + currDate);
+//        System.out.println("currTime : " + currLTime);
+//        System.out.println("dayOfweek : " + dayOfWeek);
+//
+//        /* 현재 날짜가, 출석 가능한 날짜인지 확인*/
+//        int clubId = registAttendanceDTO.getClubId();
+//        Club club = clubInfraRepository.findById(clubId);
+//
+//        Date startDate = club.getPeriod().getStartDate();//모임 시작일
+//        Date endDate = club.getPeriod().getEndDate();//모임 종료일
+//
+//        if ((currDate.equals(startDate) || currDate.after(startDate)) && (currDate.before(endDate) || currDate.equals(endDate))) {
+//
+//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+//            Calendar calendar = Calendar.getInstance();
+//
+//            /* 해당 요일(dayOfWeek)이 있는지 확인 , true -> 출석 가능한 시간인지 확인 ,true -> 출석로직 진행*/
+//            List<Schedule> scheduleList = scheduleInfraRepository.findByDayOfWeek(dayOfWeek);
+//            for (Schedule schedule : scheduleList) {
+//                //해당되는 요일이 있을 경우, 출석가능한 시간인지 확인
+//                if (schedule.getDayOfWeek().contains(dayOfWeek)) {
+//                    Date checkStartTime = schedule.getStartTime(); //출석이 가능한 시작 시간
+//                    System.out.println("출석 시작 시간: " + checkStartTime);
+//
+//                    calendar.setTime(checkStartTime); //10분 더한 출석 종료 시간
+//                    calendar.add(Calendar.MINUTE, 60); //10분 더한 출석 종료 시간
+//                    String checkEndTimeTemp = simpleDateFormat.format(calendar.getTime());
+//                    Date checkEndTime = simpleDateFormat.parse(checkEndTimeTemp);
+//
+//                    System.out.println("출석 종료 시간 String: " + checkEndTimeTemp);
+//                    System.out.println("출석 종료 시간 Date: " + checkEndTime);
+//
+//                    /*현재 시각이 출석가능 시간에 있으면 출석 진행*/
+//                    if ((currTime.equals(checkStartTime) || currTime.after(checkStartTime)) && (currTime.before(checkEndTime) || currTime.equals(checkEndTime))) {
+//                        registAttendanceDTO.setClubId(clubId);
+//                        registAttendanceDTO.setClubName(club.getClubName());
+//                        return registAttendanceDTO;
+//                    }
+//                }
+//            }
+//        }
+//            return registAttendanceDTO;
+//
+//    }
+//
+//}
 
 
 

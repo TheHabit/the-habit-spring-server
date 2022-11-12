@@ -70,14 +70,16 @@ public class Club {
     @OneToMany(mappedBy = "club" , cascade = CascadeType.ALL)
     private List<Schedule> scheduleList = new ArrayList<Schedule>();
 
+    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    private List<MeetingSchedule> meetingScheduleList = new ArrayList<>();
+
     @Column(name = "IMAGE_URI")
     private String imageUri;
 
     @Column(name = "CLUB_INTRO")
     private String clubIntro;
 
-    @Transient
-    private List<LocalDateTime> meetingSchedules;
+
     public boolean isApply(){
         if(clubMemberList.size() < numberOfMember ){
             return true;
@@ -103,6 +105,13 @@ public class Club {
         this.scheduleList.add(schedule);
         if(schedule.getClub() != this){
             schedule.setClub(this);
+        }
+    }
+
+    public void addMeetingSchedule(MeetingSchedule meetingSchedule){
+        this.meetingScheduleList.add(meetingSchedule);
+        if(meetingSchedule.getClub()!=this){
+            meetingSchedule.setClub(this);
         }
     }
 
@@ -132,9 +141,7 @@ public class Club {
         return clubDTO;
     }
     /* meetingSchadules 생성 */
-    public void makeSchedules(){
-
-    }
+    public void makeSchedules(){}
     private List<ScheduleDTO> ToScheduleDTOList(List<Schedule> scheduleList){
         List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
         for(Schedule schedule : scheduleList){

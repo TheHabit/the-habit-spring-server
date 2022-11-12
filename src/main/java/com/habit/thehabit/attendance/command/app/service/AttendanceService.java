@@ -5,8 +5,9 @@ import com.habit.thehabit.attendance.command.app.dto.RegistAttendanceDTO;
 import com.habit.thehabit.attendance.command.domain.aggregate.Attendance;
 import com.habit.thehabit.attendance.command.infra.repository.AttendanceInfraRepository;
 import com.habit.thehabit.club.command.domain.aggregate.Club;
-import com.habit.thehabit.club.command.domain.aggregate.Schedule;
+import com.habit.thehabit.club.command.domain.aggregate.MeetingSchedule;
 import com.habit.thehabit.club.command.infra.repository.ClubInfraRepository;
+import com.habit.thehabit.club.command.infra.repository.MeetingScheduleInfraRepository;
 import com.habit.thehabit.club.command.infra.repository.ScheduleInfraRepository;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.member.command.infra.repository.MemberInfraRepository;
@@ -17,11 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.TextStyle;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -31,14 +28,16 @@ public class AttendanceService {
     private final AttendanceInfraRepository attendanceInfraRepository;
     private final MemberInfraRepository memberInfraRepository;
     private final ClubInfraRepository clubInfraRepository;
+    private final MeetingScheduleInfraRepository meetingScheduleInfraRepository;
 
     private final ScheduleInfraRepository scheduleInfraRepository;
 
     @Autowired
-    public AttendanceService(AttendanceInfraRepository attendanceInfraRepository, MemberInfraRepository memberInfraRepository, ClubInfraRepository clubInfraRepository, ScheduleInfraRepository scheduleInfraRepository) {
+    public AttendanceService(AttendanceInfraRepository attendanceInfraRepository, MemberInfraRepository memberInfraRepository, ClubInfraRepository clubInfraRepository, MeetingScheduleInfraRepository meetingScheduleInfraRepository, ScheduleInfraRepository scheduleInfraRepository) {
         this.attendanceInfraRepository = attendanceInfraRepository;
         this.memberInfraRepository = memberInfraRepository;
         this.clubInfraRepository = clubInfraRepository;
+        this.meetingScheduleInfraRepository = meetingScheduleInfraRepository;
         this.scheduleInfraRepository = scheduleInfraRepository;
     }
 
@@ -59,19 +58,36 @@ public class AttendanceService {
         Member member = memberInfraRepository.findByMemberCode(memberCode);
         log.info("member : {}", member);
 
-        /*출석체크 하려는 Club의 entity를 조회함*/
+
+
+        /*출석체크 하려는 Club의 MeetingSchedule을 확인하여 출석 가능한 시간인지 확인*/
         int clubId = registAttendanceDTO.getClubId();
         Club club = clubInfraRepository.findById(clubId);
+        LocalDateTime now = LocalDateTime.now();
+        MeetingSchedule meetingSchedule = meetingScheduleInfraRepository.findByMeetingDateIsValid(now, clubId);
 
-        /*사용자가 출석요청한 날짜,클럽 아이디를 통해 출석체크를 진행함 */
+        /*이미 출석했는지 확인*/
+        LocalDateTime meetingTimeDate = meetingSchedule.getMeetingDateTime();
+        if(attendanceInfraRepository.checkDuplicated(memberCode, clubId, meetingTimeDate) != null){
+            registAttendanceDTO.setAttendancedDate(now);
+            registAttendanceDTO.setMemberCode(memberCode);
+            registAttendanceDTO.setClubId(clubId);
+            registAttendanceDTO.setClubName(club.getClubName());
+            return registAttendanceDTO;
+        }
+
+
+        /*사용자가 출석요청한 클럽 아이디를 통해 출석체크를 진행함 */
         /* (= 사용자의 Member , Club 객체를 Attendance 객체에 등록)*/
         Attendance attendance = new Attendance();
         attendance.setMember(member);
         attendance.setClub(club);
-        attendance.setAttendanceDate(registAttendanceDTO.getDate()); // dto에 담겨있는 출석체크시간을 담음
+        attendance.setAttendanceDate(now);
+        attendance.setMeetingDateTime(meetingSchedule.getMeetingDateTime());
         attendanceInfraRepository.save(attendance);
 
         /*DTO 반환*/
+        registAttendanceDTO.setAttendancedDate(now);
         registAttendanceDTO.setMemberCode(memberCode);
         registAttendanceDTO.setClubId(clubId);
         registAttendanceDTO.setClubName(club.getClubName());

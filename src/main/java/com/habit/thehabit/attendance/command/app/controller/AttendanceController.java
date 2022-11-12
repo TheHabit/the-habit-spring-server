@@ -31,9 +31,13 @@ public class AttendanceController {
     }
 
     /* 출석 */
-    @PostMapping("") //현재시간, clubID 담아서 보내야함.
+    @PostMapping("")
     public ResponseEntity<ResponseDTO> regist(@RequestBody RegistAttendanceDTO registAttendanceDTO) throws ParseException {
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "출석 성공", attendanceService.regist(registAttendanceDTO)));
+       try {
+           return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "출석 성공", attendanceService.regist(registAttendanceDTO)));
+       }catch (NullPointerException e){
+           return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "출석이 불가능합니다.", null));
+       }
     }
 
 }

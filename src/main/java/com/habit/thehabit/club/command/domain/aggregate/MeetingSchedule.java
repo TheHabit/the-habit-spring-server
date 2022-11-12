@@ -31,6 +31,8 @@ public class MeetingSchedule {
     @Column(name = "MEETING_DATE_TIME")
     private LocalDateTime meetingDateTime;
 
+    @Column(name = "ATTENDANCE_END_TIME")
+    private LocalDateTime attendanceEndTime;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "CLUB_ID")
     private Club club;
@@ -42,4 +44,10 @@ public class MeetingSchedule {
             club.getMeetingScheduleList().add(this);
         }
     }
+
+    public void setMeetingDateTime(LocalDateTime meetingDateTime) {
+        this.meetingDateTime = meetingDateTime;
+        setAttendanceEndTime(meetingDateTime.plusMinutes(10));
+    }
+
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.habit.thehabit.club.command.app.dto.CreateClubDTO;
 import com.habit.thehabit.club.command.app.dto.JoinClubDTO;
 import com.habit.thehabit.club.command.app.dto.WithdrawDTO;
+import com.habit.thehabit.club.command.app.exception.DuplicationException;
+import com.habit.thehabit.club.command.app.exception.OverstaffedException;
 import com.habit.thehabit.club.command.app.service.ClubService;
 import com.habit.thehabit.common.command.app.dto.ResponseDTO;
 import com.habit.thehabit.util.UploadToS3;
@@ -59,7 +61,13 @@ public class ClubController {
     public ResponseEntity<ResponseDTO> joinClub(@RequestBody JoinClubDTO joinClubDTO){
         System.out.println("joinClub 요청확인");
         int clubId = joinClubDTO.getClubId();
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "신청요청 성공", clubService.joinClub(clubId)));
+        try {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "신청 성공", clubService.joinClub(clubId)));
+        } catch (DuplicationException e){
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "이미 신청된 모임입니다.", null));
+        } catch (OverstaffedException e){
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "모집인원을 초과하여 신청이 불가능합니다.", null));
+        }
     }
 
 

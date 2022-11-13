@@ -14,7 +14,7 @@ public interface ClubInfraRepository extends ClubRepository {
     List<Club> findClubMembersByMemberCodeIsValid(int memberCode);
     List<Club> findAll();
 
-    @Query("select c.club from ClubMember c where c.club.recruitPeriod.endDate > :now")
+    @Query("select c.club from ClubMember c where c.club.recruitPeriod.endDate > :now and c.club.currentNumberOfMember > 0")
     List<Club> findClubByRecruitEndDateBefore(LocalDateTime now);
     Club findById(int id);
 }

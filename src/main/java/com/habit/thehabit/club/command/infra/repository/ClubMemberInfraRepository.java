@@ -5,6 +5,7 @@ import com.habit.thehabit.club.command.domain.repository.ClubMemberRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ClubMemberInfraRepository extends ClubMemberRepository {
@@ -16,7 +17,7 @@ public interface ClubMemberInfraRepository extends ClubMemberRepository {
 
     List<ClubMember> findAll();
 
-    List<ClubMember> findByClubId(int clubId);
+//    List<ClubMember> findByClubId(int clubId);
 
 //    void save(Club club);
 }

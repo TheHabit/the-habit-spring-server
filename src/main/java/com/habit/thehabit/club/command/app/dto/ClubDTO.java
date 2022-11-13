@@ -20,7 +20,8 @@ public class ClubDTO {
     private LocalDateTime recruitEndDate; //모집종료일
     private LocalDateTime startDate; //활동시작일
     private LocalDateTime endDate;   //활동종료일
-    private int numberOfMember;
+    private int numberOfMember; //모집인원수
+    private int currentNumberOfMemeber; //현재인원수
     private String status;
     private String imageUri; //이미지 정보
     private List<ScheduleDTO> scheduleDTOList;

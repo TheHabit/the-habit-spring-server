@@ -115,7 +115,6 @@ public class Club {
         }
     }
 
-
     /* currentNumberOfMember 카운팅 메소드*/
     public void addCurrentNumberOfMember(){
         this.currentNumberOfMember ++;
@@ -134,6 +133,7 @@ public class Club {
                 ,this.period.getStartDate()
                 ,this.period.getEndDate()
                 ,this.numberOfMember
+                ,this.currentNumberOfMember
                 ,this.status.toString()
                 ,this.imageUri
                 ,ToScheduleDTOList(this.scheduleList));

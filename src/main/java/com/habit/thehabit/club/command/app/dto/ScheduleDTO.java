@@ -1,5 +1,6 @@
 package com.habit.thehabit.club.command.app.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.habit.thehabit.club.command.domain.aggregate.Schedule;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,8 +16,6 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class ScheduleDTO {
     private int scheduleid;
-
-    private LocalDateTime meetingDay;
     private String dayOfWeek;
     private LocalTime startTime;
     private LocalTime endTime;

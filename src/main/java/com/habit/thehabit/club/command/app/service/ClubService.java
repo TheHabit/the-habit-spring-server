@@ -46,7 +46,7 @@ public class ClubService {
         this.scheduleInfraRepository = scheduleInfraRepository;
     }
 
-    /*사용자가 참여중인 것만 조회*/
+    /*사용자가 참여중인 클럽들 조회*/
     public  List<ClubDTO> getMyClubs() {
         /*사용자의 정보가져오기*/
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -63,6 +63,27 @@ public class ClubService {
         }
         return clubDTOList;
     }
+
+    /*모집중인 클럽들 조회*/
+    public List<ClubDTO> getRecruitingClubs() {
+        /*사용자의 정보가져오기*/
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member loginedMember = (Member) authentication.getPrincipal();
+        log.info("loginedMember {}", loginedMember);
+        int memberCode = loginedMember.getMemberCode();
+
+        /*현재시간이 모집기간에 속하는지 확인하여 리턴*/
+        LocalDateTime now = LocalDateTime.now();
+        List<Club> clubList = clubInfraRepository.findClubByRecruitEndDateBefore(now);
+        List<ClubDTO> clubDTOList = new ArrayList<>();
+
+        for(Club club : clubList){
+            clubDTOList.add(club.toClubDTO());
+        }
+        return clubDTOList;
+    }
+
+    /*모든 클럽들 조회*/
     public List<ClubDTO> findAllClubs() {
         List<Club> clubList = clubInfraRepository.findAll();
         List<ClubDTO> clubDTOList = new ArrayList<>();
@@ -230,6 +251,7 @@ public class ClubService {
         }
         return withdrawDTO;
     }
+
 
 
 }

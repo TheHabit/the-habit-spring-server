@@ -1,5 +1,6 @@
 package com.habit.thehabit.attendance.command.app.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.habit.thehabit.attendance.command.app.dto.RegistAttendanceDTO;
 import com.habit.thehabit.attendance.command.app.service.AttendanceService;
 import com.habit.thehabit.common.command.app.dto.ResponseDTO;

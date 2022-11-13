@@ -1,5 +1,6 @@
 package com.habit.thehabit.club.command.app.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.habit.thehabit.club.command.app.dto.CreateClubDTO;
 import com.habit.thehabit.club.command.app.dto.JoinClubDTO;
 import com.habit.thehabit.club.command.app.dto.WithdrawDTO;
@@ -44,10 +45,13 @@ public class ClubController {
     public ResponseEntity<ResponseDTO> getClubs(@RequestParam(value = "option", defaultValue = "-1")int option){
         if(option == 1){
             //option이 1인 경우 참가한 클럽 조회
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회요청 성공",clubService.getMyClubs()));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "참여중인 클럽 조회성공",clubService.getMyClubs()));
         }
+        if(option == 2){
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "모집중인 클럽 조회성공", clubService.getRecruitingClubs()));
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회요청 성공", clubService.findAllClubs()));
+        }
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "모든 클럽 조회성공", clubService.findAllClubs()));
     }
 
     /* club 참가 신청*/

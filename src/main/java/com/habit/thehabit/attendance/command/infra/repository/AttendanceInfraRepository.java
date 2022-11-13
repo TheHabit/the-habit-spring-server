@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AttendanceInfraRepository extends AttendanceRepository {
-    List<Attendance> findAllByClubId(int clubId);
+    @Query("select a from Attendance a where a.club.id = :clubId And a.member.memberCode = :memberCode")
+    List<Attendance> findAllByClubIdAndMemberCode(@Param("clubId") int clubId, @Param("memberCode") int memberCode);
 
     @Query("select a from Attendance a where a.meetingDateTime = :meetingDateTime And a.member.memberCode = :memberCode And a.club.id = :clubId")
     Attendance checkDuplicated(@Param("memberCode") int memberCode, @Param("clubId") int clubId, @Param("meetingDateTime") LocalDateTime meetingDateTime);

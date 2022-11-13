@@ -4,15 +4,16 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class AttendanceInfoDTO {
-    private LocalDateTime date;
     private int memberCode;
     private String memberName;
-    private String percentage;
+    private Double percentage;
+    private List<LocalDateTime> dateList;
 
 }

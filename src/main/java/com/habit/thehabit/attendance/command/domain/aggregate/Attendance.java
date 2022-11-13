@@ -58,8 +58,8 @@ public class Attendance {
             club.getAttendanceList().add(this);
         }
     }
-    public AttendanceInfoDTO toDTO(){
-        AttendanceInfoDTO attendanceInfoDTO = new AttendanceInfoDTO(this.attendanceDate, this.member.getMemberCode(), this.member.getName(),null);
-        return attendanceInfoDTO;
-    }
+//    public AttendanceInfoDTO toDTO(){
+//        AttendanceInfoDTO attendanceInfoDTO = new AttendanceInfoDTO(this.attendanceDate, this.member.getMemberCode(), this.member.getName(),null);
+//        return attendanceInfoDTO;
+//    }
 }

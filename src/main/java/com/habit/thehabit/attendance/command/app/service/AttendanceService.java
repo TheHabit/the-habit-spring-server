@@ -94,15 +94,43 @@ public class AttendanceService {
         return registAttendanceDTO;
     }
 
-    /*조회*/
-    public List<AttendanceInfoDTO> findAllAttendance(int clubId) {
-        List<Attendance> attendanceList = attendanceInfraRepository.findAllByClubId(clubId);
-        List<AttendanceInfoDTO> resultList = new ArrayList<>();
+    /* 조회 */
+    public AttendanceInfoDTO findAllAttendance(int clubId) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member loginedMember = (Member) authentication.getPrincipal();
+        log.info("loginedMember {}", loginedMember);
+        int memberCode = loginedMember.getMemberCode();
+        log.info("memberCode : {}", memberCode);
+
+        /*요청한 사용자의 Member entity조회*/
+        Member member = memberInfraRepository.findByMemberCode(memberCode);
+        log.info("member : {}", member);
+
+        //출석 현황 조회
+        List<Attendance> attendanceList = attendanceInfraRepository.findAllByClubIdAndMemberCode(clubId,memberCode);
+
+        AttendanceInfoDTO attendanceInfoDTO = new AttendanceInfoDTO();
         for (Attendance attendance : attendanceList) {
-            resultList.add(attendance.toDTO());
+            if(attendanceInfoDTO.getDateList() == null){
+                attendanceInfoDTO.setDateList(new ArrayList<>());
+            }
+            attendanceInfoDTO.getDateList().add(attendance.getAttendanceDate());
         }
 
-        return resultList;
+        /*출석률은
+        (출석한 개수: attendance에 있는 개수)/(모임 시작일 ~ 현재시간까지 meetingSchedule에 있는 개수) */
+        LocalDateTime now = LocalDateTime.now();
+        List<MeetingSchedule> meetingScheduleList = meetingScheduleInfraRepository.findAllByMeetingDateTimeBeforeAndClubId(now, clubId);
+
+        //출석률 계산
+        double percentage = (double)attendanceList.size()/meetingScheduleList.size() * 100;
+
+        //반환할 값 세팅
+        attendanceInfoDTO.setPercentage(percentage);
+        attendanceInfoDTO.setMemberCode(memberCode);
+        attendanceInfoDTO.setMemberName(member.getName());
+        return attendanceInfoDTO;
     }
 }
 

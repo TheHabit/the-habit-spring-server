@@ -3,6 +3,8 @@ import com.habit.thehabit.club.command.app.dto.ClubDTO;
 import com.habit.thehabit.club.command.app.dto.CreateClubDTO;
 import com.habit.thehabit.club.command.app.dto.ScheduleDTO;
 import com.habit.thehabit.club.command.app.dto.WithdrawDTO;
+import com.habit.thehabit.club.command.app.exception.DuplicationException;
+import com.habit.thehabit.club.command.app.exception.OverstaffedException;
 import com.habit.thehabit.club.command.domain.aggregate.Club;
 import com.habit.thehabit.club.command.domain.aggregate.ClubMember;
 import com.habit.thehabit.club.command.domain.aggregate.MeetingSchedule;
@@ -180,10 +182,10 @@ public class ClubService {
         return createClubDTO;
     }
 
-    public Object joinClub(int clubId) {
+    public ClubDTO joinClub(int clubId) throws OverstaffedException {
         System.out.println("joinClub Service 요청확인");
 
-        String message = "최대 모집인원을 초과하였습니다.";
+//        String message = "인원수를 초과했습니다.";
         /* 지원한 사람의 정보 조회*/
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member loginedMember = (Member) authentication.getPrincipal();
@@ -200,26 +202,25 @@ public class ClubService {
 
         ClubDTO clubDTO = new ClubDTO();
         /* 이미 클럽에 참여중인 유저가 요청한 경우 예외 처리*/
-        if( clubMemberInfraRepository.findByClubIdAndMemberCodeIsValid(clubId,memberCode) != null){
-            message = "이미 참가한 모임입니다.";
-            clubDTO.setMessage(message);
-            return clubDTO;
+        if( clubMemberInfraRepository.findByClubIdAndMemberCodeIsValid(clubId, memberCode) != null){
+            throw new DuplicationException();
         }
 
         /*데이터 베이스에 반영*/
             /*모집인원보다 현재 인원이 적으면 참여신청 가능*/
-        if(club.getNumberOfMember() > club.getCurrentNumberOfMember()){
-            ClubMember newClubMember = new ClubMember();
-            newClubMember.setClub(club);
-            newClubMember.setMember(member);
-            newClubMember.getClub().addCurrentNumberOfMember(); //인원수 추가
-            clubMemberInfraRepository.save(newClubMember);
-            message = "참가 신청이 완료되었습니다.";
+        if(club.getNumberOfMember() <= club.getCurrentNumberOfMember()){
+            throw new OverstaffedException();
         }
+        ClubMember newClubMember = new ClubMember();
+        newClubMember.setClub(club);
+        newClubMember.setMember(member);
+        newClubMember.getClub().addCurrentNumberOfMember(); //인원수 추가
+        clubMemberInfraRepository.save(newClubMember);
+//        message = "참가 신청이 완료되었습니다.";
 
         /* clubMember entity to DTO */
         clubDTO = club.toClubDTO();
-        clubDTO.setMessage(message);
+//        clubDTO.setMessage(message);
         return clubDTO;
     }
 

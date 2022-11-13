@@ -13,7 +13,7 @@ public interface ClubMemberInfraRepository extends ClubMemberRepository {
     @Query("select c from ClubMember c where c.club.id = :clubId  AND c.member.memberCode = :memberCode order by c.id")
     ClubMember findByClubIdAndMemberCode(@Param("memberCode") int memberCode, @Param("clubId")int clubId);
     @Query("select c from ClubMember c where c.club.id = :clubId AND c.member.memberCode = :memberCode AND c.withdrawDate IS null order by c.id")
-    ClubMember findByClubIdAndMemberCodeIsValid(@Param("memberCode") int memberCode, @Param("clubId")int clubId);
+    ClubMember findByClubIdAndMemberCodeIsValid(@Param("clubId")int clubId, @Param("memberCode") int memberCode);
 
     List<ClubMember> findAll();
 

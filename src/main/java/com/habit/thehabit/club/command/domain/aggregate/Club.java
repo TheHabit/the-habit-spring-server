@@ -11,6 +11,7 @@ import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -69,11 +70,16 @@ public class Club {
     @OneToMany(mappedBy = "club" , cascade = CascadeType.ALL)
     private List<Schedule> scheduleList = new ArrayList<Schedule>();
 
+    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    private List<MeetingSchedule> meetingScheduleList = new ArrayList<>();
+
     @Column(name = "IMAGE_URI")
     private String imageUri;
 
     @Column(name = "CLUB_INTRO")
     private String clubIntro;
+
+
     public boolean isApply(){
         if(clubMemberList.size() < numberOfMember ){
             return true;
@@ -102,6 +108,14 @@ public class Club {
         }
     }
 
+    public void addMeetingSchedule(MeetingSchedule meetingSchedule){
+        this.meetingScheduleList.add(meetingSchedule);
+        if(meetingSchedule.getClub()!=this){
+            meetingSchedule.setClub(this);
+        }
+    }
+
+
     /* currentNumberOfMember 카운팅 메소드*/
     public void addCurrentNumberOfMember(){
         this.currentNumberOfMember ++;
@@ -126,6 +140,8 @@ public class Club {
 
         return clubDTO;
     }
+    /* meetingSchadules 생성 */
+    public void makeSchedules(){}
     private List<ScheduleDTO> ToScheduleDTOList(List<Schedule> scheduleList){
         List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
         for(Schedule schedule : scheduleList){

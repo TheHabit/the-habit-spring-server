@@ -5,6 +5,7 @@ import com.habit.thehabit.club.command.app.dto.ScheduleDTO;
 import com.habit.thehabit.club.command.app.dto.WithdrawDTO;
 import com.habit.thehabit.club.command.domain.aggregate.Club;
 import com.habit.thehabit.club.command.domain.aggregate.ClubMember;
+import com.habit.thehabit.club.command.domain.aggregate.MeetingSchedule;
 import com.habit.thehabit.club.command.domain.aggregate.embeddable.Period;
 import com.habit.thehabit.club.command.infra.repository.ClubInfraRepository;
 import com.habit.thehabit.club.command.infra.repository.ClubMemberInfraRepository;
@@ -12,6 +13,7 @@ import com.habit.thehabit.club.command.infra.repository.ScheduleInfraRepository;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.member.command.infra.repository.MemberInfraRepository;
 import lombok.extern.slf4j.Slf4j;
+
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -19,9 +21,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -90,20 +95,58 @@ public class ClubService {
         club.setBookName(createClubDTO.getBookName());
         club.setRecruitPeriod(new Period(createClubDTO.getRecruitStartDate(), createClubDTO.getRecruitEndDate()));
         club.setPeriod(new Period(createClubDTO.getStartDate(), createClubDTO.getEndDate()));
-        System.out.println(createClubDTO.getNumberOfMember());
         club.setNumberOfMember(createClubDTO.getNumberOfMember());
         club.setImageUri(createClubDTO.getImageUri());
         club.addCurrentNumberOfMember();
+
+        /* MeetingSchedule에 입력할 값 생성
+        입력받은 createClubDTO.getScheuleDTOLIst()의 요일,회의시간 정보를 통해 구체적인 모임일정 List만들기 */
+        Map<String, LocalTime> scheduleMap = new HashMap<>();
+        for(ScheduleDTO scheduleDTO : createClubDTO.getScheduleDTOList()){
+            scheduleMap.put(scheduleDTO.getDayOfWeek(),scheduleDTO.getStartTime());
+        }
+        System.out.println("");
+        LocalDateTime startDate = createClubDTO.getStartDate();
+        LocalDateTime endDate = createClubDTO.getEndDate();
+
+        List<LocalDateTime> meetingDays = new ArrayList<LocalDateTime>();
+        LocalDateTime currDate = startDate;
+
+        while(currDate.isBefore(endDate)){
+            System.out.println(currDate);
+            DayOfWeek dayOfWeek =currDate.getDayOfWeek();
+            String currDayofWeek = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREA); //'?'요일
+//            System.out.println("currDayofWeek : "+currDayofWeek);
+            if(scheduleMap.containsKey(currDayofWeek)){
+                LocalDate onlyDate = currDate.toLocalDate();
+//                System.out.println("onlyDate : " + onlyDate);
+                LocalDateTime meetingDate = onlyDate.atTime(scheduleMap.get(currDayofWeek)); //회의시간 날짜,시간
+//                System.out.println("meetingDate : " + meetingDate);
+                meetingDays.add(meetingDate);
+            }
+            currDate = currDate.plusDays(1);
+//            System.out.println("while문" + meetingDays);
+        }
+
+        System.out.println("meetingDays" + meetingDays);
+        // Club에 회의 일정 추가
+        for(LocalDateTime meetingDateTime : meetingDays){
+            MeetingSchedule meetingSchedule = new MeetingSchedule();
+            meetingSchedule.setMeetingDateTime(meetingDateTime);
+            System.out.println("meetingSchedule" + meetingSchedule);
+            club.addMeetingSchedule(meetingSchedule);
+            System.out.println(club.getMeetingScheduleList());
+        }
+
 
         /* Club 객체에 넣을 List<Schedule>만들기(DTO.list<ScheduleDTO> -> List<Schedulte>)*/
         //List<Schedule> scheduleList = new ArrayList<>();
         for(ScheduleDTO scheduleDTO : createClubDTO.getScheduleDTOList()){
             club.addSchedule(scheduleDTO.toSchedule());
         }
-
         System.out.println("recruitPeriod : " + club.getRecruitPeriod());
-        /*ClubMember Entity생성 후 Member, Club 저장*/
 
+        /*ClubMember Entity생성 후 Member, Club 저장*/
         ClubMember clubMember = new ClubMember();
         clubMember.setClub(club);
         clubMember.setMember(member);

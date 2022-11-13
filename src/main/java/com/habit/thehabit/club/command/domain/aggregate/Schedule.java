@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Setter
 @Getter
@@ -30,16 +30,16 @@ public class Schedule {
     @Column(name = "SCHEDULE_ID")
     private int id;
 
-    @Column(name = "DAY")
-    private String day;
+    @Column(name = "DAY_OF_WEEK")
+    private String dayOfWeek;
 
-    @Temporal(TemporalType.TIME)
+//    @Temporal(TemporalType.TIME)
     @Column(name = "START_TIME")
-    private Date startTime;
+    private LocalTime startTime;
 
-    @Temporal(TemporalType.TIME)
+//    @Temporal(TemporalType.TIME)
     @Column(name = "END_TIME")
-    private Date endTime;
+    private LocalTime endTime;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "CLUB_ID")
@@ -53,7 +53,7 @@ public class Schedule {
         }
     }
     public ScheduleDTO toScheduleDTO(){
-        ScheduleDTO scheduleDTO = new ScheduleDTO(this.id,this.day,this.startTime,this.endTime);
+        ScheduleDTO scheduleDTO = new ScheduleDTO(this.id,this.dayOfWeek,this.startTime,this.endTime);
         return scheduleDTO;
     }
 }

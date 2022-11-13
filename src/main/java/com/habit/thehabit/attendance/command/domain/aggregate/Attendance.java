@@ -4,11 +4,15 @@ import com.habit.thehabit.attendance.command.app.dto.AttendanceInfoDTO;
 import com.habit.thehabit.club.command.domain.aggregate.Club;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "TBL_ATTENDANCE")
 @TableGenerator(
@@ -32,12 +36,12 @@ public class Attendance {
     @JoinColumn(name = "CLUB_ID")
     private Club club; // 모임정보
 
-    @Temporal(TemporalType.TIMESTAMP)
+//    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "ATTENDANCE_DATE")
-    private Date attendanceDate; //출석일
+    private LocalDateTime attendanceDate; //출석일
 
-    @Column(name = "STATUS")
-    private String Status;
+    @Column(name = "MEETING_DATE_TIME")
+    private LocalDateTime meetingDateTime;
 
     public void setMember(Member member){
         this.member = member;
@@ -54,8 +58,8 @@ public class Attendance {
             club.getAttendanceList().add(this);
         }
     }
-    public AttendanceInfoDTO toDTO(){
-        AttendanceInfoDTO attendanceInfoDTO = new AttendanceInfoDTO(this.attendanceDate, this.member.getMemberCode(), this.member.getName());
-        return attendanceInfoDTO;
-    }
+//    public AttendanceInfoDTO toDTO(){
+//        AttendanceInfoDTO attendanceInfoDTO = new AttendanceInfoDTO(this.attendanceDate, this.member.getMemberCode(), this.member.getName(),null);
+//        return attendanceInfoDTO;
+//    }
 }

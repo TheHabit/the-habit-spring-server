@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.text.ParseException;
+
+@RestController
 @RequestMapping("/v1/attendances")
 @Slf4j
 public class AttendanceController {
@@ -22,14 +24,20 @@ public class AttendanceController {
         this.attendanceService = attendanceService;
     }
 
+    /* 조회 */
     @GetMapping("")
     public ResponseEntity<ResponseDTO> findAllAttendance(@RequestParam(value = "clubId", defaultValue = "")int clubId){
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", attendanceService.findAllAttendance(clubId)));
     }
 
+    /* 출석 */
     @PostMapping("")
-    public ResponseEntity<ResponseDTO> regist(@RequestBody RegistAttendanceDTO registAttendanceDTO){
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "출석 성공", attendanceService.regist(registAttendanceDTO)));
+    public ResponseEntity<ResponseDTO> regist(@RequestBody RegistAttendanceDTO registAttendanceDTO) throws ParseException {
+       try {
+           return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "출석 성공", attendanceService.regist(registAttendanceDTO)));
+       }catch (NullPointerException e){
+           return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "출석이 불가능합니다.", null));
+       }
     }
 
 }

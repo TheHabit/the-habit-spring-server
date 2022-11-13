@@ -6,40 +6,46 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class ScheduleDTO {
     private int scheduleid;
-    private String day;
-    private Date startTime;
-    private Date endTime;
 
-    public ScheduleDTO(int id, String day, Date startTime, Date endTime) {
+    private LocalDateTime meetingDay;
+    private String dayOfWeek;
+    private LocalTime startTime;
+    private LocalTime endTime;
+
+    public ScheduleDTO(int id, String dayOfWeek, LocalTime startTime, LocalTime endTime) {
         this.scheduleid = id;
-        this.day = day;
+        this.dayOfWeek = dayOfWeek;
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    public void setStartTime(String startTime) throws ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat("H:mm");
-        this.startTime =formatter.parse(startTime);
-    }
-
-    public void setEndTime(String endTime) throws ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat("H:mm");
-        this.endTime = formatter.parse(endTime);
-    }
+//    public void setStartTime(String startTime) throws ParseException {
+//        SimpleDateFormat formatter = new SimpleDateFormat("H:mm");
+//        this.startTime =formatter.parse(startTime);
+//    }
+//
+//    public void setEndTime(String endTime) throws ParseException {
+//        SimpleDateFormat formatter = new SimpleDateFormat("H:mm");
+//        this.endTime = formatter.parse(endTime);
+//    }
     public Schedule toSchedule(){
         Schedule schedule = new Schedule();
-        schedule.setDay(this.day);
+        schedule.setDayOfWeek(this.dayOfWeek);
         schedule.setStartTime(this.startTime);
         schedule.setEndTime(this.endTime);
+//        schedule.setStartTime(this.startTime);
+//        schedule.setEndTime(this.endTime);
         return schedule;
     }
+
+
 }

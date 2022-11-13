@@ -1,5 +1,6 @@
-package com.habit.thehabit.target.command.app.service;
+package com.habit.thehabit.util;
 
+import com.habit.thehabit.target.command.app.service.TargetService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;

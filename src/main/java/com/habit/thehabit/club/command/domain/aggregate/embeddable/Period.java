@@ -8,21 +8,22 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Embeddable
 @Data
 public class Period {
-    @Temporal(TemporalType.TIMESTAMP)
+//    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "START_DATE")
-    private Date startDate;
+    private LocalDateTime startDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
+//    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "END_DATE")
-    private Date endDate;
+    private LocalDateTime endDate;
 
     public Period(){}
-    public Period(Date startDate , Date endDate){
+    public Period(LocalDateTime startDate , LocalDateTime endDate){
         this.startDate = startDate;
         this.endDate = endDate;
     }

@@ -87,10 +87,9 @@ public class RecordService {
         /** 읽을 책 담기임으로, isDone 'N'로 설정 */
         record.setIsDone("N");
 
-//        /** Aws S3로 파일 업로드 */
-//        String imgSrc = awsFileUploadUtils.fileUpload(bookImg, "record");
-//        record.setPageSource(imgSrc);
-
+        /** Aws S3로 파일 업로드 */
+        String imgSrc = awsFileUploadUtils.fileUpload(bookImg, "record");
+        record.setThumbnailLink(imgSrc);
 
         /** DB에 record 저장 */
         recordInfraRepository.save(record);
@@ -211,9 +210,9 @@ public class RecordService {
             record.getReadingPeriod().setEndDate(curDate);
 
 
-//        /** Aws S3로 파일 업로드 */
-//        String imgSrc = awsFileUploadUtils.fileUpload(bookImg, "record");
-//        record.setPageSource(imgSrc);
+        /** Aws S3로 파일 업로드 */
+        String imgSrc = awsFileUploadUtils.fileUpload(bookImg, "record");
+        record.setThumbnailLink(imgSrc);
         } else{
             throw new DuplicateRecordException("동일한 책의 독서기록이 존재합니다.");
         }
@@ -247,18 +246,25 @@ public class RecordService {
         return recordDTOList;
     }
 
-    public int countingRecordByUserInfo(int memberCode) {
+    /* 2022-11-13 수정, 권수뿐만 아니라 다른 데이터들 같이 반환 */
+    public List<RecordDTO> countingRecordByUserInfo(int memberCode) {
         System.out.println("memberCode = " + memberCode);
 
         List<Record> recordList = recordInfraRepository.findByMemberCodeAndIsDone(memberCode, "Y");
         System.out.println("recordList = " + recordList);
 
-        /** 조회된 것이 없을 때 0 반환 */
-        if(recordList == null){
-            return 0;
+        List<RecordDTO> recordDTOList = new ArrayList<>();
+        for(Record record : recordList){
+            recordDTOList.add(record.entityToDTO());
         }
+        return recordDTOList;
 
-        return recordList.size();
+//        /** 조회된 것이 없을 때 0 반환 */
+//        if(recordList == null){
+//            return 0;
+//        }
+//
+//        return recordList.size();
     }
 
     public List<RecordDTO> selectRecordListByUserInfo(int memberCode) {

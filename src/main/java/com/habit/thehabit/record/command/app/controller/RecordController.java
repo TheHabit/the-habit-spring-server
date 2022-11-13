@@ -19,6 +19,7 @@ import lombok.Getter;
 import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -51,28 +52,57 @@ public class RecordController {
 //            @Parameter(name = "startDate", description = "독서 시작 일자", example = "2022-10-11"),
 //            @Parameter(name = "endDate", description = "독서 종료 일자", example = "2022-11-11")
 //    })
-    @PostMapping("/add") /** 책 담기(읽을 책 삽입 -> isDone : False) */
-    public ResponseEntity<ResponseDTO> addRecord(/** @RequestPart(value = "bookImg") @Nullable MultipartFile bookImg, */ @RequestBody RecordDTO record, @AuthenticationPrincipal Member member){
+
+
+    /*2022-11-13 수정후, thumbnailLink 이미지파일로 받은 후 aws업로드 */
+    /** 책 담기(읽을 책 삽입 -> isDone : False) */
+    @PostMapping(value = "/add", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<ResponseDTO> addRecord(@RequestPart(value = "bookImg") @Nullable MultipartFile bookImg, @RequestPart RecordDTO record , @AuthenticationPrincipal Member member){
         
         try{
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 입력 성공", recordService.insertRecord(null, record, member)));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 입력 성공", recordService.insertRecord(bookImg, record, member)));
         } catch(Exception e){
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 입력 실패", "내부 에러 발생"));
         }
     }
+    /*2022-11-13 수정전,thumbnailLink -> url로 받았음.*/
+//    @PostMapping("/add") /** 책 담기(읽을 책 삽입 -> isDone : False) */
+//    public ResponseEntity<ResponseDTO> addRecord(/** @RequestPart(value = "bookImg") @Nullable MultipartFile bookImg, */ @RequestBody RecordDTO record, @AuthenticationPrincipal Member member){
+//
+//        try{
+//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 입력 성공", recordService.insertRecord(null, record, member)));
+//        } catch(Exception e){
+//            e.printStackTrace();
+//            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 입력 실패", "내부 에러 발생"));
+//        }
+//    }
 
+
+    /*2022-11-13 수정후, thumbnailLink 이미지파일로 받은 후 aws업로드 */
     /** 책 담기(읽을 책 삽입 -> isDone : False) 또는 책 삽입도 가능. 즉, 모든 독서록 '쓰기' 행위를 이것으로 진행 */
-    @PostMapping("/write")
-    public ResponseEntity<ResponseDTO> writeRecord(/** @RequestPart(value = "bookImg") @Nullable MultipartFile bookImg, */ @RequestBody RecordDTO record, @AuthenticationPrincipal Member member){
-
+    @PostMapping(value = "/write", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<ResponseDTO> writeRecord(@RequestPart(value = "bookImg") @Nullable MultipartFile bookImg, @RequestPart RecordDTO record , @AuthenticationPrincipal Member member){
         try{
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 입력 성공", recordService.writeRecord(null, record, member)));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 입력 성공", recordService.writeRecord(bookImg, record, member)));
         } catch(Exception e){
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 입력 실패", e.getMessage()));
         }
     }
+    /*2022-11-13 수정전*/
+//    /** 책 담기(읽을 책 삽입 -> isDone : False) 또는 책 삽입도 가능. 즉, 모든 독서록 '쓰기' 행위를 이것으로 진행 */
+//    @PostMapping("/write")
+//    public ResponseEntity<ResponseDTO> writeRecord(/** @RequestPart(value = "bookImg") @Nullable MultipartFile bookImg, */ @RequestBody RecordDTO record, @AuthenticationPrincipal Member member){
+//
+//        try{
+//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 입력 성공", recordService.writeRecord(null, record, member)));
+//        } catch(Exception e){
+//            e.printStackTrace();
+//            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 입력 실패", e.getMessage()));
+//        }
+//    }
+
 
     /** bookISBN으로 해당하는 독서록 리스트 찾아오기 */
     @GetMapping("")
@@ -120,7 +150,8 @@ public class RecordController {
         }
     }
 
-    /** 회원 정보로 '읽은' 도서 권수 찾아오기 */
+    /** 회원 정보로 '읽은' 도서 권수 찾아오기
+     * 2022-11-13 모든 정보 다 반환하기*/
     @GetMapping("/count")
     public ResponseEntity<ResponseDTO> countingRecordByUserInfo(@AuthenticationPrincipal Member member){
         int memberCode = member.getMemberCode();

@@ -17,7 +17,6 @@ target/
 /src/main/resources/config
 
 ### IntelliJ IDEA ###
-application.yml
 .idea
 *.iws
 *.iml

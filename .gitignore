@@ -13,6 +13,9 @@ target/
 .springBeans
 .sts4-cache
 
+### config ip security ###
+/src/main/resources/config
+
 ### IntelliJ IDEA ###
 application.yml
 .idea

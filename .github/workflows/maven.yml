@@ -11,8 +11,6 @@ name: Java CI with Maven
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   build:
@@ -33,7 +31,7 @@ jobs:
       with:
         files: ./src/main/resources/application.yml
       env:
-        spring.config.import.optional: ${{ secrets.CONFIG_IP }}
+        spring.config.import: ${{ secrets.CONFIG_IP }}
         
     - name: Build with Maven
       run: mvn -B package --file pom.xml

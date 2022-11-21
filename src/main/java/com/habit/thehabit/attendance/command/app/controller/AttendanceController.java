@@ -35,7 +35,8 @@ public class AttendanceController {
 
     @Operation(summary = "출석 조회 API", description = "출석 내역을 확인하는 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "출석 조회 성공", content = @Content(schema = @Schema(implementation = AttendanceInfoDTO.class)))})
+            @ApiResponse(responseCode = "200", description = "출석 조회 성공",
+                    content = @Content(schema = @Schema(implementation = AttendanceInfoDTO.class)))})
 
     /* 조회 */
     @GetMapping("")

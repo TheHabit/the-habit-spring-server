@@ -47,7 +47,8 @@ public class MeetingSchedule {
 
     public void setMeetingDateTime(LocalDateTime meetingDateTime) {
         this.meetingDateTime = meetingDateTime;
-        setAttendanceEndTime(meetingDateTime.plusMinutes(10));
+//        setAttendanceEndTime(meetingDateTime.plusMinutes(10));
+        setAttendanceEndTime(meetingDateTime.plusHours(10)); //시작시간 기준 10시간동안 출석가능
     }
 
 }

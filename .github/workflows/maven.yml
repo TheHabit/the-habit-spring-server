@@ -30,11 +30,11 @@ jobs:
 
     - name: Add Github Actions IP to SG
       run: |
-        aws ec2 authorize-security-group-ingress --group-id ${{secrets.AWS_SG_ID}} --protocol tcp --port 22 --cidr ${{steps.ip.outputs.ipv4}}/32
+        aws ec2 authorize-security-group-ingress --group-id ${{secrets.AWS_SG_ID}} --region=${{secrets.AWS_DEFAULT_REGION}} --protocol tcp --port 22 --cidr ${{steps.ip.outputs.ipv4}}/32
       env: 
         AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY}}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY}}
-        AWS_REGION: ${{secrets.AWS_DEFAULT_REGION}}
+#         AWS_REGION: ${{secrets.AWS_DEFAULT_REGION}}
         
     - uses: actions/checkout@v3
     - name: Set up JDK 11
@@ -65,11 +65,11 @@ jobs:
       
     - name: Remove Github Actions IP from security group
       run: |
-        aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+        aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --region=${{secrets.AWS_DEFAULT_REGION}} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
       env: 
         AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY}}
         AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_KEY}}
-        AWS_REGION: ${{secrets.AWS_DEFAULT_REGION}}
+#         AWS_REGION: ${{secrets.AWS_DEFAULT_REGION}}
       if: always()
       
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive

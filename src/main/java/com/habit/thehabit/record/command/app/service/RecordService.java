@@ -1,6 +1,5 @@
 package com.habit.thehabit.record.command.app.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.record.command.app.dto.RecordDTO;
 import com.habit.thehabit.record.command.app.dto.RecordGradeAndOneLineReviewDTO;
@@ -11,16 +10,9 @@ import com.habit.thehabit.record.command.domain.aggregate.ReadingPeriod;
 import com.habit.thehabit.record.command.domain.aggregate.Record;
 import com.habit.thehabit.record.command.infra.repository.RecordInfraRepository;
 import com.habit.thehabit.util.AwsFileUploadUtils;
+import com.habit.thehabit.util.ReviewToOneLineUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
@@ -31,33 +23,21 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-@RefreshScope
 public class RecordService {
-
-    private static final RestTemplate REST_TEMPLATE;
-    @Value("${ai.datasource.url}")
-    private String url;
-
-    static {
-        // RestTemplate 기본 설정을 위한 Factory 생성
-        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(10000);
-        factory.setReadTimeout(10000);
-        factory.setBufferRequestBody(false);
-        REST_TEMPLATE = new RestTemplate(factory);
-    }
 
     private RecordInfraRepository recordInfraRepository;
     private AwsFileUploadUtils awsFileUploadUtils;
+    private ReviewToOneLineUtils reviewToOneLineUtils;
 
     @Autowired
-    public RecordService(RecordInfraRepository recordInfraRepository, AwsFileUploadUtils awsFileUploadUtils){
+    public RecordService(RecordInfraRepository recordInfraRepository, AwsFileUploadUtils awsFileUploadUtils, ReviewToOneLineUtils reviewToOneLineUtils){
         this.recordInfraRepository = recordInfraRepository;
         this.awsFileUploadUtils = awsFileUploadUtils;
+        this.reviewToOneLineUtils = reviewToOneLineUtils;
     }
 
     @Transactional
-    public RecordDTO insertRecord(MultipartFile bookImg, RecordDTO recordDTO, Member member) throws IOException {
+    public RecordDTO addRecord(MultipartFile bookImg, MultipartFile pageCap, RecordDTO recordDTO, Member member) throws IOException {
 
         /** 이미 서재에 담았거나, 작성한 독서라면 예외처리 */
         List<Record> recordList = recordInfraRepository.findByMemberCodeAndBookISBNAndIsActivated(member.getMemberCode(), recordDTO.getBookISBN());
@@ -70,10 +50,6 @@ public class RecordService {
         System.out.println("recordDTO = " + recordDTO);
         Record record = recordDTO.dtoToEntity(member);
         System.out.println("record entity = " + record);
-
-        System.out.println("bookImg = " + bookImg);
-
-        System.out.println("record.getBookReview() = " + record.getBookReview());
         
         /** 시작 날짜 (현재 날짜) 기록 */
         Date curDate = new Date();
@@ -88,8 +64,11 @@ public class RecordService {
         record.setIsDone("N");
 
         /** Aws S3로 파일 업로드 */
-        String imgSrc = awsFileUploadUtils.fileUpload(bookImg, "record");
-        record.setThumbnailLink(imgSrc);
+        String bookImgSrc = awsFileUploadUtils.fileUpload(bookImg, "record/thumbnail");
+        record.setThumbnailLink(bookImgSrc);
+
+        String pageCapSrc = awsFileUploadUtils.fileUpload(pageCap, "record/pageCapture");
+        record.setPageSource(pageCapSrc);
 
         /** DB에 record 저장 */
         recordInfraRepository.save(record);
@@ -105,7 +84,7 @@ public class RecordService {
     }
 
     @Transactional
-    public RecordDTO writeRecord(MultipartFile bookImg, RecordDTO recordDTO, Member member) throws Exception {
+    public RecordDTO writeRecord(MultipartFile bookImg, MultipartFile pageCap, RecordDTO recordDTO, Member member) throws Exception {
 
         /** 영속성 컨텍스트에서 해당 레코드 조회(추후 로직 수정 필요) */
         List<Record> recordList = recordInfraRepository.findByMemberCodeAndBookISBNAndIsActivated(member.getMemberCode(), recordDTO.getBookISBN());
@@ -129,74 +108,35 @@ public class RecordService {
             /** 독서기록임으로, isDone 'Y'로 설정 */
             record.setIsDone("Y");
 
-//        /** Aws S3로 파일 업로드 */
-//        String imgSrc = awsFileUploadUtils.fileUpload(bookImg, "record");
-//        record.setPageSource(imgSrc);
+            /** Aws S3로 책 표지 및 캡처 화면 이미지 파일 업로드 */
+            String bookImgSrc = awsFileUploadUtils.fileUpload(bookImg, "record/thumbnail");
+            record.setThumbnailLink(bookImgSrc);
 
-//        /** ------------- 인공지능 API 서버로 review 전송하여 oneLineReview 얻기 */
-//        /** body 설정 */
-//        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-//        body.add("review", record.getBookReview());
-//
-//        /** header 설정 */
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-//
-//        /** http 통신할 entity 설정 */
-//        HttpEntity<?> requestEntity = new HttpEntity<>(body,headers);
-//
-//        /** AI 서버 통신 후 한줄 요약(oneLineReview) 가져오기 */
-//        JsonNode response = REST_TEMPLATE.postForObject(url, requestEntity, JsonNode.class);
-//        System.out.println("response = " + response);
-//
-//        String oneLineReview = null;
-//
-//        if(response != null){
-//            oneLineReview = String.valueOf(response.get("result"));
-//        }
-//
-//        /** record entity에 oneLineReview set */
-//        record.setOneLineReview(oneLineReview);
-//
-//        /** ------------- */
+            String pageCapSrc = awsFileUploadUtils.fileUpload(pageCap, "record/pageCapture");
+            record.setPageSource(pageCapSrc);
+
+            /** AI로부터 한 줄 요약을 가져오는 utill */
+            String oneLineReview = reviewToOneLineUtils.abStractOneLine(record.getBookReview());
+            record.setOneLineReview(oneLineReview);
 
             /** DB에 record 저장 */
             recordInfraRepository.save(record);
 
         } else if(recordList.size() == 1){
-            /** 담아 놓은 책 수정 */
+            /** 담아 놓은 책 독서기록 작성 -> 수정하는 느낌으로 작성. */
             record = recordList.get(0);
 
             /** isDone Y로 바꾸기 + review 담기 */
             record.setIsDone("Y");
             record.setBookReview(recordDTO.getBookReview());
 
-//        /** ------------- 인공지능 API 서버로 review 전송하여 oneLineReview 얻기 */
-//        /** body 설정 */
-//        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-//        body.add("review", record.getBookReview());
-//
-//        /** header 설정 */
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-//
-//        /** http 통신할 entity 설정 */
-//        HttpEntity<?> requestEntity = new HttpEntity<>(body,headers);
-//
-//        /** AI 서버 통신 후 한줄 요약(oneLineReview) 가져오기 */
-//        JsonNode response = REST_TEMPLATE.postForObject(url, requestEntity, JsonNode.class);
-//        System.out.println("response = " + response);
-//
-//        String oneLineReview = null;
-//
-//        if(response != null){
-//            oneLineReview = String.valueOf(response.get("result"));
-//        }
-//
-//        /** record entity에 oneLineReview set */
-//        record.setOneLineReview(oneLineReview);
-//
-//        /** ------------- */
+            /** Aws S3로 페이지 캡처 화면 업로드 및 링크 저장 */
+            String pageCapSrc = awsFileUploadUtils.fileUpload(pageCap, "record/pageCapture");
+            record.setPageSource(pageCapSrc);
+
+            /** AI로부터 한 줄 요약을 가져오는 utill */
+            String oneLineReview = reviewToOneLineUtils.abStractOneLine(record.getBookReview());
+            record.setOneLineReview(oneLineReview);
 
             /** 기록 및 종료 날짜(현재 날짜) 기록 (추후 기록 날짜와 종료 날짜 분리 여부 논의 필요) */
             Date curDate = new Date();
@@ -209,10 +149,6 @@ public class RecordService {
             record.getReadingPeriod().setReportDate(curDate);
             record.getReadingPeriod().setEndDate(curDate);
 
-
-        /** Aws S3로 파일 업로드 */
-        String imgSrc = awsFileUploadUtils.fileUpload(bookImg, "record");
-        record.setThumbnailLink(imgSrc);
         } else{
             throw new DuplicateRecordException("동일한 책의 독서기록이 존재합니다.");
         }
@@ -246,7 +182,7 @@ public class RecordService {
         return recordDTOList;
     }
 
-    /* 2022-11-13 수정, 권수뿐만 아니라 다른 데이터들 같이 반환 */
+    /** 로직 요구사항 구체화 필요 */
     public List<RecordDTO> countingRecordByUserInfo(int memberCode) {
         System.out.println("memberCode = " + memberCode);
 

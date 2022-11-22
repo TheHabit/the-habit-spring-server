@@ -89,13 +89,22 @@ public class RecordService {
 
         Record record;
 
+        if(recordList.size() > 1){
+            /** 해당 회원이 같은 책을 다르게 2번 씀. 내부 로직상 있을 수 없는 오류 */
+            throw new Exception();
+        }
+
         if(recordList.size() == 0){
-            /** 처음부터 쓰는 독서기록 */
+            /** 독서 기록 작성 */
+
+            /** isDone 값 N으로 설정 */
+            recordDTO.setIsDone("N");
+
             /** DB에 접근하기 위해 DTO를 엔티티로 변환 */
             record = recordDTO.dtoToEntity(member);
             System.out.println("record entity = " + record);
 
-            /** report 날짜 (현재 날짜)만 기록 : 시작, 종료 날짜는 알 수 없다 -> 로직 수정 필요 */
+            /** report 날짜 (현재 날짜)만 기록 */
             Date curDate = new Date();
             System.out.println("curDate = " + curDate);
 
@@ -104,33 +113,37 @@ public class RecordService {
             System.out.println("record.getReadingPeriod() = " + record.getReadingPeriod());
             record.setReadingPeriod(readingPeriod);
 
-            /** 독서기록임으로, isDone 'Y'로 설정 */
-            record.setIsDone("Y");
-
             /** Aws S3로 책 표지 이미지 파일 업로드 */
             String bookImgSrc = awsFileUploadUtils.fileUpload(bookImg, "record/thumbnail");
             record.setThumbnailLink(bookImgSrc);
 
             /** AI로부터 한 줄 요약을 가져오는 utill */
-            String oneLineReview = reviewToOneLineUtils.abStractOneLine(record.getBookReview());
-            record.setOneLineReview(oneLineReview);
+//            String oneLineReview = reviewToOneLineUtils.abStractOneLine(record.getBookReview());
+//            record.setOneLineReview(oneLineReview);
 
             /** DB에 record 저장 */
             recordInfraRepository.save(record);
 
-        } else if(recordList.size() == 1){
-            /** 담아 놓은 책 독서기록 작성 -> 수정하는 느낌으로 작성. */
+        } else {
+            /** 독서 기록 수정 */
             record = recordList.get(0);
 
-            /** isDone Y로 바꾸기 + review 담기 */
-            record.setIsDone("Y");
-            record.setBookReview(recordDTO.getBookReview());
+            /** review, rating 수정 */
+            if(recordDTO.getRating() != record.getRating()){
+                record.setRating(recordDTO.getRating());
+            }
 
             /** AI로부터 한 줄 요약을 가져오는 utill */
-            String oneLineReview = reviewToOneLineUtils.abStractOneLine(record.getBookReview());
-            record.setOneLineReview(oneLineReview);
+            /** review가 수정되었을 경우에만 AI를 호출하여 oneLineReview 수정 */
+            if(!recordDTO.getBookReview().equals(record.getBookReview())){
+                System.out.println("test");
+                record.setBookReview(recordDTO.getBookReview());
 
-            /** 기록 및 종료 날짜(현재 날짜) 기록 (추후 기록 날짜와 종료 날짜 분리 여부 논의 필요) */
+                String oneLineReview = reviewToOneLineUtils.abStractOneLine(recordDTO.getBookReview());
+                record.setOneLineReview(oneLineReview);
+            }
+
+            /** 기록 날짜만 변경 */
             Date curDate = new Date();
             System.out.println("curDate = " + curDate);
 
@@ -139,11 +152,7 @@ public class RecordService {
             }
 
             record.getReadingPeriod().setReportDate(curDate);
-            record.getReadingPeriod().setEndDate(curDate);
 
-        } else{
-            /** 해당 회원이 같은 책을 다르게 2번 씀. 내부 로직상 있을 수 없는 오류 */
-            throw new Exception();
         }
 
         /** 응답하기 위해 다시 entity를 DTO로 반환 */

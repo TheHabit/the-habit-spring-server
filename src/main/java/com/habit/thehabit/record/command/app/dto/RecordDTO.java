@@ -26,7 +26,6 @@ public class RecordDTO {
     private String oneLineReview;
     private String isDone;
     private String isActivated;
-
     private Date startDate;
     private Date endDate;
     private Date reportDate;

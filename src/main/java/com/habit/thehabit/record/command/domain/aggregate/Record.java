@@ -91,8 +91,7 @@ public class Record {
 
         } else{
             responseDTO = new RecordDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating,
-                    bookReview, oneLineReview, isDone, isActivated, null, null,
-                    null, member.getMemberCode());
+                    bookReview, oneLineReview, isDone, isActivated, null, null, null, member.getMemberCode());
         }
 
         return responseDTO;

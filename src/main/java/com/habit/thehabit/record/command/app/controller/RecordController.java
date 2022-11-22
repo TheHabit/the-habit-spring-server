@@ -52,7 +52,8 @@ public class RecordController {
 //            @Parameter(name = "startDate", description = "독서 시작 일자", example = "2022-10-11"),
 //            @Parameter(name = "endDate", description = "독서 종료 일자", example = "2022-11-11")
 //    })
-    @PostMapping(value = "/add", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    /** 도서 담기 ISBN, 이미지 파일을 담고 있다. */
+    @PostMapping(value = "/contain", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResponseDTO> addRecord(@RequestPart(value = "bookImg") @Nullable MultipartFile bookImg,
                                                  @RequestPart RecordDTO record , @AuthenticationPrincipal Member member){
         try{
@@ -64,7 +65,7 @@ public class RecordController {
     }
 
 
-    /** 독서록 쓰기 - isDone 값이 들어왔을 때 isDone 항목 업데이트(즉, 읽고 있는 책 -> 다 읽은 책) */
+    /** 독서록 쓰기 참고) isDone 값이 들어왔을 때 isDone 항목 업데이트(즉, 읽고 있는 책 -> 다 읽은 책) */
     @PostMapping(value = "/write", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResponseDTO> writeRecord(@RequestPart(value = "bookImg") @Nullable MultipartFile bookImg,
                                                    @RequestPart RecordDTO record , @AuthenticationPrincipal Member member){

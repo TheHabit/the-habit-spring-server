@@ -281,4 +281,23 @@ public class RecordService {
         }
         return true;
     }
+
+    public String setAllTimeBook(List<RecordDTO> recordDTOList, Member member) throws Exception {
+
+        if(recordDTOList == null){
+            throw new Exception("입력 값이 없습니다.");
+        }
+
+        /** 리스트 돌면서 인생작 등록 */
+        for(RecordDTO recordDTO : recordDTOList){
+            List<Record> recordList = recordInfraRepository.findByMemberCodeAndBookISBNAndIsActivated(member.getMemberCode(), recordDTO.getBookISBN());
+            if(recordList.size() != 1){
+                throw new Exception("해당 회원이 담은 책이 아닙니다!");
+            }
+
+            recordList.get(0).setIsBest(recordDTO.getIsBest());
+        }
+
+        return "Success";
+    }
 }

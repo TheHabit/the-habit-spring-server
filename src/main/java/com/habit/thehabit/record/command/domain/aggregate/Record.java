@@ -65,9 +65,6 @@ public class Record {
         this.isActivated = this.isActivated == null ? "Y" : this.isActivated;
     }
 
-    @Column(name = "IS_CONTAINED")
-    private String isContained;
-
     @Embedded
     private ReadingPeriod readingPeriod;
 
@@ -89,13 +86,12 @@ public class Record {
 
         if(readingPeriod != null){
             responseDTO = new RecordDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating,
-                    bookReview, oneLineReview, isDone, isActivated, isContained, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
+                    bookReview, oneLineReview, isDone, isActivated, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
                     readingPeriod.getReportDate(), member.getMemberCode());
 
         } else{
             responseDTO = new RecordDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating,
-                    bookReview, oneLineReview, isDone, isActivated, isContained, null, null,
-                    null, member.getMemberCode());
+                    bookReview, oneLineReview, isDone, isActivated, null, null, null, member.getMemberCode());
         }
 
         return responseDTO;

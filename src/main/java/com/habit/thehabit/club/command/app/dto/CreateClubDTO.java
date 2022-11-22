@@ -40,7 +40,8 @@ public class CreateClubDTO {
 
     public void setRecruitStartDate(String recruitStartDate) {
 
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd a HH:mm");
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd tt HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         this.recruitStartDate = LocalDateTime.parse(recruitStartDate);
     }
 

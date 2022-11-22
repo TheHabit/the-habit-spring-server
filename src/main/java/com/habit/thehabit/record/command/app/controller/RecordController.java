@@ -52,12 +52,11 @@ public class RecordController {
 //            @Parameter(name = "startDate", description = "독서 시작 일자", example = "2022-10-11"),
 //            @Parameter(name = "endDate", description = "독서 종료 일자", example = "2022-11-11")
 //    })
-    @PostMapping(value = "/add", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/add", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResponseDTO> addRecord(@RequestPart(value = "bookImg") @Nullable MultipartFile bookImg,
-                                                 @RequestPart(value = "pageCapture") @Nullable MultipartFile pageCap,
                                                  @RequestPart RecordDTO record , @AuthenticationPrincipal Member member){
         try{
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 입력 성공", recordService.addRecord(bookImg, pageCap, record, member)));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 입력 성공", recordService.addRecord(bookImg, record, member)));
         } catch(Exception e){
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 입력 실패", "내부 에러 발생"));
@@ -65,16 +64,15 @@ public class RecordController {
     }
 
 
-    /** 책 담기(읽을 책 삽입 -> isDone : False) 또는 책 삽입도 가능. 즉, 모든 독서록 '쓰기' 행위를 이것으로 진행 */
-    @PostMapping(value = "/write", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    /** 독서록 쓰기 - isDone 값이 들어왔을 때 isDone 항목 업데이트(즉, 읽고 있는 책 -> 다 읽은 책) */
+    @PostMapping(value = "/write", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResponseDTO> writeRecord(@RequestPart(value = "bookImg") @Nullable MultipartFile bookImg,
-                                                   @RequestPart(value = "pageCapture") @Nullable MultipartFile pageCap,
                                                    @RequestPart RecordDTO record , @AuthenticationPrincipal Member member){
         try{
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 입력 성공", recordService.writeRecord(bookImg, pageCap, record, member)));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 쓰기 성공", recordService.writeRecord(bookImg, record, member)));
         } catch(Exception e){
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 입력 실패", e.getMessage()));
+            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 쓰기 실패", e.getMessage()));
         }
     }
 
@@ -109,33 +107,32 @@ public class RecordController {
 //        }
 //    }
 
-    /** 회원 정보로 '읽고 있는' 도서 리스트 찾아오기 */
-    @GetMapping("/reading")
-    public ResponseEntity<ResponseDTO> selectRecordListByUserInfo(@AuthenticationPrincipal Member member){
+    /** 회원 정보로 모든 책 정보 반환 : 책상 앞에 섰을 때 호출 */
+    @GetMapping("/desk")
+    public ResponseEntity<ResponseDTO> selectRecordByUserInfo(@AuthenticationPrincipal Member member){
         int memberCode = member.getMemberCode();
         System.out.println("memberCode = " + memberCode);
 
         try{
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "해당 유저의 읽고 있는 도서 조회", recordService.selectRecordListByUserInfo(memberCode)));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "유저의 모든 도서 기록 반환", recordService.selectRecordByUserInfo(memberCode)));
         } catch (RecordNotFoundException re){
-            return ResponseEntity.status(204).body(new ResponseDTO(HttpStatus.NO_CONTENT, "유저가 읽고 있는 도서 조회 실패", re.getMessage()));
+            return ResponseEntity.status(204).body(new ResponseDTO(HttpStatus.NO_CONTENT, "도서 기록이 없습니다.", re.getMessage()));
         } catch (Exception e){
-            System.out.println("e = " + e);
+            System.out.println("Exception = " + e);
             return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "유저가 읽고 있는 도서 조회 실패", "내부 에러 발생"));
         }
     }
 
-    /** 회원 정보로 '읽은' 도서 권수 찾아오기
-     * 2022-11-13 모든 정보 다 반환하기*/
-    @GetMapping("/count")
-    public ResponseEntity<ResponseDTO> countingRecordByUserInfo(@AuthenticationPrincipal Member member){
+    /** 회원 정보로 읽은 책 정보 반환 : My Room에 입장하거나 방 안에서 변동 사항이 있을 때마다 호출 */
+    @GetMapping("/myroom")
+    public ResponseEntity<ResponseDTO> selectRecordByUserInfoIsDone(@AuthenticationPrincipal Member member){
         int memberCode = member.getMemberCode();
         System.out.println("memberCode = " + memberCode);
 
         try{
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "유저가 다 읽은 도서 권수 조회", recordService.countingRecordByUserInfo(memberCode)));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "유저의 모든 독서 기록 조회 성공", recordService.selectRecordByUserInfoIsDone(memberCode)));
         } catch (RecordNotFoundException re){
-            return ResponseEntity.status(204).body(new ResponseDTO(HttpStatus.NO_CONTENT, "유저가 다 읽은 도서 권수 조회 실패", re.getMessage()));
+            return ResponseEntity.status(204).body(new ResponseDTO(HttpStatus.NO_CONTENT, "도서 기록 조회 실패", re.getMessage()));
         } catch (Exception e){
             System.out.println("e = " + e);
             return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "유저가 다 읽은 도서 권수 조회 실패", "내부 에러 발생"));

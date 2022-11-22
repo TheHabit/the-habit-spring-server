@@ -37,7 +37,7 @@ public class RecordService {
     }
 
     @Transactional
-    public RecordDTO addRecord(MultipartFile bookImg, MultipartFile pageCap, RecordDTO recordDTO, Member member) throws IOException {
+    public RecordDTO addRecord(MultipartFile bookImg, RecordDTO recordDTO, Member member) throws IOException {
 
         /** 이미 서재에 담았거나, 작성한 독서라면 예외처리 */
         List<Record> recordList = recordInfraRepository.findByMemberCodeAndBookISBNAndIsActivated(member.getMemberCode(), recordDTO.getBookISBN());
@@ -67,8 +67,6 @@ public class RecordService {
         String bookImgSrc = awsFileUploadUtils.fileUpload(bookImg, "record/thumbnail");
         record.setThumbnailLink(bookImgSrc);
 
-        String pageCapSrc = awsFileUploadUtils.fileUpload(pageCap, "record/pageCapture");
-        record.setPageSource(pageCapSrc);
 
         /** DB에 record 저장 */
         recordInfraRepository.save(record);
@@ -84,12 +82,13 @@ public class RecordService {
     }
 
     @Transactional
-    public RecordDTO writeRecord(MultipartFile bookImg, MultipartFile pageCap, RecordDTO recordDTO, Member member) throws Exception {
+    public RecordDTO writeRecord(MultipartFile bookImg, RecordDTO recordDTO, Member member) throws Exception {
 
-        /** 영속성 컨텍스트에서 해당 레코드 조회(추후 로직 수정 필요) */
+        /** 영속성 컨텍스트에서 해당 레코드 조회 */
         List<Record> recordList = recordInfraRepository.findByMemberCodeAndBookISBNAndIsActivated(member.getMemberCode(), recordDTO.getBookISBN());
 
         Record record;
+
         if(recordList.size() == 0){
             /** 처음부터 쓰는 독서기록 */
             /** DB에 접근하기 위해 DTO를 엔티티로 변환 */
@@ -108,12 +107,9 @@ public class RecordService {
             /** 독서기록임으로, isDone 'Y'로 설정 */
             record.setIsDone("Y");
 
-            /** Aws S3로 책 표지 및 캡처 화면 이미지 파일 업로드 */
+            /** Aws S3로 책 표지 이미지 파일 업로드 */
             String bookImgSrc = awsFileUploadUtils.fileUpload(bookImg, "record/thumbnail");
             record.setThumbnailLink(bookImgSrc);
-
-            String pageCapSrc = awsFileUploadUtils.fileUpload(pageCap, "record/pageCapture");
-            record.setPageSource(pageCapSrc);
 
             /** AI로부터 한 줄 요약을 가져오는 utill */
             String oneLineReview = reviewToOneLineUtils.abStractOneLine(record.getBookReview());
@@ -129,10 +125,6 @@ public class RecordService {
             /** isDone Y로 바꾸기 + review 담기 */
             record.setIsDone("Y");
             record.setBookReview(recordDTO.getBookReview());
-
-            /** Aws S3로 페이지 캡처 화면 업로드 및 링크 저장 */
-            String pageCapSrc = awsFileUploadUtils.fileUpload(pageCap, "record/pageCapture");
-            record.setPageSource(pageCapSrc);
 
             /** AI로부터 한 줄 요약을 가져오는 utill */
             String oneLineReview = reviewToOneLineUtils.abStractOneLine(record.getBookReview());
@@ -150,7 +142,8 @@ public class RecordService {
             record.getReadingPeriod().setEndDate(curDate);
 
         } else{
-            throw new DuplicateRecordException("동일한 책의 독서기록이 존재합니다.");
+            /** 해당 회원이 같은 책을 다르게 2번 씀. 내부 로직상 있을 수 없는 오류 */
+            throw new Exception();
         }
 
         /** 응답하기 위해 다시 entity를 DTO로 반환 */
@@ -182,42 +175,39 @@ public class RecordService {
         return recordDTOList;
     }
 
-    /** 로직 요구사항 구체화 필요 */
-    public List<RecordDTO> countingRecordByUserInfo(int memberCode) {
-        System.out.println("memberCode = " + memberCode);
+    public List<RecordDTO> selectRecordByUserInfoIsDone(int memberCode) {
 
         List<Record> recordList = recordInfraRepository.findByMemberCodeAndIsDone(memberCode, "Y");
         System.out.println("recordList = " + recordList);
 
+        /** 조회된 것이 없을 때 예외 처리 */
+        if(recordList == null){
+            throw new RecordNotFoundException("독서 기록이 존재하지 않습니다.");
+        }
+
+        /** Entity List -> DTO List */
         List<RecordDTO> recordDTOList = new ArrayList<>();
         for(Record record : recordList){
             recordDTOList.add(record.entityToDTO());
         }
-        return recordDTOList;
 
-//        /** 조회된 것이 없을 때 0 반환 */
-//        if(recordList == null){
-//            return 0;
-//        }
-//
-//        return recordList.size();
+        return recordDTOList;
     }
 
-    public List<RecordDTO> selectRecordListByUserInfo(int memberCode) {
-        System.out.println("memberCode = " + memberCode);
+    public List<RecordDTO> selectRecordByUserInfo(int memberCode) {
 
-        List<Record> recordList = recordInfraRepository.findByMemberCodeAndIsDone(memberCode, "N");
+        List<Record> recordList = recordInfraRepository.findByMemberCode(memberCode);
         System.out.println("recordList = " + recordList);
+
+        /** 조회된 것이 없을 때 예외 처리 */
+        if(recordList == null){
+            throw new RecordNotFoundException("유저의 독서 기록이 존재하지 않습니다.");
+        }
 
         /** 리스트 안의 entity들을 DTO형태로 바꾼 뒤, DTO 리스트로 전환 */
         List<RecordDTO> recordDTOList = new ArrayList<>();
         for(Record record : recordList){
             recordDTOList.add(record.entityToDTO());
-        }
-
-        /** 조회된 것이 없을 때 예외 처리 */
-        if(recordDTOList == null){
-            throw new RecordNotFoundException("유저가 읽고 있는 책이 없습니다.");
         }
 
         return recordDTOList;
@@ -261,9 +251,6 @@ public class RecordService {
         }
         if(recordDTO.getBookName() != null){
             record.setBookName(recordDTO.getBookName());
-        }
-        if(recordDTO.getPageSource() != null){
-            record.setPageSource(recordDTO.getPageSource());
         }
 
         ReadingPeriod readingPeriod = new ReadingPeriod(recordDTO.getStartDate(), recordDTO.getEndDate(), recordDTO.getReportDate());

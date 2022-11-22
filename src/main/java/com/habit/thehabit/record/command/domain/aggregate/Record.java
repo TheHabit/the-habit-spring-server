@@ -48,9 +48,6 @@ public class Record {
     @Column(name = "RATING")
     private int rating;
 
-    @Column(name = "PAGE_SOURCE")
-    private String pageSource;
-
     @Column(name = "BOOK_REVIEW")
     private String bookReview;
 
@@ -88,12 +85,12 @@ public class Record {
         RecordDTO responseDTO;
 
         if(readingPeriod != null){
-            responseDTO = new RecordDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating, pageSource,
+            responseDTO = new RecordDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating,
                     bookReview, oneLineReview, isDone, isActivated, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
                     readingPeriod.getReportDate(), member.getMemberCode());
 
         } else{
-            responseDTO = new RecordDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating, pageSource,
+            responseDTO = new RecordDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating,
                     bookReview, oneLineReview, isDone, isActivated, null, null,
                     null, member.getMemberCode());
         }

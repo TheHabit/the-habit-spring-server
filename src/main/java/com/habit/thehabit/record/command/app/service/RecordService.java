@@ -89,6 +89,11 @@ public class RecordService {
 
         Record record;
 
+        if(recordList.size() == 0){
+            /** 책을 먼저 담아야 작성할 수 있다. */
+            throw new Exception("책을 먼저 담아주세요.");
+        }
+
         if(recordList.size() > 1){
             /** 해당 회원이 같은 책을 다르게 2번 씀. 내부 로직상 있을 수 없는 오류 */
             throw new Exception();

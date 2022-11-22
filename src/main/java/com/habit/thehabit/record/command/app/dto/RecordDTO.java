@@ -22,7 +22,6 @@ public class RecordDTO {
     private String bookISBN;
     private int rating;
 
-    private String pageSource;
     private String bookReview;
     private String oneLineReview;
     private String isDone;
@@ -42,7 +41,7 @@ public class RecordDTO {
 
     public Record dtoToEntity(Member member){
         Record record = new Record(recordCode, bookName, bookAuthor, bookPublishInfo, thumbnailLink, bookISBN, rating,
-                pageSource, bookReview, oneLineReview, isDone, isActivated, setReadingPeriod(), member);
+                 bookReview, oneLineReview, isDone, isActivated, setReadingPeriod(), member);
         return record;
     }
 

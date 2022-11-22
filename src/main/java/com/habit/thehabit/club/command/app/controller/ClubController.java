@@ -1,6 +1,5 @@
 package com.habit.thehabit.club.command.app.controller;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.habit.thehabit.club.command.app.dto.ClubDTO;
 import com.habit.thehabit.club.command.app.dto.CreateClubDTO;
 import com.habit.thehabit.club.command.app.dto.JoinClubDTO;
@@ -10,8 +9,6 @@ import com.habit.thehabit.club.command.app.exception.OverstaffedException;
 import com.habit.thehabit.club.command.app.service.ClubService;
 import com.habit.thehabit.common.command.app.dto.ResponseDTO;
 import com.habit.thehabit.util.UploadToS3;
-
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -24,12 +21,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.http.MediaType;
 import java.io.IOException;
+
 
 @Tag(name = "clubs",description = "모임API")
 @RestController
@@ -66,13 +63,49 @@ public class ClubController {
             })
 
     /*club 생성*/
-    @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ResponseDTO> createClub( @RequestPart CreateClubDTO request, @RequestPart MultipartFile imgFile ) throws IOException {
+    /*2022-11-22수정*/
+//    @PostMapping("")
+//    public ResponseEntity<ResponseDTO> createClub(@RequestBody CreateClubDTO request) throws IOException {
+//        System.out.println("클럽 개설 확인");
+//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "생성요청 성공", clubService.createClubs(request)));
+//    }
+//    @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+//    public ResponseEntity<ResponseDTO> createClub( @RequestPart CreateClubDTO request, @RequestPart MultipartFile imgFile ) throws IOException {
+//        System.out.println("클럽 개설 확인");
+//        String imageUri = uploadToS3.upload(imgFile,"club");
+//        request.setImageUri(imageUri);
+//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "생성요청 성공", clubService.createClubs(request)));
+//    }
+
+    @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<ResponseDTO> createClub(CreateClubDTO request, @RequestPart  MultipartFile imgFile) throws IOException {
         System.out.println("클럽 개설 확인");
-        String imageUri = uploadToS3.upload(imgFile,"club");
-        request.setImageUri(imageUri);
+        System.out.println(imgFile);
+        System.out.println(request.getClubName());
+        System.out.println(request.getClubIntro());
+        System.out.println(request.getNumberOfMember());
+        System.out.println(request.getRecruitStartDate());
+        System.out.println(request.getDayOfWeeks());
+        if(imgFile != null){
+            String imageUri = uploadToS3.upload(imgFile,"club");
+            request.setImageUri(imageUri);
+//            request.setImgFile(null);
+        }
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "생성요청 성공", clubService.createClubs(request)));
     }
+
+
+//    @PostMapping(value = "")
+//    public ResponseEntity<ResponseDTO> createClub(@RequestBody CreateClubDTO request) throws IOException {
+//        System.out.println("클럽 개설 확인");
+//
+//        /**/
+//        /* 방이미지 바이트배열 꺼내기 */
+//
+//        String imageUri = uploadToS3.upload(request.getImgFile(),"club");
+//        request.setImageUri(imageUri);
+//        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "생성요청 성공", clubService.createClubs(request)));
+//    }
 
     @Operation(summary = "모임조회", description = "모임 조회 API")
     @ApiResponses(value = {
@@ -124,6 +157,4 @@ public class ClubController {
         System.out.println("컨트롤러 클럽 탈퇴 요청 확인");
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "클럽 탈퇴 성공", clubService.withdrawClub(withdrawDTO)));
     }
-
-
 }

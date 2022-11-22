@@ -26,7 +26,7 @@ public class RecordDTO {
     private String oneLineReview;
     private String isDone;
     private String isActivated;
-
+    private String isContained;
     private Date startDate;
     private Date endDate;
     private Date reportDate;
@@ -41,7 +41,7 @@ public class RecordDTO {
 
     public Record dtoToEntity(Member member){
         Record record = new Record(recordCode, bookName, bookAuthor, bookPublishInfo, thumbnailLink, bookISBN, rating,
-                 bookReview, oneLineReview, isDone, isActivated, setReadingPeriod(), member);
+                 bookReview, oneLineReview, isDone, isActivated, isContained, setReadingPeriod(), member);
         return record;
     }
 

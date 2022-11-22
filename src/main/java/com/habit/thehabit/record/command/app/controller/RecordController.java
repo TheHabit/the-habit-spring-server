@@ -52,7 +52,8 @@ public class RecordController {
 //            @Parameter(name = "startDate", description = "독서 시작 일자", example = "2022-10-11"),
 //            @Parameter(name = "endDate", description = "독서 종료 일자", example = "2022-11-11")
 //    })
-    @PostMapping(value = "/add", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    /** 도서 담기 - isD */
+    @PostMapping(value = "/contain", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResponseDTO> addRecord(@RequestPart(value = "bookImg") @Nullable MultipartFile bookImg,
                                                  @RequestPart RecordDTO record , @AuthenticationPrincipal Member member){
         try{

@@ -57,20 +57,19 @@ public class RecordController {
     public ResponseEntity<ResponseDTO> addRecord(@RequestPart(value = "bookImg") @Nullable MultipartFile bookImg,
                                                  @RequestPart RecordDTO record , @AuthenticationPrincipal Member member){
         try{
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 입력 성공", recordService.addRecord(bookImg, record, member)));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "도서 담기 성공", recordService.addRecord(bookImg, record, member)));
         } catch(Exception e){
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 입력 실패", "내부 에러 발생"));
+            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "도서 담기 실패", "내부 에러 발생"));
         }
     }
 
 
     /** 독서록 쓰기 참고) isDone 값이 들어왔을 때 isDone 항목 업데이트(즉, 읽고 있는 책 -> 다 읽은 책) */
-    @PostMapping(value = "/write", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ResponseDTO> writeRecord(@RequestPart(value = "bookImg") @Nullable MultipartFile bookImg,
-                                                   @RequestPart RecordDTO record , @AuthenticationPrincipal Member member){
+    @PostMapping(value = "/write")
+    public ResponseEntity<ResponseDTO> writeRecord( @RequestBody RecordDTO record , @AuthenticationPrincipal Member member){
         try{
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 쓰기 성공", recordService.writeRecord(bookImg, record, member)));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 쓰기 성공", recordService.writeRecord(record, member)));
         } catch(Exception e){
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 쓰기 실패", e.getMessage()));

@@ -2,30 +2,22 @@ package com.habit.thehabit.record.command.app.controller;
 
 import com.habit.thehabit.common.command.app.dto.ResponseDTO;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
+import com.habit.thehabit.record.command.app.dto.RecordBestPickDTO;
 import com.habit.thehabit.record.command.app.dto.RecordDTO;
+import com.habit.thehabit.record.command.app.exception.DuplicateRecordException;
 import com.habit.thehabit.record.command.app.exception.RecordDeleteException;
 import com.habit.thehabit.record.command.app.exception.RecordNotFoundException;
 import com.habit.thehabit.record.command.app.service.RecordService;
-import com.habit.thehabit.record.command.domain.aggregate.Record;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
-import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 //@Tag(name = "독서 기록", description = "독서 기록 API")
 @RestController
@@ -57,23 +49,39 @@ public class RecordController {
     public ResponseEntity<ResponseDTO> addRecord(@RequestPart(value = "bookImg") @Nullable MultipartFile bookImg,
                                                  @RequestPart RecordDTO record , @AuthenticationPrincipal Member member){
         try{
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 입력 성공", recordService.addRecord(bookImg, record, member)));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "도서 담기 성공", recordService.addRecord(bookImg, record, member)));
+        } catch (DuplicateRecordException e){
+            e.printStackTrace();
+            return ResponseEntity.status(423).body(new ResponseDTO(HttpStatus.CONFLICT, "도서 담기 실패", "내부 에러 발생"));
         } catch(Exception e){
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 입력 실패", "내부 에러 발생"));
+            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "도서 담기 실패", "내부 에러 발생"));
         }
     }
 
 
     /** 독서록 쓰기 참고) isDone 값이 들어왔을 때 isDone 항목 업데이트(즉, 읽고 있는 책 -> 다 읽은 책) */
-    @PostMapping(value = "/write", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ResponseDTO> writeRecord(@RequestPart(value = "bookImg") @Nullable MultipartFile bookImg,
-                                                   @RequestPart RecordDTO record , @AuthenticationPrincipal Member member){
+    @PostMapping(value = "/write")
+    public ResponseEntity<ResponseDTO> writeRecord( @RequestBody RecordDTO record , @AuthenticationPrincipal Member member){
         try{
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 쓰기 성공", recordService.writeRecord(bookImg, record, member)));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 쓰기 성공", recordService.writeRecord(record, member)));
         } catch(Exception e){
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 쓰기 실패", e.getMessage()));
+        }
+    }
+
+    /** 인생 도서 등록하기 */
+    @PostMapping("/best")
+    public ResponseEntity<ResponseDTO> setAllTimeBook(@RequestBody RecordBestPickDTO recordDTOList, @AuthenticationPrincipal Member member){
+
+        System.out.println("recordDTOList.getRecordDTOList() = " + recordDTOList.getRecordDTOList());
+
+        try{
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "인생 도서 등록 성공", recordService.setAllTimeBook(recordDTOList.getRecordDTOList(), member)));
+        } catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "인생 도서 등록 실패", e.getMessage()));
         }
     }
 

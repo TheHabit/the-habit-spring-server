@@ -55,10 +55,10 @@ jobs:
       run: mvn -B package --file pom.xml
       
     - name: Docker build and push
-      run: 
+      run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker build -t ${{ secrets.DOCKER_REPO }}/remate ./
-        docker push ${{ secrets.DOCKER_REPO }}/remate
+        docker build -t ${{ secrets.DOCKER_REPO }} ./
+        docker push ${{ secrets.DOCKER_REPO }}
     - name: Get timestamp
       uses: gerred/actions/current-time@master
       id: current-time

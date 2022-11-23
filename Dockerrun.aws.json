@@ -1,7 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": ${{secrets.DOCKER_REPO}},
+    "Name": "jaycode12/habit-app",
     "Update": "true"
   },
   "Ports": [

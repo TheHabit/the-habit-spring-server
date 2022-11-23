@@ -4,10 +4,10 @@
     "Name": "jaycode12/habit-app",
     "Update": "true"
   },
-  "portMappings": [
+  "Ports": [
     {
-      "hostPort": 8080,
-      "containerPort": 8080
+      "ContainerPort": "8080",
+      "HostPort": "8080"
     }
   ]
 }

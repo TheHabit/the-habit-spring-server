@@ -14,4 +14,5 @@ public interface MemberInfraRepository extends MemberRepository {
 
     Member findByMemberCode(int memberCode);
 
+
 }

@@ -189,6 +189,7 @@ public class RecordService {
         return recordDTOList;
     }
 
+    /* 읽은 책 가져오는 서비스 */
     public List<RecordDTO> selectRecordByUserInfoIsDone(int memberCode) {
 
         List<Record> recordList = recordInfraRepository.findByMemberCodeAndIsDone(memberCode, "Y");

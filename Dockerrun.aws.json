@@ -1,16 +1,13 @@
 {
-  "AWSEBDockerrunVersion": "2",
-  "containerDefinitions": [
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "jaycode12/habit-app",
+    "Update": "true"
+  },
+  "portMappings": [
     {
-      "name": "habit-app",
-      "image": "jaycode12/habit-app",
-      "essential": true,
-      "portMappings": [
-        {
-          "hostPort": 8080,
-          "containerPort": 8080
-        }
-      ]
+      "hostPort": 8080,
+      "containerPort": 8080
     }
   ]
 }

@@ -45,9 +45,9 @@ public class RecordController {
 //            @Parameter(name = "endDate", description = "독서 종료 일자", example = "2022-11-11")
 //    })
     /** 도서 담기 ISBN, 이미지 파일을 담고 있다. */
-    @PostMapping(value = "/contain", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/contain" /** consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE } */)
     public ResponseEntity<ResponseDTO> addRecord(@RequestPart(value = "bookImg") @Nullable MultipartFile bookImg,
-                                                 @RequestPart RecordDTO record , @AuthenticationPrincipal Member member){
+                                                 RecordDTO record , @AuthenticationPrincipal Member member){
         try{
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "도서 담기 성공", recordService.addRecord(bookImg, record, member)));
         } catch (DuplicateRecordException e){

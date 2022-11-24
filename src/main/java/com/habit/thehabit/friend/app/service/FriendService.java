@@ -36,7 +36,7 @@ public class FriendService {
     /* ai 서버에 memberCode를 전송하여, 친구추전목록을 받아옴(추천된 친구의 memberCode값들) */
     public List<RecommendedMemberDTO> getRecommendedFriends(Member member) {
         int memberCode = member.getMemberCode();
-        AIRequestDTO aiRequestDTO = new AIRequestDTO(memberCode,5);//요청할 파라미터때 필요한 입력
+        AIRequestDTO aiRequestDTO = new AIRequestDTO(memberCode,5);//요청할 파라미터때 필요한 입력: (memberCode, 추천 받을 인원 수)
 
         List<Integer> recommanedFriends = aiRequestAPI.callRecommanedFriends(aiRequestDTO); // AI서버에 요청
         //List<Integer> recommanedFriends =new ArrayList<Integer>(List.of(1,2,3,4)); // AI서버에 요청 test

@@ -61,6 +61,9 @@ public class Record {
     @Column(name = "IS_ACTIVATED")
     private String isActivated;
 
+    @Column(name = "IS_BEST")
+    private String isBest;
+
     @PrePersist
     public void prePersist(){
         this.isActivated = this.isActivated == null ? "Y" : this.isActivated;
@@ -90,12 +93,14 @@ public class Record {
 
         if(readingPeriod != null){
             responseDTO = new RecordDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating,
-                    bookReview, oneLineReview, isDone, isActivated, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
+
+                    bookReview, oneLineReview, isDone, isActivated, isBest, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
                     readingPeriod.getReportDate(), member.getMemberCode(), isSent);
 
         } else{
             responseDTO = new RecordDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating,
-                    bookReview, oneLineReview, isDone, isActivated, null, null, null, member.getMemberCode(), isSent);
+                    bookReview, oneLineReview, isDone, isActivated, isBest, null, null, null, member.getMemberCode(), isSent);
+
         }
 
         return responseDTO;

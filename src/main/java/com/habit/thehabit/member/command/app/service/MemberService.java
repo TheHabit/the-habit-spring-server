@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -52,6 +54,34 @@ public class MemberService {
 
         return memberInfraRepository.findByMemberId(member.getMemberId());
     }
+
+//    @Transactional
+//    public Member signuptemp(Member member){
+//        /* ------------------------------------ */
+//        String str = ""
+//        /* ------------------------------------ */
+//        String[] names = new String []{""};
+//        for(int i = 0 ; i < 100; i++){
+//            Member newMember = new Member();
+//            member.setMemberId();
+//            member.setMemberPwd();
+//            member.setName();
+//        }
+//        /** id 중복 여부 체크 */
+//        if( memberInfraRepository.findByMemberId(member.getMemberId()) != null){
+//            throw new DuplicateIdException("중복된 ID가 존재합니다.");
+//        }
+//
+//        /** 비밀번호 encoding 해서 setting */
+//        member.setMemberPwd(passwordEncoder.encode(member.getMemberPwd()));
+//        System.out.println("member.getMemberPwd() = " + member.getMemberPwd() + "|");
+//
+//        /** insert 후 결과 반환 */
+//        memberInfraRepository.save(member);
+//
+//        return memberInfraRepository.findByMemberId(member.getMemberId());
+//    }
+//
 
 
     @Transactional

@@ -80,12 +80,6 @@ public class ClubController {
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ResponseDTO> createClub(CreateClubDTO request, @RequestPart  MultipartFile imgFile) throws IOException {
         System.out.println("클럽 개설 확인");
-        System.out.println(imgFile);
-        System.out.println(request.getClubName());
-        System.out.println(request.getClubIntro());
-        System.out.println(request.getNumberOfMember());
-        System.out.println(request.getRecruitStartDate());
-        System.out.println(request.getDayOfWeeks());
         if(imgFile != null){
             String imageUri = uploadToS3.upload(imgFile,"club");
             request.setImageUri(imageUri);

@@ -22,4 +22,7 @@ public interface RecordInfraRepository extends RecordRepository {
 
     @Query("select m from Record m where m.member.memberCode = :memberCode and m.isActivated = 'Y' and m.bookISBN = :bookISBN")
     List<Record> findByMemberCodeAndBookISBNAndIsActivated(int memberCode, String bookISBN);
+
+    /**/
+    List<Record> findAllByIsSent(String isSent);
 }

@@ -1,5 +1,6 @@
 package com.habit.thehabit.record.command.domain.aggregate;
 
+import com.habit.thehabit.friend.app.dto.UpdateDataDTO;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.record.command.app.dto.RecordDTO;
 import com.habit.thehabit.record.command.app.dto.RecordGradeAndOneLineReviewDTO;
@@ -72,6 +73,9 @@ public class Record {
     @JoinColumn(name = "MEMBER_CODE")
     private Member member;
 
+    @Column(name="IS_SENT")
+    private String isSent;
+
     /** 해당 레코드에 멤버 연관관계를 추가하는 편의 메소드 */
     public void setMember(Member member){
         this.member = member;
@@ -87,11 +91,11 @@ public class Record {
         if(readingPeriod != null){
             responseDTO = new RecordDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating,
                     bookReview, oneLineReview, isDone, isActivated, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
-                    readingPeriod.getReportDate(), member.getMemberCode());
+                    readingPeriod.getReportDate(), member.getMemberCode(), isSent);
 
         } else{
             responseDTO = new RecordDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating,
-                    bookReview, oneLineReview, isDone, isActivated, null, null, null, member.getMemberCode());
+                    bookReview, oneLineReview, isDone, isActivated, null, null, null, member.getMemberCode(), isSent);
         }
 
         return responseDTO;
@@ -103,6 +107,12 @@ public class Record {
         responseDTO = new RecordGradeAndOneLineReviewDTO(bookName, thumbnailLink, member.getName(), oneLineReview);
 
         return responseDTO;
+    }
+
+    public UpdateDataDTO entityToUpdateDataDTO(){
+        UpdateDataDTO updateDataDTO = new UpdateDataDTO(this.member.getMemberCode(),this.rating, this.bookISBN);
+
+        return updateDataDTO;
     }
 
 }

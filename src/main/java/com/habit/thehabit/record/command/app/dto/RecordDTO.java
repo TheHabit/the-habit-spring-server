@@ -32,6 +32,8 @@ public class RecordDTO {
 
     private int memberCode;
 
+    private String isSent;
+
     public ReadingPeriod setReadingPeriod(){
         ReadingPeriod readingPeriod = new ReadingPeriod(startDate, endDate, reportDate);
 
@@ -40,7 +42,7 @@ public class RecordDTO {
 
     public Record dtoToEntity(Member member){
         Record record = new Record(recordCode, bookName, bookAuthor, bookPublishInfo, thumbnailLink, bookISBN, rating,
-                 bookReview, oneLineReview, isDone, isActivated, setReadingPeriod(), member);
+                 bookReview, oneLineReview, isDone, isActivated, setReadingPeriod(), member, isSent);
         return record;
     }
 

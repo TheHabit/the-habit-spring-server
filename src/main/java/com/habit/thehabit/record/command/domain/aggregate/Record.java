@@ -72,12 +72,12 @@ public class Record {
     @Embedded
     private ReadingPeriod readingPeriod;
 
+    @Column(name="IS_SENT")
+    private String isSent;
     @ManyToOne
     @JoinColumn(name = "MEMBER_CODE")
     private Member member;
 
-    @Column(name="IS_SENT")
-    private String isSent;
 
     /** 해당 레코드에 멤버 연관관계를 추가하는 편의 메소드 */
     public void setMember(Member member){

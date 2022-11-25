@@ -2,6 +2,8 @@ package com.habit.thehabit.util;
 
 import com.habit.thehabit.friend.app.dto.AIRequestDTO;
 import com.habit.thehabit.friend.app.dto.UpdateDataDTO;
+import lombok.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,7 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.List;
 
 
-@FeignClient(name="AIRequestAPI", url = "192.168.0.69:5000")
+@RefreshScope
+@FeignClient(name="AIRequestAPI", url ="34.64.178.114:5000")
 public interface AIRequestAPI {
     @PostMapping(value = "/recommend", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 //    @Headers("Content-Type:multipart/form-data")

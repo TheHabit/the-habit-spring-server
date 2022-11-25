@@ -38,6 +38,7 @@ public class FriendController {
 
     /* AI서버로 새로작성된 Record 정보 (memberCode, rank, isbn) 전송 */
     @Scheduled(cron = "00 00 4 * * *")//-매일- 04시에 보내짐 - 순서대로 초,분,시간,일,월,요일 -
+//    @Scheduled(fixedDelay=10000) //10초마다 데이터전송
     @PostMapping("")
     public ResponseEntity<ResponseDTO> sendDataToAiServer(){
         System.out.println("test");

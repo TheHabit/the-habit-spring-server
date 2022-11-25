@@ -37,9 +37,8 @@ public class FriendService {
     public List<RecommendedMemberDTO> getRecommendedFriends(Member member) {
         int memberCode = member.getMemberCode();
         AIRequestDTO aiRequestDTO = new AIRequestDTO(memberCode,5);//요청할 파라미터때 필요한 입력: (memberCode, 추천 받을 인원 수)
-
-        List<Integer> recommanedFriends = aiRequestAPI.callRecommanedFriends(aiRequestDTO); // AI서버에 요청
-        //List<Integer> recommanedFriends =new ArrayList<Integer>(List.of(1,2,3,4)); // AI서버에 요청 test
+        List<Integer> recommanedFriends = aiRequestAPI.callRecommanedFriends(aiRequestDTO);// AI 서버에 요청
+        //List<Integer> recommanedFriends =new ArrayList<Integer>(List.of(1,2,3,4)); //AI 서버에 요청 test
 
         /* !!!!!!!!!!~~~~~~~~~~살아 있는 유저인지 검증해야함~~~~~~~~~~!!!!!!!!!! */
         System.out.println(recommanedFriends);
@@ -49,14 +48,22 @@ public class FriendService {
         for(int RecommendedMemberCode : recommanedFriends){
             RecommendedMemberDTO recommendedMemberDTO = new RecommendedMemberDTO();
             /* ============== 회원이 읽은 책 목록 생성 담기 ================*/
-            List<Record> recordList = recordInfraRepository.findByMemberCodeAndIsDone(RecommendedMemberCode, "Y");
-            System.out.println("memberCode" + RecommendedMemberCode);
-            System.out.println("recordList = " + recordList);
+            List<Record> recordList = recordInfraRepository.findByMemberCodeAndIsDoneAndIsBest(RecommendedMemberCode, "Y" , "Y");
+            System.out.println("bestRecordList = " + recordList);
 
-            /** 조회된 것이 없을 때 예외 처리 */
-            if(recordList == null){
-                throw new RecordNotFoundException("독서 기록이 존재하지 않습니다.");
+            //인생책이 없으면 그냥 평점 높은 것중 한가지 반환
+            if(recordList.size() == 0){
+//                List<Record> recordList = recordInfraRepository.findByMemberCodeAndIsDone(RecommendedMemberCode, "Y");
+                recordList = recordInfraRepository.findByMemberCodeAndIsDone(RecommendedMemberCode, "Y");
+                System.out.println("recordList = " + recordList);
+
+                /** 조회된 것이 없을 때 예외 처리 */
+                if(recordList == null){
+//                    throw new RecordNotFoundException("독서 기록이 존재하지 않습니다.");
+                    System.out.println("memberCode"+memberCode+"는 읽은 책이 없습니다.");
+                }
             }
+
             /** Entity List -> DTO List */
             List<RecordDTO> recordDTOList = new ArrayList<>();
             for(Record record : recordList){

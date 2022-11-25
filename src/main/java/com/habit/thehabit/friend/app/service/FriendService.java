@@ -48,9 +48,9 @@ public class FriendService {
 
         for(int RecommendedMemberCode : recommanedFriends){
             RecommendedMemberDTO recommendedMemberDTO = new RecommendedMemberDTO();
-
             /* ============== 회원이 읽은 책 목록 생성 담기 ================*/
             List<Record> recordList = recordInfraRepository.findByMemberCodeAndIsDone(RecommendedMemberCode, "Y");
+            System.out.println("memberCode" + RecommendedMemberCode);
             System.out.println("recordList = " + recordList);
 
             /** 조회된 것이 없을 때 예외 처리 */

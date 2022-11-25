@@ -17,8 +17,13 @@ public interface RecordInfraRepository extends RecordRepository {
     @Query("select m from Record m where m.member.memberCode = :memberCode and m.isActivated = 'Y' ")
     List<Record> findByMemberCode(int memberCode);
 
-    @Query("select m from Record m where m.member.memberCode = :memberCode and m.isActivated = 'Y' and m.isDone = :isDone ")
+    /*후기 등록한 목록중 평점 높은 순으로 반환*/
+    @Query("select r from Record r where r.member.memberCode = :memberCode and r.isActivated = 'Y' and r.isDone = :isDone order by r.rating desc")
     List<Record> findByMemberCodeAndIsDone(int memberCode, String isDone);
+
+    /*인생책 목록 중 평점 높은 순으로 반환*/
+    @Query("select r from Record r where r.member.memberCode = :memberCode and r.isActivated = 'Y' and r.isDone = :isDone and r.isBest =:isBest order by r.rating desc")
+    List<Record> findByMemberCodeAndIsDoneAndIsBest(int memberCode, String isDone, String isBest);
 
     @Query("select m from Record m where m.member.memberCode = :memberCode and m.isActivated = 'Y' and m.bookISBN = :bookISBN")
     List<Record> findByMemberCodeAndBookISBNAndIsActivated(int memberCode, String bookISBN);

@@ -70,7 +70,11 @@ public class Record {
 
     @PrePersist
     public void prePersist(){
+
         this.isActivated = this.isActivated == null ? "Y" : this.isActivated;
+        this.isBest = this.isBest == null ? "N" : this.isBest;
+        this.isOverHead = this.isOverHead == null ? "N" : this.isOverHead;
+
     }
 
     @Embedded

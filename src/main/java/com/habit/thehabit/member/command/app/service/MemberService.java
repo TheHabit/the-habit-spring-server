@@ -20,8 +20,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
+import java.util.Arrays;
+
 import java.util.Date;
 import java.util.List;
 
@@ -59,6 +64,47 @@ public class MemberService {
 
         return memberInfraRepository.findByMemberId(member.getMemberId());
     }
+
+    /*더미 데이터 생성할 때 사용*/
+//    @Transactional
+//    public String signuptemp(Member member){
+//        /* ------------------------------------ */
+//        String names =
+//                    "홍믿음, 임미르, 강버들, 송나길, 조나라우람, 손다운, 홍힘찬, 예한길, 고샘, 황힘찬, 설다운, 제갈빛가람, 한힘찬, 백달, 류빛가람, 최한길, 신나라우람, 안나라우람, 홍우람, 복나길"+
+//                ", "+
+//                    "최동수, 제갈태석, 설진환, 손경진, 김민수, 복규빈, 류경하, 윤승환, 윤병일, 제갈수근, 장혜빈, 하윤정, 서혜빈, 안윤지, 신연주, 성효진, 양진우, 임민태, 홍윤호, 손재남"+
+//                ", "+
+//                    "남궁빛나, 안우리, 탁두리, 복다래, 장새론, 조보라, 정한별, 백솔, 사공햇빛, 신나봄, 제갈봄, 김하늬, 장하다, 정나리, 성라온, 하고은, 전별빛, 제갈두리, 손아롱, 이나봄"+
+//                ", "+
+//                    "고웅, 전훈, 류광, 문광, 사공광, 권광, 송훈, 제갈광, 안훈, 풍광, 하건, 황보웅, 백건, 서건, 장웅, 신철, 황보건, 정광, 오호, 신건"+
+//                ", "+"류린, 손은, 문진, 예현, 황지, 고은, 황보성, 사공란, 권설, 김성, 홍진, 손리, 표성, 허성, 송란, 강현, 허설, 신상, 탁린, 박지";
+//
+//        List<String> nameList = Arrays.asList(names.split(", "));
+//        System.out.println(nameList);
+//        String id = "remate";
+//
+//        /* ------------------------------------ */
+//        for(int i = 0 ; i < 100; i++) {
+//            Member newMember = new Member();
+//            newMember.setMemberId(id + i);
+//            newMember.setMemberPwd(id + i);
+//            newMember.setName(nameList.get(i));
+//
+//            /** id 중복 여부 체크 */
+//            if (memberInfraRepository.findByMemberId(newMember.getMemberId()) != null) {
+//                throw new DuplicateIdException("중복된 ID가 존재합니다.");
+//            }
+//
+//            /** 비밀번호 encoding 해서 setting */
+//            newMember.setMemberPwd(passwordEncoder.encode(newMember.getMemberPwd()));
+//            System.out.println("newmember.getMemberPwd() = " + newMember.getMemberPwd() + "|");
+//
+//            /** insert 후 결과 반환 */
+//            memberInfraRepository.save(newMember);
+//        }
+//        return null;
+//    }
+
 
 
     @Transactional

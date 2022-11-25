@@ -14,6 +14,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
+//@EnableSwagger2
 //@EnableWebMvc
 public class SwaggerConfig {
 
@@ -22,11 +23,18 @@ public class SwaggerConfig {
 //        registry.addResourceHandler("/swagger-ui/**").addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
 //        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
 //    }
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) { //spring-security와 연결할 때 이 부분을 작성하지 않으면 404에러가 뜬다.
+//        registry.addResourceHandler("swagger-ui.html")
+//                .addResourceLocations("classpath:/META-INF/resources/");
+//        registry.addResourceHandler("/webjars/**")
+//                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+//    }
 
     private ApiInfo apiInfo(){
         String description = "The Habit-API";
         return new ApiInfoBuilder().title("The Habit")
-                .description(description).version("1.0").build();
+                .description(description).version("1.0.0").build();
     }
 
     @Bean

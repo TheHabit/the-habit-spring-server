@@ -8,6 +8,7 @@ import com.habit.thehabit.club.command.app.exception.OverstaffedException;
 import com.habit.thehabit.club.command.domain.aggregate.Club;
 import com.habit.thehabit.club.command.domain.aggregate.ClubMember;
 import com.habit.thehabit.club.command.domain.aggregate.MeetingSchedule;
+import com.habit.thehabit.club.command.domain.aggregate.Schedule;
 import com.habit.thehabit.club.command.domain.aggregate.embeddable.Period;
 import com.habit.thehabit.club.command.infra.repository.ClubInfraRepository;
 import com.habit.thehabit.club.command.infra.repository.ClubMemberInfraRepository;
@@ -37,7 +38,6 @@ public class ClubService {
     private final ClubInfraRepository clubInfraRepository;
     private final MemberInfraRepository memberInfraRepository;
     private final ClubMemberInfraRepository clubMemberInfraRepository;
-
     private final ScheduleInfraRepository scheduleInfraRepository;
 
     @Autowired
@@ -125,6 +125,25 @@ public class ClubService {
         /* MeetingSchedule에 입력할 값 생성
         입력받은 createClubDTO.getScheuleDTOLIst()의 요일,회의시간 정보를 통해 구체적인 모임일정 List만들기 */
         Map<String, LocalTime> scheduleMap = new HashMap<>();
+        /*2022-11-21 통신수정*/
+        List<String> dayOfWeekList = Arrays.asList(String.valueOf(createClubDTO.getDayOfWeeks()).split(""));
+        System.out.println("dayofweeksLIst : "+dayOfWeekList);
+        List<ScheduleDTO> tempScheduleDTOList = new ArrayList<>();
+        for(int i = 0; i < dayOfWeekList.size(); i++){
+            ScheduleDTO scheduleDTO = new ScheduleDTO();
+            scheduleDTO.setDayOfWeek(dayOfWeekList.get(i));
+            System.out.println("요일 : "+dayOfWeekList.get(i));
+            System.out.println(scheduleDTO);
+            System.out.println(scheduleDTO.getDayOfWeek());
+            tempScheduleDTOList.add(scheduleDTO);
+        }
+        createClubDTO.setScheduleDTOList(tempScheduleDTOList);
+        for(ScheduleDTO scheduleDTO : createClubDTO.getScheduleDTOList()){
+            System.out.println("scheduleDTO test :" + scheduleDTO.getDayOfWeek());
+        }
+//            createClubDTO.getScheduleDTOList()
+        /*2022-11-21 통신수정*/
+
         for(ScheduleDTO scheduleDTO : createClubDTO.getScheduleDTOList()){
             scheduleMap.put(scheduleDTO.getDayOfWeek(),scheduleDTO.getStartTime());
         }

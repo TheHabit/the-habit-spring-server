@@ -53,7 +53,7 @@ public class Schedule {
         }
     }
     public ScheduleDTO toScheduleDTO(){
-        ScheduleDTO scheduleDTO = new ScheduleDTO(this.id,this.dayOfWeek,this.startTime,this.endTime);
+        ScheduleDTO scheduleDTO = new ScheduleDTO(this.id,this.dayOfWeek/*,this.startTime,this.endTime*/);
         return scheduleDTO;
     }
 }

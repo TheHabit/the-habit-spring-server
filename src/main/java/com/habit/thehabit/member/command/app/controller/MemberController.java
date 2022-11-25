@@ -43,6 +43,7 @@ public class MemberController {
 
         try{
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "회원가입 성공", memberService.signup(member)));
+//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED, "회원가입 성공", memberService.signuptemp(member))); //더미 데이터 생성 할 때사용
         } catch (DuplicateIdException e){
             return ResponseEntity.status(409).body(new ResponseDTO(HttpStatus.CONFLICT, "회원가입 실패", e.getMessage()));
         } catch(Exception e){

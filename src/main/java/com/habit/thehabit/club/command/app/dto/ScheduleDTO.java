@@ -17,14 +17,14 @@ import java.time.LocalTime;
 public class ScheduleDTO {
     private int scheduleid;
     private String dayOfWeek;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private LocalTime startTime = LocalTime.of(14, 00);
+    private LocalTime endTime = LocalTime.of(15, 00);;
 
-    public ScheduleDTO(int id, String dayOfWeek, LocalTime startTime, LocalTime endTime) {
+    public ScheduleDTO(int id, String dayOfWeek/*, LocalTime startTime, LocalTime endTime*/) {
         this.scheduleid = id;
         this.dayOfWeek = dayOfWeek;
-        this.startTime = startTime;
-        this.endTime = endTime;
+//        this.startTime = startTime;
+//        this.endTime = endTime;
     }
 
 //    public void setStartTime(String startTime) throws ParseException {

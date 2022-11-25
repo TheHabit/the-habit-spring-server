@@ -52,7 +52,7 @@ public class RecordController {
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "도서 담기 성공", recordService.addRecord(bookImg, record, member)));
         } catch (DuplicateRecordException e){
             e.printStackTrace();
-            return ResponseEntity.status(423).body(new ResponseDTO(HttpStatus.CONFLICT, "도서 담기 실패", "내부 에러 발생"));
+            return ResponseEntity.status(409).body(new ResponseDTO(HttpStatus.CONFLICT, "이미 담긴 도서입니다.", "이미 담긴 도서입니다."));
         } catch(Exception e){
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "도서 담기 실패", "내부 에러 발생"));
@@ -154,6 +154,19 @@ public class RecordController {
 
         try{
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "전체 독서기록 한줄평 가져오기", recordService.selectAllRecordGradeAndOneLineReview()));
+        } catch (RecordNotFoundException re){
+            return ResponseEntity.status(204).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 조회 실패", re.getMessage()));
+        } catch (Exception e){
+            System.out.println("e = " + e);
+            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 조회 실패", "내부 에러 발생"));
+        }
+    }
+
+    @GetMapping("/all-admin")
+    public ResponseEntity<ResponseDTO> selectAllRecord(){
+
+        try{
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "전체 독서 기록 리스트 가져오기", recordService.selectAllRecord()));
         } catch (RecordNotFoundException re){
             return ResponseEntity.status(204).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 조회 실패", re.getMessage()));
         } catch (Exception e){

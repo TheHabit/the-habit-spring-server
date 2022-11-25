@@ -1,6 +1,7 @@
 package com.habit.thehabit.record.command.app.service;
 
 import com.habit.thehabit.member.command.domain.aggregate.Member;
+import com.habit.thehabit.record.command.app.dto.RecordAdminDTO;
 import com.habit.thehabit.record.command.app.dto.RecordDTO;
 import com.habit.thehabit.record.command.app.dto.RecordGradeAndOneLineReviewDTO;
 import com.habit.thehabit.record.command.app.exception.DuplicateRecordException;
@@ -112,9 +113,9 @@ public class RecordService {
             record.setBookReview(recordDTO.getBookReview());
 
             /** AI로부터 한 줄 요약을 가져오는 utill - AI 완성되면 풀어주면 됨 */
-//            String oneLineReview = reviewToOneLineUtils.abStractOneLine(recordDTO.getBookReview());
-//            record.setOneLineReview(oneLineReview);
-            record.setOneLineReview("example one-line-review");
+            String oneLineReview = reviewToOneLineUtils.abStractOneLine(recordDTO.getBookReview());
+            System.out.println("oneLineReview = " + oneLineReview);
+            record.setOneLineReview(oneLineReview);
         }
 
         /** report date */
@@ -215,6 +216,24 @@ public class RecordService {
         return recordDTOList;
     }
 
+    public List<RecordAdminDTO> selectAllRecord() {
+
+        List<Record> recordList = recordInfraRepository.findByIsActivatedAndIsDoneOrderByRatingDesc("Y", "Y");
+        System.out.println("recordList = " + recordList);
+
+        /** Admin에게 뿌려줄 데이터를 가져오는 DTO를 만들어서 진행 */
+        List<RecordAdminDTO> recordDTOList = new ArrayList<>();
+        for(Record record : recordList){
+            recordDTOList.add(record.entityToAdminDTO());
+        }
+
+        if(recordDTOList == null){
+            throw new RecordNotFoundException("전체 독서 기록이 없습니다.");
+        }
+
+        return recordDTOList;
+    }
+
     @Transactional
     public RecordDTO updateRecord(RecordDTO recordDTO, Member member) {
 
@@ -288,7 +307,7 @@ public class RecordService {
             throw new Exception("입력 값이 없습니다.");
         }
 
-        /** 리스트 돌면서 인생작 등록 */
+        /** 리스트 돌면서 인생작 등록(또는 해제) */
         for(RecordDTO recordDTO : recordDTOList){
             List<Record> recordList = recordInfraRepository.findByMemberCodeAndBookISBNAndIsActivated(member.getMemberCode(), recordDTO.getBookISBN());
             if(recordList.size() != 1){

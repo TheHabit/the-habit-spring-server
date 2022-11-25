@@ -1,6 +1,7 @@
 package com.habit.thehabit.record.command.domain.aggregate;
 
 import com.habit.thehabit.member.command.domain.aggregate.Member;
+import com.habit.thehabit.record.command.app.dto.RecordAdminDTO;
 import com.habit.thehabit.record.command.app.dto.RecordDTO;
 import com.habit.thehabit.record.command.app.dto.RecordGradeAndOneLineReviewDTO;
 import lombok.*;
@@ -63,6 +64,9 @@ public class Record {
     @Column(name = "IS_BEST")
     private String isBest;
 
+    @Column(name = "IS_OVER_HEAD")
+    private String isOverHead;
+
     @PrePersist
     public void prePersist(){
         this.isActivated = this.isActivated == null ? "Y" : this.isActivated;
@@ -89,12 +93,12 @@ public class Record {
 
         if(readingPeriod != null){
             responseDTO = new RecordDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating,
-                    bookReview, oneLineReview, isDone, isActivated, isBest, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
+                    bookReview, oneLineReview, isDone, isActivated, isBest, isOverHead, readingPeriod.getStartDate(), readingPeriod.getEndDate(),
                     readingPeriod.getReportDate(), member.getMemberCode());
 
         } else{
             responseDTO = new RecordDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating,
-                    bookReview, oneLineReview, isDone, isActivated, isBest, null, null, null, member.getMemberCode());
+                    bookReview, oneLineReview, isDone, isActivated, isBest, isOverHead, null, null, null, member.getMemberCode());
         }
 
         return responseDTO;
@@ -104,6 +108,14 @@ public class Record {
         RecordGradeAndOneLineReviewDTO responseDTO;
 
         responseDTO = new RecordGradeAndOneLineReviewDTO(bookName, thumbnailLink, member.getName(), oneLineReview);
+
+        return responseDTO;
+    }
+
+    public RecordAdminDTO entityToAdminDTO(){
+        RecordAdminDTO responseDTO;
+
+        responseDTO = new RecordAdminDTO(recordCode, bookName, bookISBN, bookAuthor, member.getName());
 
         return responseDTO;
     }

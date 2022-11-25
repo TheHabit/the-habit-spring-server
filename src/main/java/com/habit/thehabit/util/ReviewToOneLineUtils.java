@@ -22,8 +22,8 @@ public class ReviewToOneLineUtils {
     static {
         // RestTemplate 기본 설정을 위한 Factory 생성
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(10000);
-        factory.setReadTimeout(10000);
+        factory.setConnectTimeout(20000);
+        factory.setReadTimeout(20000);
         factory.setBufferRequestBody(false);
         REST_TEMPLATE = new RestTemplate(factory);
     }
@@ -44,7 +44,8 @@ public class ReviewToOneLineUtils {
         HttpEntity<?> requestEntity = new HttpEntity<>(body,headers);
 
         /** AI 서버 통신 후 한줄 요약(oneLineReview) 가져오기 */
-        JsonNode response = REST_TEMPLATE.postForObject(url, requestEntity, JsonNode.class);
+        System.out.println("url = " + url);
+        JsonNode response = REST_TEMPLATE.postForObject(url+"summary", requestEntity, JsonNode.class);
         System.out.println("response = " + response);
 
         String oneLineReview = null;

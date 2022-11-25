@@ -3,12 +3,17 @@ package com.habit.thehabit.member.command.app.service;
 import com.habit.thehabit.common.command.app.dto.TokenDTO;
 import com.habit.thehabit.common.command.app.exception.DuplicateIdException;
 import com.habit.thehabit.config.jwt.TokenProvider;
+import com.habit.thehabit.member.command.app.dto.MemberAdminDTO;
+import com.habit.thehabit.member.command.app.dto.MemberDTO;
+import com.habit.thehabit.member.command.app.dto.MemberListAndSizeDTO;
 import com.habit.thehabit.member.command.app.dto.UpdateRequestDTO;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.member.command.infra.repository.MemberInfraRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,7 +21,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -110,5 +117,23 @@ public class MemberService {
 
         memberInfraRepository.save(member);
         return null;
+    }
+
+    public MemberListAndSizeDTO getMembers(Pageable pageable) {
+        Page<Member> memberList = memberInfraRepository.findAll(pageable);
+
+        List<MemberAdminDTO> memberAdminDTOList = new ArrayList<>();
+        for(Member member : memberList){
+            MemberAdminDTO memberAdminDTO = new MemberAdminDTO(member.getMemberCode(), member.getMemberId(),
+                    member.getName(), member.getMemberRole(), member.getIsWithDrawal());
+
+            memberAdminDTOList.add(memberAdminDTO);
+        }
+        System.out.println("memberAdminDTOList = " + memberAdminDTOList);
+
+        MemberListAndSizeDTO memberListAndSizeDTO = new MemberListAndSizeDTO(memberAdminDTOList, memberList.getTotalElements());
+
+
+        return memberListAndSizeDTO;
     }
 }

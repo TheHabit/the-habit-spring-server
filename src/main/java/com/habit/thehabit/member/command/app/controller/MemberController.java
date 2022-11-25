@@ -2,14 +2,20 @@ package com.habit.thehabit.member.command.app.controller;
 
 import com.habit.thehabit.common.command.app.dto.ResponseDTO;
 import com.habit.thehabit.common.command.app.exception.DuplicateIdException;
+import com.habit.thehabit.member.command.app.dto.MemberAdminDTO;
+import com.habit.thehabit.member.command.app.dto.MemberListAndSizeDTO;
 import com.habit.thehabit.member.command.app.dto.UpdateRequestDTO;
 import com.habit.thehabit.member.command.app.service.MemberService;
 import com.habit.thehabit.member.command.domain.aggregate.Member;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/v1/members")
@@ -18,6 +24,18 @@ public class MemberController {
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
+    }
+
+    @GetMapping("")
+    public ResponseEntity<ResponseDTO> getMembers(@PageableDefault(sort = "memberCode") Pageable pageable){
+        System.out.println("pageable = " + pageable);
+        try{
+            MemberListAndSizeDTO memberListAndSizeDTO = memberService.getMembers(pageable);
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공" , memberListAndSizeDTO ));
+        } catch(Exception e){
+            System.out.println("error = " + e);
+            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 에러", "서버 에러"));
+        }
     }
 
     @PostMapping("")

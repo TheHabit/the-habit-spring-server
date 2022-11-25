@@ -108,12 +108,18 @@ public class RecordService {
             record.setRating(recordDTO.getRating());
         }
 
+        /** isOverHead(대표책) */
+        if(recordDTO.getIsOverHead() != record.getIsOverHead()){
+            record.setIsOverHead(recordDTO.getIsOverHead());
+        }
+
         /** review가 수정되었을 경우에만 AI를 호출하여 oneLineReview 수정 */
         if(!recordDTO.getBookReview().equals(record.getBookReview())){
             record.setBookReview(recordDTO.getBookReview());
 
             /** AI로부터 한 줄 요약을 가져오는 utill - AI 완성되면 풀어주면 됨 */
             String oneLineReview = reviewToOneLineUtils.abStractOneLine(recordDTO.getBookReview());
+            oneLineReview = oneLineReview.substring(1, oneLineReview.length() - 1);
             System.out.println("oneLineReview = " + oneLineReview);
             record.setOneLineReview(oneLineReview);
         }

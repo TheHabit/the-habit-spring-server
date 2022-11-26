@@ -72,7 +72,7 @@ public class Member implements UserDetails {
     @Column(name = "MEMBER_ROLE")
     private String memberRole;
 
-    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Record> records = new ArrayList<Record>();
 
     /** 해당 멤버의 레코드 리스트에 개별 레코드를 추가하는 편의 메소드 */

@@ -168,6 +168,7 @@ public class MemberService {
     public MemberListAndSizeDTO getMembers(Pageable pageable) {
         Page<Member> memberList = memberInfraRepository.findAll(pageable);
 
+        System.out.println("memberList = " + memberList);
         List<MemberAdminDTO> memberAdminDTOList = new ArrayList<>();
         for(Member member : memberList){
             MemberAdminDTO memberAdminDTO = new MemberAdminDTO(member.getMemberCode(), member.getMemberId(),
@@ -178,7 +179,6 @@ public class MemberService {
         System.out.println("memberAdminDTOList = " + memberAdminDTOList);
 
         MemberListAndSizeDTO memberListAndSizeDTO = new MemberListAndSizeDTO(memberAdminDTOList, memberList.getTotalElements());
-
 
         return memberListAndSizeDTO;
     }

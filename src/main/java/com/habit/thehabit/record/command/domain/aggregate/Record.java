@@ -5,6 +5,7 @@ import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.record.command.app.dto.RecordAdminDTO;
 import com.habit.thehabit.record.command.app.dto.RecordDTO;
 import com.habit.thehabit.record.command.app.dto.RecordGradeAndOneLineReviewDTO;
+import com.habit.thehabit.record.command.app.dto.RecordOneDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -123,7 +124,7 @@ public class Record {
     public RecordAdminDTO entityToAdminDTO(){
         RecordAdminDTO responseDTO;
 
-        responseDTO = new RecordAdminDTO(recordCode, bookName, bookISBN, bookAuthor, member.getName());
+        responseDTO = new RecordAdminDTO(recordCode, bookName, bookISBN, bookAuthor, member.getName(), rating);
 
         return responseDTO;
     }
@@ -132,6 +133,13 @@ public class Record {
         UpdateDataDTO updateDataDTO = new UpdateDataDTO(this.member.getMemberCode(),this.rating, this.bookISBN);
 
         return updateDataDTO;
+    }
+
+    public RecordOneDTO entityToRecordOneDTO(){
+        RecordOneDTO recordOneDTO = new RecordOneDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating,
+                bookReview, oneLineReview, isDone, isBest, readingPeriod.getReportDate(), member.getName());
+
+        return recordOneDTO;
     }
 
 }

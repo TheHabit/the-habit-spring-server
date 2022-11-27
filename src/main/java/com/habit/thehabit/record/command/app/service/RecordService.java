@@ -4,6 +4,7 @@ import com.habit.thehabit.member.command.domain.aggregate.Member;
 import com.habit.thehabit.record.command.app.dto.RecordAdminDTO;
 import com.habit.thehabit.record.command.app.dto.RecordDTO;
 import com.habit.thehabit.record.command.app.dto.RecordGradeAndOneLineReviewDTO;
+import com.habit.thehabit.record.command.app.dto.RecordOneDTO;
 import com.habit.thehabit.record.command.app.exception.DuplicateRecordException;
 import com.habit.thehabit.record.command.app.exception.RecordDeleteException;
 import com.habit.thehabit.record.command.app.exception.RecordNotFoundException;
@@ -79,6 +80,9 @@ public class RecordService {
         /** 영속성 컨텍스트에서 해당 레코드 조회 */
         List<Record> recordList = recordInfraRepository.findByMemberCodeAndBookISBNAndIsActivated(member.getMemberCode(), recordDTO.getBookISBN());
 
+        System.out.println("recordList = " + recordList);
+        System.out.println("recordDTO = " + recordDTO);
+
         Record record;
 
         if(recordList.size() == 0){
@@ -98,19 +102,26 @@ public class RecordService {
 
         /**---------------------------------- 독서 기록 작성 ------------------------------------*/
 
+
         record = recordList.get(0);
 
         /** isDone */
         record.setIsDone(recordDTO.getIsDone());
 
         /** rating */
-        if(recordDTO.getRating() != record.getRating()){
+        if( recordDTO.getRating() != record.getRating()){
             record.setRating(recordDTO.getRating());
         }
 
         /** isOverHead(대표책) */
-        if(recordDTO.getIsOverHead() != record.getIsOverHead()){
-            record.setIsOverHead(recordDTO.getIsOverHead());
+        if(recordDTO.getIsOverHead() != null && recordDTO.getIsOverHead().equals("Y")){
+            /** 기존에 대표책이었던 책이 있는지 조회하여 있었다면 대표책 해제 */
+            Record bestRecord = recordInfraRepository.findByMemberCodeAndIsActivatedAndIsOverHead(member.getMemberCode());
+            if(bestRecord != null){
+                bestRecord.setIsOverHead("N");
+            }
+            /** 대표책 새롭게 설정 */
+            record.setIsOverHead("Y");
         }
 
         /** review가 수정되었을 경우에만 AI를 호출하여 oneLineReview 수정 */
@@ -225,7 +236,7 @@ public class RecordService {
 
     public List<RecordAdminDTO> selectAllRecord() {
 
-        List<Record> recordList = recordInfraRepository.findByIsActivatedAndIsDoneOrderByRatingDesc("Y", "Y");
+        List<Record> recordList = recordInfraRepository.findByIsActivatedAndIsDoneOrderByRecordCode("Y", "Y");
         System.out.println("recordList = " + recordList);
 
         /** Admin에게 뿌려줄 데이터를 가져오는 DTO를 만들어서 진행 */
@@ -325,5 +336,15 @@ public class RecordService {
         }
 
         return "Success";
+    }
+
+    public RecordOneDTO selectRecordByRecordCode(String recordCode) {
+
+        Record record = recordInfraRepository.findByIsActivatedAndRecordCodeOrderByRecordCode("Y", Long.parseLong(recordCode));
+        System.out.println("record = " + record);
+
+        RecordOneDTO recordOneDTO = record.entityToRecordOneDTO();
+
+        return recordOneDTO;
     }
 }

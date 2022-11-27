@@ -14,5 +14,6 @@ public class RecordAdminDTO {
     private String bookISBN;
     private String bookAuthor;
     private String name;
+    private int rating;
 
 }

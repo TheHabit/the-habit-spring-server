@@ -63,7 +63,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/").permitAll()
                     .antMatchers("/v1/auths/login").permitAll()
                     .antMatchers(HttpMethod.POST,"/v1/members").permitAll()
-                    .antMatchers("/v1/**").hasAuthority("USER")
+                    .antMatchers("/v1/**").hasAnyAuthority("USER", "ADMIN")
                     
                     //.antMatchers(HttpMethod.PUT,"/v1/members").hasAuthority("USER")
                     //.antMatchers(HttpMethod.POST, "/v1/records").hasAuthority("USER")

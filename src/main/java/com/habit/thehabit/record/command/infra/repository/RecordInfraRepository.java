@@ -3,7 +3,9 @@ package com.habit.thehabit.record.command.infra.repository;
 import com.habit.thehabit.record.command.domain.aggregate.Record;
 import com.habit.thehabit.record.command.domain.repository.RecordRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 
+import javax.persistence.QueryHint;
 import java.util.List;
 
 public interface RecordInfraRepository extends RecordRepository {
@@ -14,6 +16,7 @@ public interface RecordInfraRepository extends RecordRepository {
 
     List<Record> findByIsActivatedAndIsDoneOrderByRatingDesc(String isActivated, String isDone);
 
+    @QueryHints(value = @QueryHint(name = "org.hibernate.readOnly", value = "true"))
     List<Record> findByIsActivatedAndIsDoneOrderByRecordCode(String isActivated, String isDone);
 
     Record findByIsActivatedAndRecordCodeOrderByRecordCode(String isActivated, Long recordCode);

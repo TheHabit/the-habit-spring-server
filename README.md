@@ -1,3 +1,5 @@
-# the-habit-spring-server
+## Re-Mate
+가상 환경 내에서 함께 독서 모임을 진행하고, 독서 기록을 공유하는 메타버스 기반 독서 플랫폼입니다.
 
-### Team The Habit의 독서 챌린지 플랫폼입니다.
+## Info
+Re-Mate 

@@ -106,7 +106,13 @@ public class ClubController {
             @ApiResponse(responseCode = "200", description = "클럽 생성 성공", content = @Content(mediaType = "application/json",array = @ArraySchema(schema = @Schema(implementation = ClubDTO.class))))})
     /* 개설된 club목록 조회 */
     @GetMapping("")
-    public ResponseEntity<ResponseDTO> getClubs(@RequestParam(value = "option", defaultValue = "-1")int option){
+    public ResponseEntity<ResponseDTO> getClubs(@RequestParam(value = "option", defaultValue = "-1")int option ,@RequestParam(value = "clubId", defaultValue = "-1")int clubId){
+        if(clubId > 0){
+            System.out.println("클럽상세조회");
+            System.out.println("clubID :" + clubId);
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "클럽 상세 조회 성공",clubService.getClubDetail(clubId)));
+        }
+
         if(option == 1){
             //option이 1인 경우 참가한 클럽 조회
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "참여중인 클럽 조회성공",clubService.getMyClubs()));
@@ -115,6 +121,7 @@ public class ClubController {
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "모집중인 클럽 조회성공", clubService.getRecruitingClubs()));
 
         }
+        System.out.println("========================= 클럽 조회 요청 컨트롤러 ===========================");
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "모든 클럽 조회성공", clubService.findAllClubs()));
     }
 

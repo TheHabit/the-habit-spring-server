@@ -126,7 +126,10 @@ public class Club {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
 
         ClubDTO clubDTO = new ClubDTO(
-                this.id,"", this.clubName, this.clubIntro
+                this.id
+                ,""
+                ,this.clubName
+                ,this.clubIntro
                 ,this.bookName
                 ,this.recruitPeriod.getStartDate()
                 ,this.recruitPeriod.getEndDate()
@@ -137,6 +140,7 @@ public class Club {
                 ,this.status.toString()
                 ,this.imageUri
                 ,ToScheduleDTOList(this.scheduleList));
+        System.out.println("toDTO");
 
         return clubDTO;
     }

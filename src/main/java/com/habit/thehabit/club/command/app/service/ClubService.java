@@ -8,7 +8,6 @@ import com.habit.thehabit.club.command.app.exception.OverstaffedException;
 import com.habit.thehabit.club.command.domain.aggregate.Club;
 import com.habit.thehabit.club.command.domain.aggregate.ClubMember;
 import com.habit.thehabit.club.command.domain.aggregate.MeetingSchedule;
-import com.habit.thehabit.club.command.domain.aggregate.Schedule;
 import com.habit.thehabit.club.command.domain.aggregate.embeddable.Period;
 import com.habit.thehabit.club.command.infra.repository.ClubInfraRepository;
 import com.habit.thehabit.club.command.infra.repository.ClubMemberInfraRepository;
@@ -272,6 +271,9 @@ public class ClubService {
         return withdrawDTO;
     }
 
-
-
+    public ClubDTO getClubDetail(int clubId) {
+        Club club = clubInfraRepository.findById(clubId);
+        ClubDTO clubDTO = club.toClubDTO();
+        return clubDTO;
+    }
 }

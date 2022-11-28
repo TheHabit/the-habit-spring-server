@@ -10,14 +10,11 @@ import com.habit.thehabit.record.command.app.exception.RecordNotFoundException;
 import com.habit.thehabit.record.command.app.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 //@Tag(name = "독서 기록", description = "독서 기록 API")
 @RestController
@@ -73,12 +70,12 @@ public class RecordController {
 
     /** 인생 도서 등록하기 */
     @PostMapping("/best")
-    public ResponseEntity<ResponseDTO> setAllTimeBook(@RequestBody RecordBestPickDTO recordDTOList, @AuthenticationPrincipal Member member){
+    public ResponseEntity<ResponseDTO> setAllTimeBook(@RequestBody RecordBestPickDTO recordBestPickDTO, @AuthenticationPrincipal Member member){
 
-        System.out.println("recordDTOList.getRecordDTOList() = " + recordDTOList.getRecordDTOList());
+        System.out.println("recordBestPickDTO = " + recordBestPickDTO);
 
         try{
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "인생 도서 등록 성공", recordService.setAllTimeBook(recordDTOList.getRecordDTOList(), member)));
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "인생 도서 등록 성공", recordService.setAllTimeBook(recordBestPickDTO.getRecordList(), member)));
         } catch(Exception e){
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "인생 도서 등록 실패", e.getMessage()));

@@ -319,7 +319,10 @@ public class RecordService {
         return true;
     }
 
+    @Transactional
     public String setAllTimeBook(List<RecordDTO> recordDTOList, Member member) throws Exception {
+
+        System.out.println("recordDTOList = " + recordDTOList);
 
         if(recordDTOList == null){
             throw new Exception("입력 값이 없습니다.");
@@ -328,6 +331,7 @@ public class RecordService {
         /** 리스트 돌면서 인생작 등록(또는 해제) */
         for(RecordDTO recordDTO : recordDTOList){
             List<Record> recordList = recordInfraRepository.findByMemberCodeAndBookISBNAndIsActivated(member.getMemberCode(), recordDTO.getBookISBN());
+
             if(recordList.size() != 1){
                 throw new Exception("해당 회원이 담은 책이 아닙니다!");
             }

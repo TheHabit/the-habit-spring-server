@@ -136,8 +136,15 @@ public class Record {
     }
 
     public RecordOneDTO entityToRecordOneDTO(){
-        RecordOneDTO recordOneDTO = new RecordOneDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating,
-                bookReview, oneLineReview, isDone, isBest, readingPeriod.getReportDate(), member.getName());
+        RecordOneDTO recordOneDTO;
+
+        if(readingPeriod != null){
+            recordOneDTO = new RecordOneDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating,
+                    bookReview, oneLineReview, isDone, isBest, readingPeriod.getReportDate(), member.getName());
+        } else{
+            recordOneDTO = new RecordOneDTO(recordCode, bookName, bookAuthor, bookPubllishInfo, thumbnailLink, bookISBN, rating,
+                    bookReview, oneLineReview, isDone, isBest, null, member.getName());
+        }
 
         return recordOneDTO;
     }

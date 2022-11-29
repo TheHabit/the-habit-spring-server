@@ -3,8 +3,8 @@ server:
 spring:
   config:
     import:
-    - classpath:/config/config-server-import.yml
-#    - optional:CONFIG_IP
+#    - classpath:/config/config-server-import.yml
+    - optional:CONFIG_IP
   profiles:
     active: dev
   application:

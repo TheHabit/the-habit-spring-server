@@ -2,6 +2,7 @@ package com.habit.thehabit.record.command.app.dto;
 
 import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 @NoArgsConstructor
@@ -11,7 +12,7 @@ import java.util.List;
 @ToString
 public class RecordBestPickDTO {
 
-    List<RecordDTO> recordDTOList;
+    private List<RecordDTO> recordList;
 
 }
 

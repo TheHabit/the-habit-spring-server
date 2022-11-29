@@ -10,6 +10,7 @@ Re-Mate 프로젝트는 MileStone, Issue를 활용하여 이슈 관리를 진행
   + Spring Boot
   + JPA
   + Oracle
+  + Docker
   + AWS RDS
   + AWS S3
   + AWS EC2

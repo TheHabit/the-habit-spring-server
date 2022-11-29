@@ -5,6 +5,7 @@ Re-Mate는 가상 환경 내에서 함께 독서 모임을 진행하고, 독서 
 Re-Mate 프로젝트는 MileStone, Issue를 활용하여 이슈 관리를 진행했습니다. 자세한 사항은 해당 부분에서 확인할 수 있습니다.
 
 ## 시스템 아키텍처 
+  
 
 ## Github flow 브랜치 전략
 ![githubflow](https://user-images.githubusercontent.com/85207194/204445038-50e832b9-7440-47a9-9778-8b17d1c616c5.png)
@@ -14,3 +15,5 @@ Re-Mate 프로젝트는 MileStone, Issue를 활용하여 이슈 관리를 진행
 + 코드 리뷰를 거치는 pull request
 + Github Action을 통한 CI/CD  
 PR : https://github.com/TheHabit/the-habit-spring-server/pulls?q=is%3Apr+is%3Aclosed
+
+## ERD

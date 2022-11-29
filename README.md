@@ -12,5 +12,5 @@ Re-Mate 프로젝트는 MileStone, Issue를 활용하여 이슈 관리를 진행
 + 의도를 명확히 드러내는 자세한 이름의 브랜치 생성
 + 자세한 commit 메세지와 주기적인 push를 통한 작업 공유
 + 코드 리뷰를 거치는 pull request
-+ Github Action을 통한 CI/CD
++ Github Action을 통한 CI/CD  
 PR : https://github.com/TheHabit/the-habit-spring-server/pulls?q=is%3Apr+is%3Aclosed

@@ -1,6 +1,6 @@
 # 📚 Re-Mate
 Re-Mate는 가상 환경 내에서 함께 독서 모임을 진행하고, 독서 기록을 공유하는 메타버스 기반 독서 플랫폼입니다.
-![KakaoTalk_20221129_162949326](https://user-images.githubusercontent.com/85207194/204473492-31b87109-f33c-4e4d-b55f-6f43770d483b.png)
+![admin로고](https://user-images.githubusercontent.com/85207194/204474472-239ac19f-1047-48d7-8a9b-5be072ba8787.png)
 
 
 ## 💡 INFO

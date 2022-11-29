@@ -20,6 +20,8 @@ public interface ClubInfraRepository extends ClubRepository {
     @QueryHints(value = @QueryHint(name = "org.hibernate.readOnly", value = "true"))
     List<Club> findAll();
 
+
+
 //    @Query("select c.id, c.clubName, c.clubIntro, c.currentNumberOfMember, c.bookName  from Club c")
 //    List<Club> findAllClub();
 

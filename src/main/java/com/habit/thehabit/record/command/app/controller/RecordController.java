@@ -193,7 +193,6 @@ public class RecordController {
     @DeleteMapping("")
     public ResponseEntity<ResponseDTO> deleteRecord(@RequestParam Long recordCode){
         System.out.println("recordCode = " + recordCode);
-
         try{
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "독서기록 삭제 성공", "삭제 완료되었습니다."));
         } catch (RecordDeleteException rde){
@@ -202,7 +201,5 @@ public class RecordController {
             System.out.println("exception = " + e);
             return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "독서기록 삭제 실패", "내부 에러"));
         }
-
     }
-
 }

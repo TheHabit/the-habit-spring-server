@@ -17,3 +17,4 @@ Re-Mate 프로젝트는 MileStone, Issue를 활용하여 이슈 관리를 진행
 PR : https://github.com/TheHabit/the-habit-spring-server/pulls?q=is%3Apr+is%3Aclosed
 
 ## ERD
+![thehabbit-spring-server](https://user-images.githubusercontent.com/85207194/204455530-f452e0da-f612-4269-8d17-0a3771024d45.png)

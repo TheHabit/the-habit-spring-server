@@ -25,7 +25,8 @@ Re-Mate 프로젝트는 [MileStone](https://github.com/TheHabit/the-habit-spring
 2. AWS를 활용한 클라우드 아키텍처 설계 및 배포
 
 ## ✅ 기술스택
-![기술 융합 구조도](https://user-images.githubusercontent.com/75306582/204972841-c6058931-9c9e-4381-9927-3570b0e82f5d.png)
+![기술스택](https://user-images.githubusercontent.com/75306582/204977701-270a5947-1ae3-4939-b96f-319ba97586e5.jpg)
+
 ## ✅ 시스템 아키텍처 
 ![ReMate Architect](https://user-images.githubusercontent.com/75306582/204968887-27244572-da7e-4883-9c90-4471326b36fd.png)
 

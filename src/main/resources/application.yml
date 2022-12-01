@@ -1,10 +1,12 @@
 server:
   port: 8080
+  tomcat:
+    connection-timeout: 1800000
 spring:
   config:
     import:
-#    - classpath:/config/config-server-import.yml
-    - optional:CONFIG_IP
+    - classpath:/config/config-server-import.yml
+#    - optional:CONFIG_IP
   profiles:
     active: dev
   application:

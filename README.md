@@ -2,8 +2,7 @@
 Re-Mate는 가상 환경 내에서 함께 독서 모임을 진행하고, 독서 기록을 공유하는 메타버스 기반 독서 플랫폼입니다.
 
 
-<img src="https://user-images.githubusercontent.com/85207194/204476562-e96633bf-25f3-41c9-bfbd-ec159a09038e.png" width=50% height=50%>
-
+![re-mate](https://user-images.githubusercontent.com/85207194/207511293-c11478ae-7cdf-4536-a6a2-70d5d0d6f6b5.jpg)
 
 ## 🎆 프로젝트 기획
  문화체육관광부의 2021 독서실태조사에 따르면, 2013년 이후 연간 종이책 독서율은 꾸준히 감소하고 있는 반면,

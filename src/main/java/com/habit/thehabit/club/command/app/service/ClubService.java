@@ -115,6 +115,7 @@ public class ClubService {
         Club club = new Club();
         club.setClubName(createClubDTO.getClubName());
         club.setBookName(createClubDTO.getBookName());
+        club.setClubIntro(createClubDTO.getClubIntro());
         club.setRecruitPeriod(new Period(createClubDTO.getRecruitStartDate(), createClubDTO.getRecruitEndDate()));
         club.setPeriod(new Period(createClubDTO.getStartDate(), createClubDTO.getEndDate()));
         club.setNumberOfMember(createClubDTO.getNumberOfMember());

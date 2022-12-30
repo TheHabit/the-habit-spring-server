@@ -16,7 +16,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-//@Tag(name = "독서 기록", description = "독서 기록 API")
 @RestController
 @RequestMapping("/v1/records")
 public class RecordController {
@@ -29,19 +28,7 @@ public class RecordController {
     }
 
 
-//    @Operation(summary = "독서기록 삽입하기", description = "새로운 독서 기록을 삽입합니다.")
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "201", description = "OK", content = @Content(schema = @Schema(implementation = RecordDTO.class))),
-//            @ApiResponse(responseCode = "500", description = "Internal Sever Error")
-//    })
-//    @Parameters({
-//            @Parameter(name = "bookName", description = "책 제목", example = "지적 대화를 위한 넓고 얉은 지식"),
-//            @Parameter(name = "bookISBN", description = "책 ISBN", example = "11211312314"),
-//            @Parameter(name = "bookReview", description = "독서록"),
-//            @Parameter(name = "startDate", description = "독서 시작 일자", example = "2022-10-11"),
-//            @Parameter(name = "endDate", description = "독서 종료 일자", example = "2022-11-11")
-//    })
-    /** 도서 담기 ISBN, 이미지 파일을 담고 있다. */
+    /** 도서 담기 */
     @PostMapping(value = "/contain" /** consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE } */)
     public ResponseEntity<ResponseDTO> addRecord(@RequestPart(value = "bookImg") @Nullable MultipartFile bookImg,
                                                  RecordDTO record , @AuthenticationPrincipal Member member){
@@ -57,7 +44,7 @@ public class RecordController {
     }
 
 
-    /** 독서록 쓰기 참고) isDone 값이 들어왔을 때 isDone 항목 업데이트(즉, 읽고 있는 책 -> 다 읽은 책) */
+    /** 독서 기록 작성 */
     @PostMapping(value = "/write")
     public ResponseEntity<ResponseDTO> writeRecord( @RequestBody RecordDTO record , @AuthenticationPrincipal Member member){
         try{
@@ -68,7 +55,7 @@ public class RecordController {
         }
     }
 
-    /** 인생 도서 등록하기 */
+    /** 인생 도서 등록 */
     @PostMapping("/best")
     public ResponseEntity<ResponseDTO> setAllTimeBook(@RequestBody RecordBestPickDTO recordBestPickDTO, @AuthenticationPrincipal Member member){
 
@@ -83,7 +70,7 @@ public class RecordController {
     }
 
 
-    /** bookISBN으로 해당하는 독서록 리스트 찾아오기 */
+    /** bookISBN으로 독서기록 조회 */
     @GetMapping("")
     public ResponseEntity<ResponseDTO> selectRecordListByISBN(@RequestParam String bookISBN){
         System.out.println("bookISBN = " + bookISBN);
@@ -98,7 +85,7 @@ public class RecordController {
         }
     }
 
-    /** RecordCode로 해당하는 독서기록 찾아오기 */
+    /** RecordCode로 독서기록 조회 */
     @GetMapping("one")
     public ResponseEntity<ResponseDTO> selectRecordByRecordCode(@RequestParam String recordCode){
         System.out.println("recordCode = " + recordCode);
@@ -113,7 +100,7 @@ public class RecordController {
         }
     }
 
-    /** 회원 정보로 모든 책 정보 반환 : 책상 앞에 섰을 때 호출 */
+    /** 회원 정보로 모든 독서기록 조회 */
     @GetMapping("/desk")
     public ResponseEntity<ResponseDTO> selectRecordByUserInfo(@AuthenticationPrincipal Member member){
         int memberCode = member.getMemberCode();
@@ -129,7 +116,7 @@ public class RecordController {
         }
     }
 
-    /** 회원 정보로 읽은 책 정보 반환 : My Room에 입장하거나 방 안에서 변동 사항이 있을 때마다 호출 */
+    /** 회원 정보로 완독한 독서기록 조회 */
     @GetMapping("/myroom")
     public ResponseEntity<ResponseDTO> selectRecordByUserInfoIsDone(@AuthenticationPrincipal Member member){
         int memberCode = member.getMemberCode();
@@ -145,7 +132,7 @@ public class RecordController {
         }
     }
 
-    /** 전체 독서록 리스트(평점, 한줄평) 가져오기 */
+    /** 전체 독서기록에서 평점, 한줄평 조회 */
     @GetMapping("/all")
     public ResponseEntity<ResponseDTO> selectAllRecordOneLineReview(){
 
@@ -159,6 +146,7 @@ public class RecordController {
         }
     }
 
+    /** 관리자 - 전체 독서기록 조회 */
     @GetMapping("/all-admin")
     public ResponseEntity<ResponseDTO> selectAllRecord(){
 
@@ -172,7 +160,7 @@ public class RecordController {
         }
     }
 
-    /** 독서기록 수정 - 부분 수정 가능하다는 의미로 Patch Method로 작성 */
+    /** 독서기록 수정 */
     @PatchMapping("")
     public ResponseEntity<ResponseDTO> updateRecord(@RequestBody RecordDTO recordDTO, @AuthenticationPrincipal Member member){
 

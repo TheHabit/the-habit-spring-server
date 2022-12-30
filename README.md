@@ -39,8 +39,7 @@ Re-Mate는 가상 환경 내에서 함께 독서 모임을 진행하고, 독서 
 + 작업 의도를 명확히 파악할 수 있도록, 브랜치의 프리픽스 (feat, fix 등)를 명확히 적도록 함
 + 자세한 commit 메세지와 주기적인 push를 통한 작업 공유
 + 코드 리뷰를 거치는 pull request
-<br>
-[PR 내역 확인하기](https://github.com/TheHabit/the-habit-spring-server/pulls?q=is%3Apr+is%3Aclosed)
++ [PR 내역 확인하기](https://github.com/TheHabit/the-habit-spring-server/pulls?q=is%3Apr+is%3Aclosed)
 
 ## ✅ ERD
 + 회원, 독서 기록, 독서 모임을 포함한 ERD
